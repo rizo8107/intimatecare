@@ -30,21 +30,21 @@ const FeatureSection = () => {
   ];
 
   return (
-    <section className="section-padding bg-white">
+    <section className="py-12 md:py-16 lg:py-24 bg-white">
       <div className="container-custom">
-        <h2 className="text-center section-title mb-12">What I Offer</h2>
+        <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-serif font-medium mb-8 md:mb-12">What I Offer</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="bg-sand-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-sand-50 rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow"
             >
-              <h3 className="font-serif text-xl mb-3 text-blush-600">{feature.title}</h3>
-              <p className="text-muted-foreground mb-4">{feature.description}</p>
+              <h3 className="font-serif text-lg md:text-xl mb-2 md:mb-3 text-blush-600">{feature.title}</h3>
+              <p className="text-muted-foreground text-sm md:text-base mb-4">{feature.description}</p>
               <Link 
                 to={feature.link}
-                className="text-blush-600 font-medium hover:text-blush-800 transition-colors"
+                className="text-blush-600 font-medium hover:text-blush-800 transition-colors text-sm md:text-base"
               >
                 {feature.linkText} →
               </Link>
