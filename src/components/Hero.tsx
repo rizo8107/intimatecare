@@ -34,9 +34,9 @@ const Hero = () => {
             <div className="relative w-full max-w-[250px] sm:max-w-[300px] md:max-w-[350px] lg:max-w-md">
               <div className="absolute -inset-1 rounded-full bg-blush-200 opacity-30 blur"></div>
               <img 
-                src="https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                alt="Sex Educator and Intimacy Coach" 
-                className="rounded-full w-full h-auto relative z-10 border-4 border-white shadow-lg"
+                src="https://images.unsplash.com/photo-1529519195486-16945e2f7e95?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                alt="Intimate couple - Sex Educator and Intimacy Coach" 
+                className="rounded-full w-full h-auto relative z-10 border-4 border-white shadow-lg object-cover"
               />
             </div>
           </div>
