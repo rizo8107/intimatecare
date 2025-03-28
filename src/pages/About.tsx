@@ -16,7 +16,7 @@ const About = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-center mb-12">
               <img
-                src="/lovable-uploads/ed233340-7b1c-46cf-8369-944b2ebeaa4e.png"
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
                 alt="Khushboo Bist"
                 className="rounded-lg shadow-lg max-w-md w-full"
               />

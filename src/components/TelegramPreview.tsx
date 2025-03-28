@@ -47,7 +47,7 @@ const TelegramPreview = () => {
           
           <div className="flex justify-center">
             <img 
-              src="/lovable-uploads/dcb068d0-f5f0-40bf-8df8-bbc7a1b979c8.png"
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
               alt="Intimate Talks Telegram Group" 
               className="rounded-lg shadow-lg max-w-md w-full"
             />

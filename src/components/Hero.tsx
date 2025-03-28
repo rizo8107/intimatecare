@@ -31,8 +31,8 @@ const Hero = () => {
             <div className="relative">
               <div className="absolute -inset-1 rounded-full bg-blush-200 opacity-30 blur"></div>
               <img 
-                src="/lovable-uploads/60a76655-9a4b-4075-8070-59355b917c79.png" 
-                alt="Khushboo Bist - Sex Educator and Intimacy Coach" 
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                alt="Sex Educator and Intimacy Coach" 
                 className="rounded-full w-full max-w-md h-auto relative z-10 border-4 border-white shadow-lg"
               />
             </div>

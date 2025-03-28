@@ -8,8 +8,8 @@ const AboutPreview = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <img 
-              src="/lovable-uploads/ed233340-7b1c-46cf-8369-944b2ebeaa4e.png" 
-              alt="Khushboo Bist - Intimacy Coach" 
+              src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+              alt="Intimacy Coach" 
               className="rounded-lg shadow-md w-full h-auto"
             />
           </div>
