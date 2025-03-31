@@ -6,39 +6,38 @@ const Hero = () => {
   const isMobile = useIsMobile();
   
   return (
-    <section className="bg-gradient-to-b from-sand-50 to-white py-10 md:py-16 lg:py-24">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div className="order-2 lg:order-1 animate-fade-in">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-foreground mb-3 md:mb-4 leading-tight">
-              Your Go-To Sex Educator & Intimacy Coach
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-blush-600 mb-4 md:mb-6 font-serif italic">
-              Let's Make Pleasure a Priority!
-            </p>
-            <p className="text-muted-foreground mb-6 md:mb-8 text-base md:text-lg">
-              Sex education—something we all need, yet something we barely talk about. Why? 
-              We were born from it. We experience it. We crave it. But when it comes to understanding 
-              pleasure, intimacy, and connection, we hesitate.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link to="/sessions" className="btn-primary text-center">
-                Let's Start
-              </Link>
-              <Link to="/about" className="btn-accent text-center">
-                Learn More
-              </Link>
-            </div>
-          </div>
-          <div className="order-1 lg:order-2 flex justify-center mb-6 lg:mb-0">
-            <div className="relative w-full max-w-[250px] sm:max-w-[300px] md:max-w-[350px] lg:max-w-md">
-              <div className="absolute -inset-1 rounded-full bg-blush-200 opacity-30 blur"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                alt="Sex Educator and Intimacy Coach" 
-                className="rounded-full w-full h-auto relative z-10 border-4 border-white shadow-lg"
-              />
-            </div>
+    <section className="relative w-full">
+      {/* Banner Image */}
+      <div className="absolute inset-0 w-full h-full">
+        <img 
+          src="/lovable-uploads/46de4cb1-d11f-40c5-9c1b-b1f6454a4abd.png" 
+          alt="Khushboo Bist - Sex Educator and Intimacy Coach" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-sand-950/60 to-transparent"></div>
+      </div>
+      
+      {/* Content */}
+      <div className="container-custom relative z-10 py-16 md:py-24 lg:py-32">
+        <div className="max-w-2xl">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-white mb-3 md:mb-4 leading-tight">
+            Your Go-To Sex Educator & Intimacy Coach
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-blush-200 mb-4 md:mb-6 font-serif italic">
+            Let's Make Pleasure a Priority!
+          </p>
+          <p className="text-sand-100 mb-6 md:mb-8 text-base md:text-lg">
+            Sex education—something we all need, yet something we barely talk about. Why? 
+            We were born from it. We experience it. We crave it. But when it comes to understanding 
+            pleasure, intimacy, and connection, we hesitate.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <Link to="/sessions" className="btn-primary text-center">
+              Let's Start
+            </Link>
+            <Link to="/about" className="btn-accent text-center">
+              Learn More
+            </Link>
           </div>
         </div>
       </div>

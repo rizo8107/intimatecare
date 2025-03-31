@@ -10,7 +10,7 @@ import NewsletterSection from "@/components/NewsletterSection";
 
 const Index = () => {
   return (
-    <div>
+    <div className="flex flex-col">
       <Hero />
       <FeatureSection />
       <AboutPreview />
