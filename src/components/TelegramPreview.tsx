@@ -3,24 +3,24 @@ import { Link } from 'react-router-dom';
 
 const TelegramPreview = () => {
   return (
-    <section className="py-12 md:py-16 lg:py-24 bg-gradient-to-r from-blush-50 to-sand-50">
+    <section className="section-padding bg-gradient-to-r from-blush-50 to-sand-50">
       <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-xl md:text-2xl font-serif text-blush-600 mb-2 md:mb-3">Join Our Community</h2>
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-serif mb-3 md:mb-4">My Exclusive Product – Intimate Talks</h3>
-            <p className="text-base md:text-lg mb-3 md:mb-4">
+            <h2 className="section-subtitle">Join Our Community</h2>
+            <h3 className="section-title">My Exclusive Product – Intimate Talks</h3>
+            <p className="text-lg mb-4">
               Join the most intimate space for open, honest conversations about sex, pleasure, and relationships!
             </p>
-            <p className="mb-5 md:mb-6 text-muted-foreground text-sm md:text-base">
+            <p className="mb-6 text-muted-foreground">
               A safe, inclusive, and judgment-free space for open and honest discussions about relationships, 
               love, and intimacy. Whether you're seeking advice, looking to share experiences, or simply 
               want to connect with like-minded individuals, you're in the right place.
             </p>
             
-            <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm mb-6 md:mb-8">
-              <h4 className="font-serif text-lg md:text-xl mb-3 md:mb-4">Why Join?</h4>
-              <ul className="space-y-2 text-muted-foreground text-sm md:text-base">
+            <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+              <h4 className="font-serif text-xl mb-4">Why Join?</h4>
+              <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-start">
                   <span className="text-blush-500 mr-2">•</span>
                   Learn what no one taught you about intimacy
@@ -45,11 +45,11 @@ const TelegramPreview = () => {
             </Link>
           </div>
           
-          <div className="flex justify-center mt-6 lg:mt-0">
+          <div className="flex justify-center">
             <img 
-              src="https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
               alt="Intimate Talks Telegram Group" 
-              className="rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md"
+              className="rounded-lg shadow-lg max-w-md w-full"
             />
           </div>
         </div>
