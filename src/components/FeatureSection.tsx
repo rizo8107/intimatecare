@@ -52,25 +52,6 @@ const FeatureSection = () => {
           ))}
         </div>
       </div>
-      
-      <div className="mt-12 md:mt-16 lg:mt-20 container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          <div className="rounded-lg overflow-hidden shadow-md">
-            <img 
-              src="https://images.unsplash.com/photo-1596560548464-f010549e45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-              alt="Couple holding hands over water" 
-              className="w-full h-auto object-cover aspect-video"
-            />
-          </div>
-          <div className="rounded-lg overflow-hidden shadow-md">
-            <img 
-              src="https://images.unsplash.com/photo-1551978129-b73f45d132eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-              alt="Man kissing woman's forehead" 
-              className="w-full h-auto object-cover aspect-video"
-            />
-          </div>
-        </div>
-      </div>
     </section>
   );
 };

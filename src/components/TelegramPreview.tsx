@@ -47,9 +47,9 @@ const TelegramPreview = () => {
           
           <div className="flex justify-center mt-6 lg:mt-0">
             <img 
-              src="https://images.unsplash.com/photo-1607699024760-6cc627c95770?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
               alt="Intimate Talks Telegram Group" 
-              className="rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md object-cover aspect-[4/3]"
+              className="rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md"
             />
           </div>
         </div>

@@ -10,7 +10,7 @@ import NewsletterSection from "@/components/NewsletterSection";
 
 const Index = () => {
   return (
-    <div className="overflow-hidden">
+    <div>
       <Hero />
       <FeatureSection />
       <AboutPreview />
