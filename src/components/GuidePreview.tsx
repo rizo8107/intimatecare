@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 
 const GuidePreview = () => {
@@ -39,26 +38,20 @@ const GuidePreview = () => {
                 </ul>
               </div>
               
-              <div className="flex justify-center lg:justify-start">
-                <Link to="/guide" className="btn-primary">
-                  Spice Up Your Bedroom Today!
-                </Link>
-              </div>
+              <Link 
+                to="/guides/69-positions" 
+                className="inline-block bg-[#ff8e7f] hover:bg-[#ff7a69] text-white py-3 px-6 rounded-md font-medium transition-all text-sm md:text-base"
+              >
+                Spice Up Your Bedroom Today!
+              </Link>
             </div>
             
-            <div className="flex justify-center mt-6 lg:mt-0">
-              <div className="bg-white p-3 md:p-4 rounded-lg shadow-lg rotate-3 max-w-[200px] sm:max-w-[250px] md:max-w-xs">
-                <div className="aspect-[3/4] bg-gradient-to-br from-blush-400 to-blush-600 rounded-md flex items-center justify-center">
-                  <div className="text-center text-white p-4 md:p-6">
-                    <h3 className="font-serif text-xl md:text-2xl mb-1 md:mb-2">69 Position</h3>
-                    <h4 className="font-serif text-2xl md:text-3xl mb-3 md:mb-4">E-Guide</h4>
-                    <p className="text-xs md:text-sm mb-4 md:mb-6">The ultimate guide to spice up your intimate moments</p>
-                    <div className="inline-block border-2 border-white rounded-full px-3 md:px-4 py-1 text-xs md:text-sm">
-                      By Khushboo Bist
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex justify-center">
+              <img 
+                src="/69.jpg" 
+                alt="69 Position E-Guide Cover" 
+                className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300"
+              />
             </div>
           </div>
         </div>
