@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 
 const AboutPreview = () => {
@@ -8,7 +7,7 @@ const AboutPreview = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="mb-6 lg:mb-0">
             <img 
-              src="/public/about.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+              src="/about.jpg" 
               alt="Intimacy Coach" 
               className="rounded-lg shadow-md w-full h-auto"
             />

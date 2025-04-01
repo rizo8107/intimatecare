@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 
 const TelegramPreview = () => {
@@ -47,7 +46,7 @@ const TelegramPreview = () => {
           
           <div className="flex justify-center mt-6 lg:mt-0">
             <img 
-              src="/public/telegram.png"
+              src="/telegram.png"
               alt="Intimate Talks Telegram Group" 
               className="rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md"
             />
