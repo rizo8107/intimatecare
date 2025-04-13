@@ -3,6 +3,13 @@ import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 
 const IntimateTalks = () => {
+  // Get the current URL to construct absolute URLs for redirects
+  const baseUrl = window.location.origin;
+  const successUrl = `${baseUrl}/intimate-success`;
+  
+  // Construct the payment URL with success redirect
+  const paymentUrl = `https://payments.cashfree.com/forms?code=intimatetalks&redirect_url=${encodeURIComponent(successUrl)}`;
+
   return (
     <div>
       <section className="bg-sand-50 py-16 md:py-24">
@@ -73,7 +80,7 @@ const IntimateTalks = () => {
                   
                   <div className="text-center">
                     <a 
-                      href="https://payments.cashfree.com/forms?code=intimatetalks"
+                      href={paymentUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-primary w-full inline-block py-3 text-center"
@@ -109,24 +116,6 @@ const IntimateTalks = () => {
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* Hidden verification links for payment confirmation */}
-          <div className="hidden">
-            <Link to="/verify-join/intimatetalks?payment=CF12345" id="verify-payment-link">
-              Verify Payment
-            </Link>
-          </div>
-          
-          {/* Hidden verification instructions snippet */}
-          <div className="hidden" id="payment-verification-instructions">
-            <p>
-              After your payment is processed, please check your email for a verification link. 
-              Click on the link to connect your Telegram account and join the group.
-            </p>
-            <p>
-              If you don't receive the email, please contact us at support@intimatecare.com
-            </p>
           </div>
         </div>
       </section>
