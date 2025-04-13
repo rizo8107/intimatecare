@@ -32,10 +32,17 @@ const IntimateSuccess = () => {
   // Function to handle Telegram auth callback
   const handleTelegramAuth = (user: any) => {
     console.log('Telegram auth success:', user);
-    setTelegramData(user);
+    
+    // Ensure we capture both user ID and username for chat identification
+    const telegramUserData = {
+      ...user,
+      chat_id: user.id, // Adding chat_id field which is the same as user.id
+    };
+    
+    setTelegramData(telegramUserData);
     
     // Send the data to the backend
-    sendTelegramDataToBackend(user);
+    sendTelegramDataToBackend(telegramUserData);
   };
 
   // Function to send data to the backend webhook
@@ -50,8 +57,12 @@ const IntimateSuccess = () => {
         amount,
         source: 'intimate_talks',
         auth_date_formatted: new Date(userData.auth_date * 1000).toISOString(),
-        command: '/user_join_verified'
+        command: '/user_join_verified',
+        chat_id: userData.id,  // Explicitly include chat_id for the webhook
+        username: userData.username || ''
       };
+      
+      console.log('Sending data to webhook:', payloadData);
       
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
         method: 'POST',
@@ -110,6 +121,8 @@ const IntimateSuccess = () => {
     script.setAttribute('data-onauth', 'onTelegramAuth(user)');
     script.setAttribute('data-request-access', 'write');
     script.setAttribute('data-auth-url', 'https://intimatecare.in' + window.location.pathname);
+    script.setAttribute('data-userpic', 'false');
+    script.setAttribute('data-radius', '8');
     
     // Append the script to the container
     telegramLoginContainerRef.current.appendChild(script);
@@ -193,6 +206,11 @@ const IntimateSuccess = () => {
                     Thank you, {telegramData.first_name}! You're all set to join our Telegram group. 
                     Check your Telegram app for the invitation link.
                   </p>
+                  <p className="text-green-600 text-sm mt-2">
+                    Your Telegram ID: {telegramData.id} 
+                    {telegramData.username && ` (@${telegramData.username})`}
+                  </p>
+                  <input type="hidden" id="telegram-chat-id" value={telegramData.id} />
                 </div>
               ) : (
                 <div className="flex justify-center">
