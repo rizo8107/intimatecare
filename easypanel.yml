@@ -1,0 +1,23 @@
+name: intimatecare
+type: web
+deploy:
+  mode: docker-compose
+  build: true
+  ports:
+    - "80:80"
+  volumes:
+    - type: bind
+      source: /etc/localtime
+      target: /etc/localtime
+      read_only: true
+  resources:
+    limits:
+      memory: 1G
+    reservations:
+      memory: 256M
+env:
+  - name: NODE_ENV
+    value: production
+domains:
+  - domain: intimatecare.khushboobist.com
+    primary: true 
