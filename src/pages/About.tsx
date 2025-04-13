@@ -1,4 +1,3 @@
-
 const About = () => {
   return (
     <div>
@@ -16,7 +15,7 @@ const About = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-center mb-12">
               <img
-                src="/public/about.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                src="/about.jpg"
                 alt="Khushboo Bist"
                 className="rounded-lg shadow-lg max-w-md w-full"
               />
