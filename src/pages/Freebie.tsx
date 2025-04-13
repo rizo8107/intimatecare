@@ -1,28 +1,60 @@
-
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 
 const Freebie = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Success!",
-        description: "Check your email for your free Pleasure Mapping guide.",
+    try {
+      console.log('Submitting form data to webhook...');
+      
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/freebie', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          source: 'website_freebie_form',
+        }),
       });
       
-      // Reset the form
-      setEmail('');
-      setName('');
-    }, 1000);
+      const data = await response.json().catch(() => null);
+      console.log('Webhook response:', response.status, data);
+      
+      if (response.ok) {
+        toast({
+          title: "Success!",
+          description: "Check your email for your free Pleasure Mapping guide.",
+        });
+        
+        // Reset the form
+        setEmail('');
+        setName('');
+        setPhone('');
+      } else {
+        console.error('Form submission failed:', response.status, data);
+        throw new Error(`Failed to submit form: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send your request. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -102,6 +134,23 @@ const Freebie = () => {
                       placeholder="Enter your email"
                       required
                     />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-muted-foreground mb-1">
+                      Your Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
+                      placeholder="Enter your phone number"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Optional, but recommended for better communication
+                    </p>
                   </div>
                   
                   <div>

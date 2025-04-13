@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from "@/hooks/use-toast";
 
@@ -7,20 +6,51 @@ const NewsletterSection = () => {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setEmail('');
-      setName('');
-      toast({
-        title: "Success!",
-        description: "You've successfully subscribed to our newsletter.",
+    try {
+      console.log('Sending newsletter subscription data...');
+      
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/kb_newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          source: 'website_newsletter',
+          subscriptionDate: new Date().toISOString(),
+        }),
       });
-    }, 1000);
+      
+      const data = await response.json().catch(() => null);
+      console.log('Webhook response:', response.status, data);
+      
+      if (response.ok) {
+        setEmail('');
+        setName('');
+        toast({
+          title: "Success!",
+          description: "You've successfully subscribed to our newsletter.",
+        });
+      } else {
+        console.error('Newsletter subscription failed:', response.status, data);
+        throw new Error(`Failed to subscribe: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

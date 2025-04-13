@@ -2,30 +2,6 @@ import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 
 const Guide = () => {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Purchase Successful!",
-        description: "Check your email for the download link to your 69 Position E-Guide.",
-      });
-      
-      // Reset the form
-      setEmail('');
-      setName('');
-      setPhone('');
-    }, 1000);
-  };
-
   return (
     <div>
       <section className="bg-sand-50 py-16 md:py-24">
@@ -103,67 +79,27 @@ const Guide = () => {
                   </p>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your name"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Phone
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your phone number"
-                      required
-                    />
-                  </div>
+                <div className="space-y-6">
+                  <p className="text-center">
+                    Get immediate access to all 69 positions with detailed instructions and illustrations.
+                  </p>
                   
                   <div className="pt-4">
-                    <button 
-                      type="submit"
-                      className="btn-primary w-full text-lg py-4"
-                      disabled={loading}
+                    <a 
+                      href="https://payments.cashfree.com/forms/69positionsebbok"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary w-full inline-block text-lg py-4 text-center"
                     >
-                      {loading ? "Processing..." : "Buy Now"}
-                    </button>
+                      Buy Now
+                    </a>
                   </div>
                   
                   <p className="text-xs text-center text-muted-foreground">
                     After purchase, you'll receive an email with the download link for your guide.
                     Your information is securely processed and will never be shared with third parties.
                   </p>
-                </form>
+                </div>
                 
                 <div className="mt-8 pt-6 border-t border-sand-100">
                   <h3 className="font-serif text-lg mb-4 text-center">What Readers Are Saying</h3>

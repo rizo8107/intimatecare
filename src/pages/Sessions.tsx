@@ -1,36 +1,7 @@
-
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 
 const Sessions = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [sessionType, setSessionType] = useState('free');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Booking Request Received!",
-        description: "We'll contact you shortly to confirm your session.",
-      });
-      
-      // Reset the form
-      setName('');
-      setEmail('');
-      setPhone('');
-      setSessionType('free');
-      setMessage('');
-    }, 1000);
-  };
-
   return (
     <div>
       <section className="bg-sand-50 py-16 md:py-24">
@@ -55,8 +26,8 @@ const Sessions = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               {/* Free Session */}
               <div className="border border-sand-200 rounded-lg p-8 bg-white hover:shadow-md transition-shadow">
-                <h3 className="font-serif text-xl mb-4">Free First Session</h3>
-                <p className="text-3xl font-serif text-blush-600 mb-4">₹0</p>
+                <h3 className="font-serif text-xl mb-4">First Session</h3>
+                <p className="text-3xl font-serif text-blush-600 mb-4">₹599</p>
                 <ul className="space-y-2 mb-6 text-muted-foreground">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
@@ -79,7 +50,7 @@ const Sessions = () => {
                   Popular
                 </div>
                 <h3 className="font-serif text-xl mb-4">30-Minute Session</h3>
-                <p className="text-3xl font-serif text-blush-600 mb-4">₹1,500</p>
+                <p className="text-3xl font-serif text-blush-600 mb-4">₹499</p>
                 <ul className="space-y-2 mb-6 text-muted-foreground">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
@@ -99,7 +70,7 @@ const Sessions = () => {
               {/* Student Session */}
               <div className="border border-sand-200 rounded-lg p-8 bg-white hover:shadow-md transition-shadow">
                 <h3 className="font-serif text-xl mb-4">Student Special</h3>
-                <p className="text-3xl font-serif text-blush-600 mb-4">₹500</p>
+                <p className="text-3xl font-serif text-blush-600 mb-4">₹399</p>
                 <ul className="space-y-2 mb-6 text-muted-foreground">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
@@ -117,104 +88,38 @@ const Sessions = () => {
               </div>
             </div>
             
-            {/* Booking Form */}
+            {/* Booking Link */}
             <div className="bg-white p-8 rounded-lg shadow-md">
               <h2 className="font-serif text-2xl mb-6 text-center">Book Your Session Now</h2>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your name"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Phone
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your phone number"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="sessionType" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Session Type
-                    </label>
-                    <select
-                      id="sessionType"
-                      value={sessionType}
-                      onChange={(e) => setSessionType(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      required
-                    >
-                      <option value="free">Free First Session (1 hour)</option>
-                      <option value="regular">30-Minute Session (₹1,500)</option>
-                      <option value="student">Student Special (₹500)</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-muted-foreground mb-1">
-                    Brief Description of Your Concerns
-                  </label>
-                  <textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500 min-h-[100px]"
-                    placeholder="Briefly describe what you'd like to discuss in our session..."
-                    required
-                  ></textarea>
-                </div>
-                
-                <div className="text-center">
-                  <button 
-                    type="submit"
-                    className="btn-primary px-8"
-                    disabled={loading}
-                  >
-                    {loading ? "Submitting..." : "Request Booking"}
-                  </button>
-                </div>
-                
-                <p className="text-xs text-center text-muted-foreground">
-                  Upon submission, you'll receive an email with available time slots and payment instructions.
-                  All sessions are conducted via audio call. Your privacy and confidentiality are guaranteed.
+              <div className="space-y-6">
+                <p className="text-center text-lg">
+                  Ready to book your session? Click below to select an available time slot.
                 </p>
-              </form>
+                
+                <div className="flex justify-center">
+                  <a 
+                    href="https://topmate.io/intimatecare/1102760" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn-primary px-12 py-4 text-lg inline-block"
+                  >
+                    Book on Topmate
+                  </a>
+                </div>
+                
+                <p className="text-sm text-center text-muted-foreground">
+                  Your session will be held via audio call. You'll be able to select your preferred time slot on the booking page.
+                  <br />
+                  All sessions are completely confidential and your privacy is our top priority.
+                </p>
+                
+                <div className="mt-6 bg-blush-50 p-4 rounded-lg">
+                  <p className="text-center text-muted-foreground">
+                    <span className="font-medium">Current Special Offer:</span> Book your first 60-minute session for only ₹499 (Regular price: ₹2,999)
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

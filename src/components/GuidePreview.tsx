@@ -39,7 +39,7 @@ const GuidePreview = () => {
               </div>
               
               <Link 
-                to="/guides/69-positions" 
+                to="/guide" 
                 className="inline-block bg-[#ff8e7f] hover:bg-[#ff7a69] text-white py-3 px-6 rounded-md font-medium transition-all text-sm md:text-base"
               >
                 Spice Up Your Bedroom Today!

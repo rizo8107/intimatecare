@@ -1,8 +1,57 @@
-
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, Instagram, Youtube, Twitter } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const Footer = () => {
+  const [footerEmail, setFooterEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      console.log('Sending footer newsletter subscription data...');
+      
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/kb_newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          email: footerEmail,
+          source: 'website_footer',
+          subscriptionDate: new Date().toISOString(),
+        }),
+      });
+      
+      const data = await response.json().catch(() => null);
+      console.log('Webhook response:', response.status, data);
+      
+      if (response.ok) {
+        setFooterEmail('');
+        toast({
+          title: "Success!",
+          description: "You've successfully subscribed to our newsletter.",
+        });
+      } else {
+        console.error('Newsletter subscription failed:', response.status, data);
+        throw new Error(`Failed to subscribe: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer className="bg-sand-100 pt-16 pb-8">
       <div className="container-custom">
@@ -80,15 +129,21 @@ const Footer = () => {
             
             <div className="mt-6">
               <h4 className="font-medium mb-2">Subscribe to Newsletter</h4>
-              <form className="flex flex-col sm:flex-row gap-2">
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
                 <input 
                   type="email" 
                   placeholder="Your email" 
+                  value={footerEmail}
+                  onChange={(e) => setFooterEmail(e.target.value)}
                   className="px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
                   required
                 />
-                <button type="submit" className="btn-primary sm:whitespace-nowrap">
-                  Subscribe
+                <button 
+                  type="submit" 
+                  className="btn-primary sm:whitespace-nowrap"
+                  disabled={loading}
+                >
+                  {loading ? "..." : "Subscribe"}
                 </button>
               </form>
             </div>

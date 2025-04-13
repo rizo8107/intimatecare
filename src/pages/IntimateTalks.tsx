@@ -1,31 +1,8 @@
-
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 
 const IntimateTalks = () => {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Success!",
-        description: "Check your email for the Telegram group invitation link.",
-      });
-      
-      // Reset the form
-      setEmail('');
-      setName('');
-    }, 1000);
-  };
-
   return (
     <div>
       <section className="bg-sand-50 py-16 md:py-24">
@@ -89,52 +66,27 @@ const IntimateTalks = () => {
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="font-serif text-2xl mb-6 text-center">Join The Intimate Talks Today!</h2>
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your name"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Your Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
+                <div className="space-y-6">
+                  <p className="text-center text-lg">
+                    Ready to be part of our exclusive community? Click below to join now!
+                  </p>
                   
                   <div className="text-center">
-                    <button 
-                      type="submit"
-                      className="btn-primary w-full"
-                      disabled={loading}
+                    <a 
+                      href="https://payments.cashfree.com/forms?code=intimatetalks"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary w-full inline-block py-3 text-center"
                     >
-                      {loading ? "Processing..." : "Join Now"}
-                    </button>
+                      Join Now
+                    </a>
                   </div>
                   
                   <p className="text-xs text-center text-muted-foreground">
-                    By joining, you agree to our community guidelines. We'll send you the Telegram 
-                    group invitation link via email. Your privacy is important to us.
+                    By joining, you agree to our community guidelines. After your payment is processed, 
+                    you'll receive the Telegram group invitation link via email. Your privacy is important to us.
                   </p>
-                </form>
+                </div>
                 
                 <div className="mt-8 pt-6 border-t border-sand-100">
                   <h3 className="font-serif text-lg mb-4 text-center">What Members Are Saying</h3>

@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 
 const FeatureSection = () => {
@@ -20,12 +19,6 @@ const FeatureSection = () => {
       description: "Spice up your bedroom game with our expert-crafted guide to 69 exciting positions.",
       link: "/guide",
       linkText: "Get Guide"
-    },
-    {
-      title: "Complete Guide Collection",
-      description: "Access our comprehensive collection of intimacy guides for couples at special bundle pricing.",
-      link: "/products",
-      linkText: "View Collection"
     },
     {
       title: "Free Resources",
