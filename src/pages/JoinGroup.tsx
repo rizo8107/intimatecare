@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import TelegramLoginButton from '@/components/TelegramLoginButton';
 
 const JoinGroup = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'verified' | 'failed'>('loading');
   const [telegramUsername, setTelegramUsername] = useState('');
+  const [telegramUser, setTelegramUser] = useState<any>(null);
   const [paymentId, setPaymentId] = useState('');
-  const [telegramScript, setTelegramScript] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -26,25 +27,6 @@ const JoinGroup = () => {
       return;
     }
 
-    // Load Telegram script
-    const script = document.createElement('script');
-    script.src = 'https://telegram.org/js/telegram-widget.js?22';
-    script.async = true;
-    script.setAttribute('data-telegram-login', 'IntimateCareTelegramBot'); // Replace with your bot username
-    script.setAttribute('data-size', 'large');
-    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-    script.setAttribute('data-request-access', 'write');
-    document.head.appendChild(script);
-
-    // Define the callback function
-    window.onTelegramAuth = (user: any) => {
-      console.log('Telegram auth success:', user);
-      setTelegramUsername(user.username);
-      // Optionally store other user data if needed
-    };
-
-    setTelegramScript(true);
-
     // Verify token if provided
     if (token) {
       // You would typically make an API call to your backend to verify the token
@@ -60,13 +42,13 @@ const JoinGroup = () => {
       // If no token but payment ID exists, wait for Telegram login
       setVerificationStatus('verified');
     }
-
-    // Cleanup
-    return () => {
-      document.head.removeChild(script);
-      delete window.onTelegramAuth;
-    };
   }, [searchParams, navigate]);
+
+  const handleTelegramAuth = (user: any) => {
+    console.log('Telegram auth success:', user);
+    setTelegramUsername(user.username || '');
+    setTelegramUser(user);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +62,7 @@ const JoinGroup = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          telegramUsername,
+          telegramUser,
           paymentId,
           source: 'intimate_care_join_page',
           timestamp: new Date().toISOString(),
@@ -170,9 +152,15 @@ const JoinGroup = () => {
                   Please click the button below to authenticate with Telegram.
                 </p>
                 
-                {telegramScript && !telegramUsername && (
+                {!telegramUsername && (
                   <div className="flex justify-center my-4">
-                    <div id="telegram-login-widget"></div>
+                    <TelegramLoginButton 
+                      botName="IntimateCareTelegramBot"
+                      onAuth={handleTelegramAuth}
+                      buttonSize="large"
+                      showUserPic={true}
+                      requestAccess="write"
+                    />
                   </div>
                 )}
                 
@@ -217,12 +205,5 @@ const JoinGroup = () => {
     </div>
   );
 };
-
-// Add this to window to avoid TypeScript errors
-declare global {
-  interface Window {
-    onTelegramAuth: (user: any) => void;
-  }
-}
 
 export default JoinGroup; 
