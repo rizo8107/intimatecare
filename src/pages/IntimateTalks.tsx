@@ -110,6 +110,24 @@ const IntimateTalks = () => {
               </div>
             </div>
           </div>
+          
+          {/* Hidden verification links for payment confirmation */}
+          <div className="hidden">
+            <Link to="/verify-join/intimatetalks?payment=CF12345" id="verify-payment-link">
+              Verify Payment
+            </Link>
+          </div>
+          
+          {/* Hidden verification instructions snippet */}
+          <div className="hidden" id="payment-verification-instructions">
+            <p>
+              After your payment is processed, please check your email for a verification link. 
+              Click on the link to connect your Telegram account and join the group.
+            </p>
+            <p>
+              If you don't receive the email, please contact us at support@intimatecare.com
+            </p>
+          </div>
         </div>
       </section>
     </div>
