@@ -131,7 +131,7 @@ const IntimateSuccess = () => {
     // Real verification code
     try {
       // Fetch data from Supabase API
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
       
       const response = await fetch(`https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*`, {
         method: 'GET',
@@ -254,6 +254,12 @@ const IntimateSuccess = () => {
   const sendTelegramDataToBackend = async (userData: any) => {
     try {
       setLoading(true);
+      
+      // Debug: Log all state variables to check consistency
+      console.log('[DEBUG] Phone number state:', phoneNumber);
+      console.log('[DEBUG] Matched payment state:', matchedPayment);
+      console.log('[DEBUG] Agreed to terms state:', agreedToTerms);
+      console.log('[DEBUG] Payment verified state:', paymentVerified);
       
       // Log important data before sending
       console.log('Raw Telegram user data:', userData);
