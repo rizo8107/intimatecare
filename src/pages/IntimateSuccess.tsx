@@ -234,35 +234,49 @@ const IntimateSuccess = () => {
     console.log('Current phoneNumber state:', phoneNumber);
     console.log('Current matchedPayment state:', matchedPayment);
     
-    // First store the Telegram data in state
-    setTelegramData(user);
+    // Store the phone number in local storage as a backup
+    try {
+      localStorage.setItem('verified_phone', phoneNumber);
+      console.log('Stored phone in localStorage:', phoneNumber);
+    } catch (e) {
+      console.error('Failed to store phone in localStorage', e);
+    }
     
-    // Wait a moment to ensure state is updated before sending data
-    setTimeout(() => {
-      // Get the current values from state and inputs to ensure we have the latest data
-      const currentPhone = document.getElementById('phoneNumber')?.value || phoneNumber;
-      console.log('Phone number before sending to webhook:', currentPhone);
-      
-      // Create a deep copy of the matched payment to avoid reference issues
-      const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
-      
-      // Create combined user data with all necessary information
-      const combinedUserData = {
-        ...user,
-        chat_id: user.id,
-        user_id: user.id,
-        telegram_id: user.id,
-        phone_number: currentPhone,
-        verified_phone: currentPhone,
-        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
-        amount: amount || (matchedPayment?.amount || ''),
-        customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
-        matched_payment: paymentDataCopy
-      };
-      
-      // Send the combined data to the backend
-      sendTelegramDataToBackend(combinedUserData);
-    }, 500);
+    // First store the Telegram data in state
+    setTelegramData({
+      ...user,
+      phone_number: phoneNumber,
+      verified_phone: phoneNumber
+    });
+    
+    // Explicitly get the phone number from the input field if possible
+    let currentPhone = phoneNumber;
+    const phoneInput = document.getElementById('phoneNumber');
+    if (phoneInput && 'value' in phoneInput) {
+      currentPhone = (phoneInput as HTMLInputElement).value || phoneNumber;
+    }
+    
+    console.log('Final phone number to be sent:', currentPhone);
+    
+    // Create a deep copy of the matched payment to avoid reference issues
+    const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
+    
+    // Create combined user data with all necessary information
+    const combinedUserData = {
+      ...user,
+      chat_id: user.id,
+      user_id: user.id,
+      telegram_id: user.id,
+      phone_number: currentPhone,
+      verified_phone: currentPhone,
+      payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
+      amount: amount || (matchedPayment?.amount || ''),
+      customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
+      matched_payment: paymentDataCopy
+    };
+    
+    // Send the combined data to the backend
+    sendTelegramDataToBackend(combinedUserData);
   };
 
   // Function to send data to the backend webhook
@@ -270,25 +284,44 @@ const IntimateSuccess = () => {
     try {
       setLoading(true);
       
+      // Try to get phone from localStorage as a backup
+      let backupPhone = '';
+      try {
+        backupPhone = localStorage.getItem('verified_phone') || '';
+      } catch (e) {
+        console.error('Failed to read from localStorage', e);
+      }
+      
       // Debug: Log all state variables to check consistency
       console.log('[DEBUG] Phone number state:', phoneNumber);
-      console.log('[DEBUG] Phone number from input:', document.getElementById('phoneNumber')?.value);
+      
+      // Safely access the input value
+      let inputValue = '';
+      const phoneInput = document.getElementById('phoneNumber');
+      if (phoneInput && 'value' in phoneInput) {
+        inputValue = (phoneInput as HTMLInputElement).value;
+      }
+      console.log('[DEBUG] Phone number from input:', inputValue);
+      console.log('[DEBUG] Phone number from localStorage:', backupPhone);
       console.log('[DEBUG] Phone number in userData:', userData.phone_number);
       console.log('[DEBUG] Matched payment state:', matchedPayment);
       console.log('[DEBUG] Agreed to terms state:', agreedToTerms);
       console.log('[DEBUG] Payment verified state:', paymentVerified);
       
+      // Get the most reliable phone number
+      const reliablePhone = userData.phone_number || inputValue || phoneNumber || backupPhone;
+      console.log('[DEBUG] Most reliable phone number:', reliablePhone);
+      
       // Log important data before sending
       console.log('Raw Telegram user data:', userData);
       console.log('User ID from Telegram:', userData.id);
-      console.log('Phone number being sent:', userData.phone_number);
-      console.log('Matched payment data being sent:', userData.matched_payment || matchedPayment);
+      console.log('Final phone number being sent:', reliablePhone);
       
       // Deep clone matchedPayment to avoid any reference issues
       const paymentDataToSend = userData.matched_payment || 
                                (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
       
-      // Add payment details to the payload
+      // Add payment details to the payload with the most reliable phone number
       const payloadData = {
         ...userData,
         payment_id: userData.payment_id || paymentId || (paymentDataToSend?.payment_id || paymentDataToSend?.id || ''),
@@ -300,8 +333,8 @@ const IntimateSuccess = () => {
         user_id: userData.id,  // Also include as user_id for compatibility
         telegram_id: userData.id, // Third format to ensure it's captured
         username: userData.username || '',
-        phone_number: userData.phone_number || phoneNumber,
-        verified_phone: userData.verified_phone || phoneNumber,
+        phone_number: reliablePhone,
+        verified_phone: reliablePhone,
         verified_payment: paymentDataToSend ? true : false,
         payment_data: paymentDataToSend,
         customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || ''
