@@ -242,6 +242,10 @@ const IntimateSuccess = () => {
     try {
       setLoading(true);
       
+      // Log the raw user data from Telegram
+      console.log('Raw Telegram user data:', userData);
+      console.log('User ID from Telegram:', userData.id);
+      
       // Add payment details to the payload
       const payloadData = {
         ...userData,
@@ -251,6 +255,8 @@ const IntimateSuccess = () => {
         auth_date_formatted: new Date(userData.auth_date * 1000).toISOString(),
         command: '/user_join_verified',
         chat_id: userData.id,  // Explicitly include chat_id for the webhook
+        user_id: userData.id,  // Also include as user_id for compatibility
+        telegram_id: userData.id, // Third format to ensure it's captured
         username: userData.username || '',
         phone_number: phoneNumber
       };
@@ -265,13 +271,18 @@ const IntimateSuccess = () => {
         body: JSON.stringify(payloadData),
       });
       
+      // Log response status
+      console.log('Webhook response status:', response.status);
+      
       if (response.ok) {
         toast({
           title: 'Success!',
           description: 'You have successfully joined the Intimate Talks community. Check your Telegram for the group link.',
         });
       } else {
-        throw new Error('Failed to process Telegram login');
+        const errorText = await response.text();
+        console.error('Webhook error response:', errorText);
+        throw new Error(`Failed to process Telegram login: ${response.status}`);
       }
     } catch (error) {
       console.error('Error sending Telegram data:', error);
