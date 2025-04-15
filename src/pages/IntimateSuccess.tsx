@@ -234,20 +234,35 @@ const IntimateSuccess = () => {
     console.log('Current phoneNumber state:', phoneNumber);
     console.log('Current matchedPayment state:', matchedPayment);
     
-    // Create a deep copy of the matched payment to avoid any reference issues
-    const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
+    // First store the Telegram data in state
+    setTelegramData(user);
     
-    // Ensure we capture both user ID and username for chat identification
-    const telegramUserData = {
-      ...user,
-      chat_id: user.id, // Adding chat_id field which is the same as user.id
-      phone_number: phoneNumber, // Add phone number from input field
-    };
-    
-    setTelegramData(telegramUserData);
-    
-    // Send the data to the backend
-    sendTelegramDataToBackend(telegramUserData);
+    // Wait a moment to ensure state is updated before sending data
+    setTimeout(() => {
+      // Get the current values from state and inputs to ensure we have the latest data
+      const currentPhone = document.getElementById('phoneNumber')?.value || phoneNumber;
+      console.log('Phone number before sending to webhook:', currentPhone);
+      
+      // Create a deep copy of the matched payment to avoid reference issues
+      const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
+      
+      // Create combined user data with all necessary information
+      const combinedUserData = {
+        ...user,
+        chat_id: user.id,
+        user_id: user.id,
+        telegram_id: user.id,
+        phone_number: currentPhone,
+        verified_phone: currentPhone,
+        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
+        amount: amount || (matchedPayment?.amount || ''),
+        customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
+        matched_payment: paymentDataCopy
+      };
+      
+      // Send the combined data to the backend
+      sendTelegramDataToBackend(combinedUserData);
+    }, 500);
   };
 
   // Function to send data to the backend webhook
@@ -257,6 +272,8 @@ const IntimateSuccess = () => {
       
       // Debug: Log all state variables to check consistency
       console.log('[DEBUG] Phone number state:', phoneNumber);
+      console.log('[DEBUG] Phone number from input:', document.getElementById('phoneNumber')?.value);
+      console.log('[DEBUG] Phone number in userData:', userData.phone_number);
       console.log('[DEBUG] Matched payment state:', matchedPayment);
       console.log('[DEBUG] Agreed to terms state:', agreedToTerms);
       console.log('[DEBUG] Payment verified state:', paymentVerified);
@@ -264,17 +281,18 @@ const IntimateSuccess = () => {
       // Log important data before sending
       console.log('Raw Telegram user data:', userData);
       console.log('User ID from Telegram:', userData.id);
-      console.log('Phone number being sent:', phoneNumber);
-      console.log('Matched payment data being sent:', matchedPayment);
+      console.log('Phone number being sent:', userData.phone_number);
+      console.log('Matched payment data being sent:', userData.matched_payment || matchedPayment);
       
       // Deep clone matchedPayment to avoid any reference issues
-      const paymentDataToSend = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
+      const paymentDataToSend = userData.matched_payment || 
+                               (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
       
       // Add payment details to the payload
       const payloadData = {
         ...userData,
-        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
-        amount: amount || (matchedPayment?.amount || ''),
+        payment_id: userData.payment_id || paymentId || (paymentDataToSend?.payment_id || paymentDataToSend?.id || ''),
+        amount: userData.amount || amount || (paymentDataToSend?.amount || ''),
         source: 'intimate_talks',
         auth_date_formatted: new Date(userData.auth_date * 1000).toISOString(),
         command: '/user_join_verified',
@@ -282,11 +300,11 @@ const IntimateSuccess = () => {
         user_id: userData.id,  // Also include as user_id for compatibility
         telegram_id: userData.id, // Third format to ensure it's captured
         username: userData.username || '',
-        phone_number: phoneNumber,
-        verified_phone: phoneNumber,
+        phone_number: userData.phone_number || phoneNumber,
+        verified_phone: userData.verified_phone || phoneNumber,
         verified_payment: paymentDataToSend ? true : false,
         payment_data: paymentDataToSend,
-        customer_name: paymentDataToSend?.customer_name || paymentDataToSend?.name || ''
+        customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || ''
       };
       
       console.log('Sending webhook payload:', JSON.stringify(payloadData));
