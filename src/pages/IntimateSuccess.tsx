@@ -23,6 +23,7 @@ const IntimateSuccess = () => {
   const [paymentVerified, setPaymentVerified] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(false);
   const telegramLoginContainerRef = useRef<HTMLDivElement>(null);
+  const [matchedPayment, setMatchedPayment] = useState<any>(null);
 
   // Parse query parameters from URL
   useEffect(() => {
@@ -157,6 +158,7 @@ const IntimateSuccess = () => {
       console.log('Checking for normalized phone:', normalizedInputPhone);
       
       // Check if the phone number exists in any payment record
+      let foundPayment = null;
       const verified = payments.some((payment: any) => {
         // Get all possible phone fields
         const phoneFields = [
@@ -177,12 +179,18 @@ const IntimateSuccess = () => {
           
           if (normalizedPaymentPhone === normalizedInputPhone) {
             console.log('Match found!');
+            foundPayment = payment;
             return true;
           }
         }
         
         return false;
       });
+      
+      // Store the matched payment data if found
+      if (foundPayment) {
+        setMatchedPayment(foundPayment);
+      }
       
       console.log('Verification result:', verified);
       setPaymentVerified(verified);
@@ -228,7 +236,9 @@ const IntimateSuccess = () => {
     const telegramUserData = {
       ...user,
       chat_id: user.id, // Adding chat_id field which is the same as user.id
-      phone_number: phoneNumber // Add phone number from input field
+      phone_number: phoneNumber, // Add phone number from input field
+      verified_phone: phoneNumber, // Add verified phone number
+      matched_payment: matchedPayment // Add the matched payment data
     };
     
     setTelegramData(telegramUserData);
@@ -245,12 +255,14 @@ const IntimateSuccess = () => {
       // Log the raw user data from Telegram
       console.log('Raw Telegram user data:', userData);
       console.log('User ID from Telegram:', userData.id);
+      console.log('Verified phone:', phoneNumber);
+      console.log('Matched payment data:', matchedPayment);
       
       // Add payment details to the payload
       const payloadData = {
         ...userData,
-        payment_id: paymentId,
-        amount,
+        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
+        amount: amount || (matchedPayment?.amount || ''),
         source: 'intimate_talks',
         auth_date_formatted: new Date(userData.auth_date * 1000).toISOString(),
         command: '/user_join_verified',
@@ -258,7 +270,11 @@ const IntimateSuccess = () => {
         user_id: userData.id,  // Also include as user_id for compatibility
         telegram_id: userData.id, // Third format to ensure it's captured
         username: userData.username || '',
-        phone_number: phoneNumber
+        phone_number: phoneNumber,
+        verified_phone: phoneNumber,
+        verified_payment: matchedPayment ? true : false,
+        payment_data: matchedPayment,
+        customer_name: matchedPayment?.customer_name || matchedPayment?.name || ''
       };
       
       console.log('Sending data to webhook:', payloadData);
