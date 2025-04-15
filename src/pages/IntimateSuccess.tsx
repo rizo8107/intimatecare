@@ -6,13 +6,12 @@ import { toast } from '@/components/ui/use-toast';
 declare global {
   interface Window {
     telegramLoginCallback: (user: any) => void;
-    verified_phone?: string; // Add type for verified_phone property
   }
 }
 
 // Supabase API keys
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlLWRlbW8iLCJpYXQiOjE2NDE3NjkyMDAsImV4cCI6MTc5OTUzNTYwMH0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UtZGVtbyIsImlhdCI6MTY0MTc2OTIwMCwiZXhwIjoxNzk5NTM1NjAwfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q';
 
 const IntimateSuccess = () => {
   const location = useLocation();
@@ -117,34 +116,23 @@ const IntimateSuccess = () => {
     
     setVerificationLoading(true);
     
-    // Store the phone number globally to ensure it's available later
-    try {
-      // Save to localStorage for persistence
-      localStorage.setItem('verified_phone', phoneNumber);
-      // Also save to sessionStorage as backup
-      sessionStorage.setItem('verified_phone', phoneNumber);
-      // Create a global variable as another backup
-      window.verified_phone = phoneNumber;
-      console.log('PHONE STORED IN ALL STORAGES:', phoneNumber);
-      
-      // Create hidden field on page as additional backup
-      let hiddenField = document.getElementById('hidden-phone-field');
-      if (!hiddenField) {
-        hiddenField = document.createElement('input');
-        document.body.appendChild(hiddenField);
-      }
-      if (hiddenField instanceof HTMLInputElement) {
-        hiddenField.type = 'hidden';
-        hiddenField.id = 'hidden-phone-field';
-        hiddenField.value = phoneNumber;
-      }
-    } catch (e) {
-      console.error('Failed to store phone number', e);
-    }
+    // For development, auto-verify any phone number
+    // Comment this out and uncomment the code below for production
+    /*
+    setAgreedToTerms(true);
+    toast({
+      title: 'Success',
+      description: 'Phone verified successfully!'
+    });
+    setVerificationLoading(false);
+    return true;
+    */
     
     // Real verification code
     try {
       // Fetch data from Supabase API
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+      
       const response = await fetch(`https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*`, {
         method: 'GET',
         headers: {
@@ -202,12 +190,6 @@ const IntimateSuccess = () => {
       // Store the matched payment data if found
       if (foundPayment) {
         setMatchedPayment(foundPayment);
-        // Store payment in localStorage too
-        try {
-          localStorage.setItem('matched_payment', JSON.stringify(foundPayment));
-        } catch (e) {
-          console.error('Failed to store payment in localStorage', e);
-        }
       }
       
       console.log('Verification result:', verified);
@@ -302,72 +284,42 @@ const IntimateSuccess = () => {
     try {
       setLoading(true);
       
-      // Get the phone number from every possible source
+      // Try to get phone from localStorage as a backup
       let backupPhone = '';
-      let hiddenFieldPhone = '';
-      let sessionPhone = '';
-      let globalPhone = '';
-      
       try {
         backupPhone = localStorage.getItem('verified_phone') || '';
-        sessionPhone = sessionStorage.getItem('verified_phone') || '';
-        globalPhone = window.verified_phone || '';
-        
-        const hiddenField = document.getElementById('hidden-phone-field');
-        if (hiddenField instanceof HTMLInputElement) {
-          hiddenFieldPhone = hiddenField.value;
-        }
-        
-        console.log('[DEBUG] Phone sources:', {
-          statePhone: phoneNumber,
-          inputValue: document.getElementById('phoneNumber') instanceof HTMLInputElement 
-            ? (document.getElementById('phoneNumber') as HTMLInputElement).value 
-            : 'not available',
-          localStorage: backupPhone,
-          sessionStorage: sessionPhone,
-          globalVariable: globalPhone,
-          hiddenField: hiddenFieldPhone,
-          userDataPhone: userData.phone_number
-        });
       } catch (e) {
-        console.error('Failed to read phone from storages', e);
+        console.error('Failed to read from localStorage', e);
       }
       
-      // Get the most reliable phone number with fallbacks
-      const reliablePhone = userData.phone_number || 
-                           phoneNumber || 
-                           hiddenFieldPhone || 
-                           backupPhone || 
-                           sessionPhone || 
-                           globalPhone || 
-                           ''; // Empty string as last resort
+      // Debug: Log all state variables to check consistency
+      console.log('[DEBUG] Phone number state:', phoneNumber);
       
-      // If all methods fail, force a hardcoded value for debugging
-      const finalPhone = reliablePhone || '8667252980'; // Hardcoded fallback phone as absolute last resort
+      // Safely access the input value
+      let inputValue = '';
+      const phoneInput = document.getElementById('phoneNumber');
+      if (phoneInput && 'value' in phoneInput) {
+        inputValue = (phoneInput as HTMLInputElement).value;
+      }
+      console.log('[DEBUG] Phone number from input:', inputValue);
+      console.log('[DEBUG] Phone number from localStorage:', backupPhone);
+      console.log('[DEBUG] Phone number in userData:', userData.phone_number);
+      console.log('[DEBUG] Matched payment state:', matchedPayment);
+      console.log('[DEBUG] Agreed to terms state:', agreedToTerms);
+      console.log('[DEBUG] Payment verified state:', paymentVerified);
       
-      console.log('[DEBUG] Final phone being used:', finalPhone);
+      // Get the most reliable phone number
+      const reliablePhone = userData.phone_number || inputValue || phoneNumber || backupPhone;
+      console.log('[DEBUG] Most reliable phone number:', reliablePhone);
+      
+      // Log important data before sending
+      console.log('Raw Telegram user data:', userData);
+      console.log('User ID from Telegram:', userData.id);
+      console.log('Final phone number being sent:', reliablePhone);
       
       // Deep clone matchedPayment to avoid any reference issues
-      let paymentDataToSend = null;
-      try {
-        // Try to get from props
-        paymentDataToSend = userData.matched_payment || matchedPayment;
-        
-        // If not available, try localStorage
-        if (!paymentDataToSend) {
-          const storedPayment = localStorage.getItem('matched_payment');
-          if (storedPayment) {
-            paymentDataToSend = JSON.parse(storedPayment);
-          }
-        }
-        
-        // Make sure to clone if exists
-        if (paymentDataToSend) {
-          paymentDataToSend = JSON.parse(JSON.stringify(paymentDataToSend));
-        }
-      } catch (e) {
-        console.error('Error processing payment data', e);
-      }
+      const paymentDataToSend = userData.matched_payment || 
+                               (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
       
       // Add payment details to the payload with the most reliable phone number
       const payloadData = {
@@ -381,8 +333,8 @@ const IntimateSuccess = () => {
         user_id: userData.id,  // Also include as user_id for compatibility
         telegram_id: userData.id, // Third format to ensure it's captured
         username: userData.username || '',
-        phone_number: finalPhone,
-        verified_phone: finalPhone,
+        phone_number: reliablePhone,
+        verified_phone: reliablePhone,
         verified_payment: paymentDataToSend ? true : false,
         payment_data: paymentDataToSend,
         customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || ''
@@ -537,7 +489,7 @@ const IntimateSuccess = () => {
                 
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <p className="text-sm text-gray-500">
-                    Your payment ID: {paymentId} | Amount: ₹{amount}
+                    Thank you for your purchase and support.
                   </p>
                 </div>
               </div>
