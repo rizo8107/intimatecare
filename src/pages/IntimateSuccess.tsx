@@ -131,7 +131,7 @@ const IntimateSuccess = () => {
     // Real verification code
     try {
       // Fetch data from Supabase API
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
       
       const response = await fetch(`https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*`, {
         method: 'GET',
@@ -231,14 +231,17 @@ const IntimateSuccess = () => {
   // Function to handle Telegram auth callback
   const handleTelegramAuth = (user: any) => {
     console.log('Telegram auth success:', user);
+    console.log('Current phoneNumber state:', phoneNumber);
+    console.log('Current matchedPayment state:', matchedPayment);
+    
+    // Create a deep copy of the matched payment to avoid any reference issues
+    const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
     
     // Ensure we capture both user ID and username for chat identification
     const telegramUserData = {
       ...user,
       chat_id: user.id, // Adding chat_id field which is the same as user.id
       phone_number: phoneNumber, // Add phone number from input field
-      verified_phone: phoneNumber, // Add verified phone number
-      matched_payment: matchedPayment // Add the matched payment data
     };
     
     setTelegramData(telegramUserData);
@@ -252,11 +255,14 @@ const IntimateSuccess = () => {
     try {
       setLoading(true);
       
-      // Log the raw user data from Telegram
+      // Log important data before sending
       console.log('Raw Telegram user data:', userData);
       console.log('User ID from Telegram:', userData.id);
-      console.log('Verified phone:', phoneNumber);
-      console.log('Matched payment data:', matchedPayment);
+      console.log('Phone number being sent:', phoneNumber);
+      console.log('Matched payment data being sent:', matchedPayment);
+      
+      // Deep clone matchedPayment to avoid any reference issues
+      const paymentDataToSend = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
       
       // Add payment details to the payload
       const payloadData = {
@@ -272,12 +278,12 @@ const IntimateSuccess = () => {
         username: userData.username || '',
         phone_number: phoneNumber,
         verified_phone: phoneNumber,
-        verified_payment: matchedPayment ? true : false,
-        payment_data: matchedPayment,
-        customer_name: matchedPayment?.customer_name || matchedPayment?.name || ''
+        verified_payment: paymentDataToSend ? true : false,
+        payment_data: paymentDataToSend,
+        customer_name: paymentDataToSend?.customer_name || paymentDataToSend?.name || ''
       };
       
-      console.log('Sending data to webhook:', payloadData);
+      console.log('Sending webhook payload:', JSON.stringify(payloadData));
       
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
         method: 'POST',
