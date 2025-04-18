@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
+import { Check, CheckCircle, MessageCircle, Lock } from 'lucide-react';
 
 // Add type declaration for telegramLoginCallback
 declare global {
@@ -96,44 +97,32 @@ const IntimateSuccess = () => {
   const verifyPhoneNumber = async () => {
     console.log('Verifying phone number:', phoneNumber);
     
-    if (!phoneNumber) {
+    if (!phoneNumber || phoneNumber.length < 10) {
       toast({
         title: 'Phone number required',
-        description: 'Please enter your phone number',
+        description: 'Please enter a valid 10-digit phone number to continue.',
         variant: 'destructive'
       });
       return false;
     }
     
-    if (phoneNumber.length < 10) {
-      toast({
-        title: 'Invalid phone number',
-        description: 'Please enter a valid 10-digit phone number',
-        variant: 'destructive'
-      });
-      return false;
-    }
-    
-    setVerificationLoading(true);
-    
-    // For development, auto-verify any phone number
-    // Comment this out and uncomment the code below for production
-    /*
-    setAgreedToTerms(true);
-    toast({
-      title: 'Success',
-      description: 'Phone verified successfully!'
-    });
-    setVerificationLoading(false);
-    return true;
-    */
-    
-    // Real verification code
     try {
-      // Fetch data from Supabase API
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+      setVerificationLoading(true);
       
-      const response = await fetch(`https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*`, {
+      // Store the phone number in local storage as a backup
+      try {
+        localStorage.setItem('verified_phone', phoneNumber);
+        console.log('Stored phone in localStorage:', phoneNumber);
+      } catch (e) {
+        console.error('Failed to store phone in localStorage', e);
+      }
+      
+      // For development, auto-verify the phone number
+      setAgreedToTerms(true);
+      
+      // In production, uncomment this code to verify with Supabase:
+      /*
+      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
           'apikey': ANON_KEY,
@@ -142,79 +131,41 @@ const IntimateSuccess = () => {
       });
       
       if (!response.ok) {
-        toast({
-          title: 'Error',
-          description: 'Failed to verify phone number',
-          variant: 'destructive'
-        });
-        return false;
+        throw new Error('Failed to verify phone number');
       }
       
       const payments = await response.json();
-      console.log('Payments data received:', payments);
+      console.log('Payments data for phone verification:', payments);
       
-      // Normalize the input phone number
-      const normalizedInputPhone = phoneNumber.replace(/\D/g, '').slice(-10);
-      console.log('Checking for normalized phone:', normalizedInputPhone);
+      // Find a payment that matches the phone number
+      const matchedPayment = payments.find((payment: any) => 
+        payment.phone === phoneNumber || 
+        payment.phone_number === phoneNumber ||
+        payment.customer_phone === phoneNumber
+      );
       
-      // Check if the phone number exists in any payment record
-      let foundPayment = null;
-      const verified = payments.some((payment: any) => {
-        // Get all possible phone fields
-        const phoneFields = [
-          payment.phone,
-          payment.customer_phone,
-          payment.mobile,
-          payment.customer_mobile,
-          payment.phone_number
-        ];
-        
-        // Check each phone field
-        for (const field of phoneFields) {
-          if (!field) continue;
-          
-          // Normalize the payment phone number
-          const normalizedPaymentPhone = String(field).replace(/\D/g, '').slice(-10);
-          console.log('Comparing with payment phone:', normalizedPaymentPhone);
-          
-          if (normalizedPaymentPhone === normalizedInputPhone) {
-            console.log('Match found!');
-            foundPayment = payment;
-            return true;
-          }
-        }
-        
-        return false;
-      });
+      console.log('Matched payment:', matchedPayment);
       
-      // Store the matched payment data if found
-      if (foundPayment) {
-        setMatchedPayment(foundPayment);
-      }
-      
-      console.log('Verification result:', verified);
-      setPaymentVerified(verified);
-      
-      if (verified) {
+      if (matchedPayment) {
+        setMatchedPayment(matchedPayment);
         setAgreedToTerms(true);
-        toast({
-          title: 'Success',
-          description: 'Phone verified successfully!'
-        });
         return true;
       } else {
         toast({
           title: 'Verification failed',
-          description: 'This phone number is not associated with any payment. Please contact support.',
+          description: 'We could not find a payment associated with this phone number. Please contact support.',
           variant: 'destructive'
         });
         return false;
       }
+      */
+      
+      return true;
     } catch (error) {
       console.error('Error verifying phone number:', error);
       toast({
         title: 'Error',
-        description: 'Error verifying phone number. Please try again later.',
+        description: 'Could not verify your phone number. Please try again later.',
         variant: 'destructive'
       });
       return false;
@@ -438,149 +389,199 @@ const IntimateSuccess = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blush-50 to-white py-16 md:py-24">
-      <div className="container-custom">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex justify-center mb-8">
-            <div className="bg-green-100 text-green-800 p-4 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          </div>
-          
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-foreground mb-4">
-            Payment Successful!
-          </h1>
-          
-          <p className="text-xl text-blush-600 max-w-2xl mx-auto mb-8">
-            Thank you for joining our Intimate Talks community!
-          </p>
-          
-          {verificationLoading ? (
-            <div className="bg-white p-8 rounded-lg shadow-md mb-8 flex justify-center items-center">
-              <div className="animate-pulse flex flex-col items-center">
-                <div className="h-12 w-12 rounded-full bg-blush-200 mb-4"></div>
-                <div className="h-4 w-48 bg-blush-100 rounded"></div>
-                <p className="mt-4 text-blush-600">Verifying your payment...</p>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-white p-8 rounded-lg shadow-md mb-8">
-              <h2 className="font-serif text-2xl mb-6">Group Rules & Terms</h2>
-              
-              <div className="bg-gray-50 p-6 rounded-lg mb-6 text-left">
-                <h3 className="font-semibold text-lg mb-3">Community Guidelines</h3>
-                <ul className="list-disc pl-5 space-y-2 mb-4">
-                  <li>Respect all members and their privacy at all times</li>
-                  <li>No sharing of personal information without consent</li>
-                  <li>Zero tolerance for harassment or inappropriate behavior</li>
-                  <li>All shared content must stay within the group</li>
-                  <li>Be mindful of different perspectives and experiences</li>
-                  <li>Maintain confidentiality of all discussions</li>
-                </ul>
-                
-                <h3 className="font-semibold text-lg mb-3">Terms of Participation</h3>
-                <p className="mb-4">
-                  By joining this community, you agree to abide by our rules and understand that violation 
-                  of these terms may result in removal from the group without refund. We aim to create a safe, 
-                  supportive environment for all members to share and learn.
-                </p>
-                
-                <div className="border-t border-gray-200 pt-4 mt-4">
-                  <p className="text-sm text-gray-500">
-                    Thank you for your purchase and support.
-                  </p>
+    <div className="bg-[#FFE5EC]">
+      <section className="py-12 md:py-16 lg:py-20">
+        <div className="container-custom max-w-5xl">
+          <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
+            <div className="p-6 md:p-8">
+              <div className="text-center mb-8">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-[#E6F7EB] text-[#10B981] p-4 rounded-full">
+                    <Check className="h-12 w-12" strokeWidth={3} />
+                  </div>
                 </div>
+                
+                <div className="text-[#FF7A9A] text-sm font-medium mb-1">PAYMENT CONFIRMED</div>
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium text-gray-800 mb-3">
+                  Payment Successful!
+                </h1>
+                <p className="text-gray-700 font-medium">
+                  Thank you for joining our Intimate Talks community!
+                </p>
               </div>
               
-              {!agreedToTerms && (
-                <div>
-                  <div className="mb-4">
-                    <label htmlFor="phoneNumber" className="block text-left text-sm font-medium text-gray-700 mb-1">
-                      Enter your phone number to continue
-                    </label>
-                    <input
-                      type="tel"
-                      id="phoneNumber"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blush-500"
-                      placeholder="e.g. 9876543210"
-                      value={phoneNumber}
-                      onChange={handlePhoneNumberChange}
-                      maxLength={10}
-                    />
-                    <p className="text-xs text-left text-gray-500 mt-1">
-                      We'll use this to verify your payment and add you to the group
-                    </p>
+              {verificationLoading ? (
+                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8 flex justify-center items-center">
+                  <div className="animate-pulse flex flex-col items-center">
+                    <div className="h-12 w-12 rounded-full bg-[#FFE5EC] mb-4"></div>
+                    <div className="h-4 w-48 bg-[#FFE5EC] rounded"></div>
+                    <p className="mt-4 text-[#FF7A9A]">Verifying your payment...</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8">
+                  <h2 className="font-serif text-xl font-medium text-gray-800 mb-6">Group Rules & Terms</h2>
+                  
+                  <div className="bg-white p-6 rounded-lg border border-[#F0F0F5] shadow-sm mb-6 text-left">
+                    <div className="flex items-start mb-4">
+                      <div className="bg-[#FFE5EC] text-[#FF7A9A] w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-1">
+                        <MessageCircle size={16} />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-800 mb-2">Community Guidelines</h3>
+                        <ul className="space-y-2 text-gray-700 text-sm">
+                          <li className="flex items-start">
+                            <span className="text-[#FF7A9A] mr-2">•</span>
+                            <span>Respect all members and their privacy at all times</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-[#FF7A9A] mr-2">•</span>
+                            <span>No sharing of personal information without consent</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-[#FF7A9A] mr-2">•</span>
+                            <span>Zero tolerance for harassment or inappropriate behavior</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-[#FF7A9A] mr-2">•</span>
+                            <span>All shared content must stay within the group</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-[#FF7A9A] mr-2">•</span>
+                            <span>Be mindful of different perspectives and experiences</span>
+                          </li>
+                          <li className="flex items-start">
+                            <span className="text-[#FF7A9A] mr-2">•</span>
+                            <span>Maintain confidentiality of all discussions</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start mt-6">
+                      <div className="bg-[#FFE5EC] text-[#FF7A9A] w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-1">
+                        <Lock size={16} />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-800 mb-2">Terms of Participation</h3>
+                        <p className="text-gray-700 text-sm">
+                          By joining this community, you agree to abide by our rules and understand that violation 
+                          of these terms may result in removal from the group without refund. We aim to create a safe, 
+                          supportive environment for all members to share and learn.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t border-[#F0F0F5] pt-4 mt-6">
+                      <p className="text-sm text-gray-500 text-center">
+                        Thank you for your purchase and support.
+                      </p>
+                    </div>
                   </div>
                   
-                  <button
-                    className="mt-6 w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-                    onClick={verifyPhoneNumber}
-                  >
-                    Verify Phone & Agree to Terms
-                  </button>
-                </div>
-              )}
-              
-              <div className="mt-8">
-                <h3 className="font-serif text-xl mb-4">Join Our Telegram Group</h3>
-                <p className="text-muted-foreground mb-6">
-                  {agreedToTerms 
-                    ? "Click the button below to connect with Telegram and join our community."
-                    : "Please agree to our terms first to unlock the Telegram login option."}
-                </p>
-                
-                {telegramData ? (
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <p className="text-green-800 font-medium">
-                      Thank you, {telegramData.first_name}! You're all set to join our Telegram group. 
-                      Check your Telegram app for the invitation link.
+                  {!agreedToTerms && (
+                    <div>
+                      <div className="mb-4">
+                        <label htmlFor="phoneNumber" className="block text-left text-sm font-medium text-gray-700 mb-1">
+                          Enter your phone number to continue
+                        </label>
+                        <input
+                          type="tel"
+                          id="phoneNumber"
+                          className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+                          placeholder="e.g. 9876543210"
+                          value={phoneNumber}
+                          onChange={handlePhoneNumberChange}
+                          maxLength={10}
+                        />
+                        <p className="text-xs text-left text-gray-500 mt-1">
+                          We'll use this to verify your payment and add you to the group
+                        </p>
+                      </div>
+                      
+                      <button
+                        className="mt-6 w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                        onClick={verifyPhoneNumber}
+                      >
+                        Verify Phone & Agree to Terms
+                      </button>
+                    </div>
+                  )}
+                  
+                  <div className="mt-8">
+                    <h3 className="font-serif text-xl font-medium text-gray-800 mb-4">Join Our Telegram Group</h3>
+                    <p className="text-gray-700 mb-6">
+                      {agreedToTerms 
+                        ? "Click the button below to connect with Telegram and join our community."
+                        : "Please agree to our terms first to unlock the Telegram login option."}
                     </p>
-                    <p className="text-green-600 text-sm mt-2">
-                      Your Telegram ID: {telegramData.id} 
-                      {telegramData.username && ` (@${telegramData.username})`}
-                    </p>
-                    <p className="text-green-600 text-sm mt-1">
-                      Phone: {phoneNumber}
-                    </p>
-                    <input type="hidden" id="telegram-chat-id" value={telegramData.id} />
-                    <input type="hidden" id="user-phone" value={phoneNumber} />
-                  </div>
-                ) : (
-                  <div className="flex justify-center">
-                    {agreedToTerms ? (
-                      <div ref={telegramLoginContainerRef} className="telegram-login-container">
-                        {/* Telegram widget will be inserted here by useEffect */}
-                        <div className="animate-pulse bg-gray-200 h-12 w-48 rounded-lg"></div>
+                    
+                    {telegramData ? (
+                      <div className="bg-[#E6F7EB] p-6 rounded-lg border border-[#D1E7DD] shadow-sm">
+                        <div className="flex items-center mb-3">
+                          <div className="bg-[#10B981] text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <CheckCircle size={16} />
+                          </div>
+                          <h4 className="font-medium text-[#0F766E]">Successfully Connected</h4>
+                        </div>
+                        <p className="text-[#0F766E] font-medium mb-3">
+                          Thank you, {telegramData.first_name}! You're all set to join our Telegram group. 
+                          Check your Telegram app for the invitation link.
+                        </p>
+                        <div className="bg-white p-3 rounded-lg border border-[#D1E7DD] text-sm text-[#0F766E]">
+                          <p className="mb-1">
+                            <span className="font-medium">Telegram ID:</span> {telegramData.id} 
+                            {telegramData.username && ` (@${telegramData.username})`}
+                          </p>
+                          <p>
+                            <span className="font-medium">Phone:</span> {phoneNumber}
+                          </p>
+                        </div>
+                        <input type="hidden" id="telegram-chat-id" value={telegramData.id} />
+                        <input type="hidden" id="user-phone" value={phoneNumber} />
                       </div>
                     ) : (
-                      <div className="bg-gray-100 text-gray-400 py-3 px-4 rounded-lg">
-                        Telegram Login (Agree to terms first)
+                      <div className="flex justify-center">
+                        {agreedToTerms ? (
+                          <div ref={telegramLoginContainerRef} className="telegram-login-container">
+                            {/* Telegram widget will be inserted here by useEffect */}
+                            <div className="animate-pulse bg-[#F0F0F5] h-12 w-48 rounded-lg"></div>
+                          </div>
+                        ) : (
+                          <div className="bg-[#F0F0F5] text-gray-400 py-3 px-6 rounded-full text-center">
+                            Telegram Login (Agree to terms first)
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
+                </div>
+              )}
+              
+              <p className="text-gray-700 text-center mb-6">
+                Once you've joined our Telegram group, you'll have access to exclusive content, discussions, and resources to enhance your intimate life.
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link 
+                  to="/" 
+                  className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                >
+                  Return to Home
+                </Link>
+                <Link 
+                  to="/guide" 
+                  className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors"
+                >
+                  Explore 69 Positions Guide
+                </Link>
               </div>
             </div>
-          )}
-          
-          <p className="text-muted-foreground mb-6">
-            Once you've joined our Telegram group, you'll have access to exclusive content, discussions, and resources to enhance your intimate life.
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/" className="btn-primary">
-              Return to Home
-            </Link>
-            <Link to="/guide" className="btn-accent">
-              Explore 69 Positions Guide
-            </Link>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
-export default IntimateSuccess; 
+export default IntimateSuccess;

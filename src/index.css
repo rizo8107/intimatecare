@@ -1,84 +1,85 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap');
 
+/* tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 30 30% 98%;
-    --foreground: 20 14.3% 4.1%;
+    --background: 40 30% 98%;
+    --foreground: 320 14% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 20 14.3% 4.1%;
+    --card-foreground: 320 14% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 20 14.3% 4.1%;
+    --popover-foreground: 320 14% 10%;
 
-    --primary: 346 83.3% 41.4%;
-    --primary-foreground: 355 100% 97.3%;
+    --primary: 340 80% 70%;
+    --primary-foreground: 355 100% 98%;
 
-    --secondary: 120 6.5% 58.8%;
-    --secondary-foreground: 24 9.8% 10%;
+    --secondary: 160 40% 80%;
+    --secondary-foreground: 160 40% 20%;
 
-    --muted: 60 4.8% 95.9%;
-    --muted-foreground: 25 5.3% 44.7%;
+    --muted: 60 10% 96%;
+    --muted-foreground: 320 10% 40%;
 
-    --accent: 40 54.8% 68.8%;
-    --accent-foreground: 24 9.8% 10%;
+    --accent: 40 80% 80%;
+    --accent-foreground: 40 80% 20%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 20 5.9% 90%;
-    --input: 20 5.9% 90%;
-    --ring: 346 83.3% 41.4%;
+    --border: 320 10% 90%;
+    --input: 320 10% 90%;
+    --ring: 340 80% 70%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-foreground: 320 10% 30%;
+    --sidebar-primary: 340 80% 70%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 40 80% 90%;
+    --sidebar-accent-foreground: 40 80% 20%;
+    --sidebar-border: 320 10% 90%;
+    --sidebar-ring: 340 80% 70%;
   }
 
   .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 60 9.1% 97.8%;
+    --background: 320 14% 6%;
+    --foreground: 60 10% 98%;
 
-    --card: 20 14.3% 4.1%;
-    --card-foreground: 60 9.1% 97.8%;
+    --card: 320 14% 8%;
+    --card-foreground: 60 10% 98%;
 
-    --popover: 20 14.3% 4.1%;
-    --popover-foreground: 60 9.1% 97.8%;
+    --popover: 320 14% 8%;
+    --popover-foreground: 60 10% 98%;
 
-    --primary: 346 83.3% 41.4%;
-    --primary-foreground: 355 100% 97.3%;
+    --primary: 340 70% 60%;
+    --primary-foreground: 355 100% 98%;
 
-    --secondary: 120 6.5% 58.8%;
-    --secondary-foreground: 60 9.1% 97.8%;
+    --secondary: 160 40% 40%;
+    --secondary-foreground: 60 10% 98%;
 
-    --muted: 12 6.5% 15.1%;
-    --muted-foreground: 24 5.4% 63.9%;
+    --muted: 320 10% 15%;
+    --muted-foreground: 320 10% 70%;
 
-    --accent: 40 54.8% 68.8%;
-    --accent-foreground: 60 9.1% 97.8%;
+    --accent: 40 70% 60%;
+    --accent-foreground: 60 10% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 9.1% 97.8%;
+    --destructive-foreground: 60 10% 98%;
 
-    --border: 12 6.5% 15.1%;
-    --input: 12 6.5% 15.1%;
-    --ring: 346 83.3% 41.4%;
+    --border: 320 10% 15%;
+    --input: 320 10% 15%;
+    --ring: 340 70% 60%;
   }
 }
 
 @layer base {
+  /* tailwind directives */
   * {
     @apply border-border;
   }
@@ -97,20 +98,91 @@
 }
 
 @layer components {
+  /* tailwind directives */
   .container-custom {
     @apply container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl;
   }
   
+  /* Topmate-inspired button styles with pastel colors */
   .btn-primary {
-    @apply bg-blush-500 hover:bg-blush-600 text-white py-2 md:py-3 px-4 md:px-6 rounded-md font-medium transition-all text-sm md:text-base;
+    @apply bg-[#FF9AB3] hover:bg-[#FF7A9A] text-white py-2.5 px-5 rounded-full font-medium transition-all text-sm shadow-sm hover:shadow-md;
   }
   
   .btn-secondary {
-    @apply bg-sage-500 hover:bg-sage-600 text-white py-2 md:py-3 px-4 md:px-6 rounded-md font-medium transition-all text-sm md:text-base;
+    @apply bg-[#9ADCBF] hover:bg-[#7ACCA7] text-[#2A6B4D] py-2.5 px-5 rounded-full font-medium transition-all text-sm shadow-sm hover:shadow-md;
   }
   
   .btn-accent {
-    @apply bg-sand-100 hover:bg-sand-200 text-sand-800 py-2 md:py-3 px-4 md:px-6 rounded-md font-medium transition-all text-sm md:text-base;
+    @apply bg-[#FFD6A5] hover:bg-[#FFC280] text-[#8A5A2B] py-2.5 px-5 rounded-full font-medium transition-all text-sm shadow-sm hover:shadow-md;
+  }
+
+  /* Topmate-inspired card styles */
+  .topmate-card {
+    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-5 border border-[#F0F0F5];
+  }
+  
+  /* Topmate-inspired badge styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-primary {
+    @apply bg-[#FFEBF0] text-[#FF7A9A];
+  }
+  
+  .badge-secondary {
+    @apply bg-[#E5FFF1] text-[#2A6B4D];
+  }
+  
+  .badge-accent {
+    @apply bg-[#FFF2E5] text-[#8A5A2B];
+  }
+  
+  /* Topmate-inspired tab styles */
+  .tabs-container {
+    @apply flex space-x-1 rounded-lg bg-[#F5F5FA] p-1;
+  }
+  
+  .tab {
+    @apply px-4 py-2 text-sm font-medium rounded-md transition-all;
+  }
+  
+  .tab-active {
+    @apply bg-white shadow-sm text-[#FF7A9A];
+  }
+  
+  .tab-inactive {
+    @apply text-gray-500 hover:text-gray-700 hover:bg-white/[0.5];
+  }
+  
+  /* Topmate-inspired input styles */
+  .input-topmate {
+    @apply w-full rounded-lg border border-[#E5E5EF] bg-white px-3 py-2 text-sm shadow-sm focus:border-[#FF9AB3] focus:outline-none focus:ring-1 focus:ring-[#FF9AB3];
+  }
+  
+  /* Topmate-inspired toggle/switch */
+  .toggle-container {
+    @apply relative inline-flex h-6 w-11 items-center rounded-full;
+  }
+  
+  .toggle-active {
+    @apply bg-[#FF9AB3];
+  }
+  
+  .toggle-inactive {
+    @apply bg-[#E5E5EF];
+  }
+  
+  .toggle-handle {
+    @apply inline-block h-4 w-4 transform rounded-full bg-white transition;
+  }
+  
+  .toggle-handle-active {
+    @apply translate-x-6;
+  }
+  
+  .toggle-handle-inactive {
+    @apply translate-x-1;
   }
   
   .section-padding {
@@ -122,6 +194,36 @@
   }
   
   .section-subtitle {
-    @apply text-lg md:text-xl lg:text-2xl font-serif text-blush-600 mb-2 md:mb-4;
+    @apply text-lg md:text-xl lg:text-2xl font-serif text-[#FF7A9A] mb-2 md:mb-4;
+  }
+  
+  /* Topmate-inspired stats card */
+  .stats-card {
+    @apply flex flex-col items-center justify-center p-4 bg-white rounded-xl shadow-sm;
+  }
+  
+  .stats-value {
+    @apply text-2xl font-bold text-gray-800;
+  }
+  
+  .stats-label {
+    @apply text-sm text-gray-500;
+  }
+  
+  /* Topmate-inspired service card */
+  .service-card {
+    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-[#F0F0F5] overflow-hidden;
+  }
+  
+  .service-card-header {
+    @apply p-4 border-b border-[#F0F0F5];
+  }
+  
+  .service-card-body {
+    @apply p-4;
+  }
+  
+  .service-card-footer {
+    @apply p-4 flex justify-between items-center border-t border-[#F0F0F5];
   }
 }

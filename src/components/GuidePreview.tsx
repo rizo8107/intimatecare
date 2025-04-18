@@ -2,19 +2,28 @@ import { Link } from 'react-router-dom';
 
 const GuidePreview = () => {
   return (
-    <section className="py-12 md:py-16 lg:py-24 bg-white">
-      <div className="container-custom">
-        <div className="bg-blush-50 p-6 md:p-8 lg:p-12 rounded-xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium mb-4 md:mb-6">69 Position E-Guide</h2>
-              <p className="text-base md:text-lg mb-5 md:mb-6">
-                Spice up your bedroom game with my expert-crafted 69 Position E-Guide
-              </p>
+    <section className="py-12 md:py-16 lg:py-20 bg-[#FFF2E5]">
+      <div className="container-custom max-w-5xl">
+        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+          {/* Main content - Two column layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Column 1 - Content */}
+            <div className="p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
+              {/* Title and Intro */}
+              <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
+                <div className="text-[#FF8E7F] text-sm font-medium mb-1">Exclusive E-Guide</div>
+                <h2 className="text-2xl md:text-3xl font-serif font-medium text-gray-800 mb-3">
+                  69 Position E-Guide
+                </h2>
+                <p className="text-gray-800 font-medium">
+                  Spice up your bedroom game with my expert-crafted 69 Position E-Guide
+                </p>
+              </div>
               
-              <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm mb-6 md:mb-8">
-                <h4 className="font-serif text-lg md:text-xl mb-3 md:mb-4">What You'll Discover:</h4>
-                <ul className="space-y-2 md:space-y-3 text-muted-foreground text-sm md:text-base">
+              {/* What You'll Discover Card */}
+              <div className="bg-[#F9F9FB] rounded-xl p-5 mb-6">
+                <h3 className="font-serif text-lg mb-3">What You'll Discover:</h3>
+                <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
                     Step-by-step instructions for 69 exciting sex positions
@@ -38,20 +47,29 @@ const GuidePreview = () => {
                 </ul>
               </div>
               
+              {/* CTA Button */}
               <Link 
                 to="/guide" 
-                className="inline-block bg-[#ff8e7f] hover:bg-[#ff7a69] text-white py-3 px-6 rounded-md font-medium transition-all text-sm md:text-base"
+                className="inline-block bg-[#FF8E7F] hover:bg-[#FF7A69] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
               >
                 Spice Up Your Bedroom Today!
               </Link>
             </div>
             
-            <div className="flex justify-center">
-              <img 
-                src="/69.jpg" 
-                alt="69 Position E-Guide Cover" 
-                className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300"
-              />
+            {/* Column 2 - Image */}
+            <div className="p-6 md:p-8 flex items-center justify-center">
+              <div className="w-full max-w-sm">
+                <img 
+                  src="/69.jpg" 
+                  alt="69 Position E-Guide Cover" 
+                  className="w-full h-auto rounded-2xl shadow-sm"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://via.placeholder.com/400x500";
+                    target.onerror = null;
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

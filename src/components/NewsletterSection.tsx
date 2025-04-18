@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { toast } from "@/hooks/use-toast";
+import { Mail, Send, Heart, Lock } from 'lucide-react';
+import WhatsAppChannel from './WhatsAppChannel';
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');
@@ -54,64 +56,96 @@ const NewsletterSection = () => {
   };
 
   return (
-    <section className="section-padding bg-sand-50">
-      <div className="container-custom max-w-4xl">
-        <div className="text-center mb-10">
-          <h2 className="section-title">Sign Up for Our Newsletter!</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Want more expert tips, exclusive content, and spicy insights straight to your inbox?
-            Subscribe to our newsletter and be the first to receive intimacy & pleasure hacks!
+    <section className="py-12 md:py-16 lg:py-20 bg-[#FFE5EC]">
+      <div className="container-custom max-w-6xl">
+        <div className="text-center mb-8">
+          <div className="text-[#FF7A9A] text-sm font-medium mb-2">STAY CONNECTED</div>
+          <h2 className="text-3xl md:text-4xl font-serif font-medium text-gray-800 mb-4">
+            Join Our Community
+          </h2>
+          <p className="text-gray-700 max-w-2xl mx-auto">
+            Stay updated with expert tips, exclusive content, and intimate care advice through your preferred channel.
           </p>
         </div>
         
-        <div className="bg-white p-8 rounded-lg shadow-sm">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-1">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 rounded-md border border-sand-200 focus:outline-none focus:ring-2 focus:ring-blush-500"
-                  placeholder="Enter your email"
-                  required
-                />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {/* Newsletter Subscription */}
+          <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-[#FFE5EC] rounded-full flex items-center justify-center">
+                <Mail size={28} className="text-[#FF7A9A]" />
               </div>
             </div>
             
-            <div className="flex justify-center mt-6">
-              <button 
-                type="submit"
-                className="btn-primary px-8"
-                disabled={loading}
-              >
-                {loading ? "Subscribing..." : "Subscribe Now"}
-              </button>
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-serif font-medium text-gray-800 mb-3">
+                Newsletter Subscription
+              </h3>
+              <p className="text-gray-700">
+                Get intimacy & pleasure hacks delivered straight to your inbox.
+              </p>
             </div>
             
-            <p className="text-xs text-center text-muted-foreground mt-4">
-              By subscribing, you agree to receive our newsletter. You can unsubscribe at any time.
-              We respect your privacy and will never share your information.
-            </p>
-          </form>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+                    placeholder="Enter your name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="flex justify-center mt-6">
+                <button 
+                  type="submit"
+                  className="flex items-center justify-center py-3 px-8 bg-[#FF7A9A] text-white rounded-full hover:bg-[#FF5A8A] transition-colors font-medium"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    "Subscribing..."
+                  ) : (
+                    <>
+                      <Send size={18} className="mr-2" />
+                      Subscribe Now
+                    </>
+                  )}
+                </button>
+              </div>
+              
+              <div className="flex items-center justify-center text-gray-600 text-sm mt-4">
+                <Lock size={14} className="mr-2" />
+                <p>
+                  We respect your privacy and will never share your information.
+                </p>
+              </div>
+            </form>
+          </div>
+          
+          {/* WhatsApp Channel */}
+          <WhatsAppChannel />
         </div>
       </div>
     </section>

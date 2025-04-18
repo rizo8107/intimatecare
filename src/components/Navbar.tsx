@@ -45,19 +45,19 @@ const Navbar = () => {
     <nav 
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled 
-          ? 'py-2 backdrop-blur-lg bg-white/80 shadow-md' 
-          : 'py-4 bg-white/60'
+          ? 'py-2 backdrop-blur-lg bg-white/90 shadow-sm' 
+          : 'py-4 bg-white/80'
       }`}
     >
       <div className="container-custom">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center group">
-            <h1 className="font-serif text-2xl font-medium text-blush-600 relative">
+            <h1 className="font-serif text-2xl font-medium text-[#FF7A9A] relative">
               Khushboo{" "}
               <span className="font-cursive inline-block transition-transform group-hover:scale-110 origin-bottom-left">
                 Bist
               </span>
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blush-400 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FF7A9A] transition-all duration-300 group-hover:w-full"></span>
             </h1>
           </Link>
 
@@ -83,8 +83,8 @@ const Navbar = () => {
             </NavLink>
             <Link 
               to="/freebie" 
-              className={`ml-2 px-4 py-2 rounded-full bg-gradient-to-r from-blush-500 to-blush-600 text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-blush-200 hover:-translate-y-1 active:translate-y-0 ${
-                isActive('/freebie') ? 'shadow-lg shadow-blush-200' : ''
+              className={`ml-2 px-5 py-2 rounded-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
+                isActive('/freebie') ? 'shadow-md' : ''
               }`}
             >
               Free Guide
@@ -95,10 +95,10 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 rounded-full text-foreground focus:outline-none hover:bg-blush-50 transition-colors"
+              className="p-2 rounded-full text-gray-700 focus:outline-none hover:bg-[#FFE5EC] transition-colors"
               aria-label="Toggle menu"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={24} className="text-[#FF7A9A]" /> : <Menu size={24} className="text-[#FF7A9A]" />}
             </button>
           </div>
         </div>
@@ -109,7 +109,7 @@ const Navbar = () => {
             isOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="bg-white rounded-xl shadow-lg p-4 space-y-1">
+          <div className="bg-white rounded-xl shadow-sm p-4 space-y-1 border border-[#F0F0F5]">
             <MobileNavLink to="/" active={isActive('/')} onClick={closeMenu}>
               Home
             </MobileNavLink>
@@ -132,7 +132,7 @@ const Navbar = () => {
             <div className="pt-4">
               <Link 
                 to="/freebie" 
-                className="block w-full py-3 rounded-lg bg-gradient-to-r from-blush-500 to-blush-600 text-white font-medium text-center transition-all hover:shadow-md"
+                className="block w-full py-3 rounded-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white font-medium text-center transition-all"
                 onClick={closeMenu}
               >
                 Get Your Free Guide
@@ -149,15 +149,15 @@ const Navbar = () => {
 const NavLink = ({ to, active, children }) => (
   <Link
     to={to}
-    className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-blush-50 ${
+    className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] ${
       active 
-        ? 'text-blush-600 bg-blush-50' 
-        : 'text-foreground hover:text-blush-500'
+        ? 'text-[#FF7A9A] bg-[#FFE5EC]' 
+        : 'text-gray-700 hover:text-[#FF7A9A]'
     }`}
   >
     {children}
     {active && (
-      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-blush-500 rounded-full"></span>
+      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-[#FF7A9A] rounded-full"></span>
     )}
   </Link>
 );
@@ -168,8 +168,8 @@ const MobileNavLink = ({ to, active, onClick, children }) => (
     to={to}
     className={`block px-4 py-3 rounded-md transition-all ${
       active 
-        ? 'bg-blush-50 text-blush-600 font-medium' 
-        : 'text-foreground hover:bg-gray-50 hover:text-blush-500'
+        ? 'bg-[#FFE5EC] text-[#FF7A9A] font-medium' 
+        : 'text-gray-700 hover:bg-gray-50 hover:text-[#FF7A9A]'
     }`}
     onClick={onClick}
   >
