@@ -96,7 +96,7 @@ const Sessions = () => {
                   
                   <div className="space-y-4">
                     <a 
-                      href="https://topmate.io/khushboo_intimatecare"
+                      href="https://topmate.io/intimatecare/1102760"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
