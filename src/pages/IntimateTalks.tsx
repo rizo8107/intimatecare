@@ -7,8 +7,66 @@ const IntimateTalks = () => {
         <div className="container-custom max-w-5xl">
           <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              {/* Left Column - Content */}
-              <div className="p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
+              {/* Image and CTA - Appears first on mobile */}
+              <div className="order-first md:order-last p-6 md:p-8 bg-[#FAFAFA]">
+                <div className="w-full max-w-sm mx-auto mb-6">
+                  <div className="relative">
+                    <div className="bg-[#F9E5FF] rounded-xl p-4 mb-4 text-center">
+                      <p className="text-[#5D4777] font-medium uppercase text-sm tracking-wide">MY EXCLUSIVE PRODUCT</p>
+                    </div>
+                    <img 
+                      src="/telegram.png" 
+                      alt="Intimate Talks Telegram Group" 
+                      className="w-full h-auto rounded-2xl shadow-sm"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/telegram-placeholder.png";
+                        target.onerror = null;
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-[#F0F0F5]">
+                  <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
+                    <h2 className="font-serif text-xl text-center mb-4">Join Intimate Talks Today!</h2>
+                    <div className="flex justify-center my-4">
+                      <div className="bg-[#F9E5FF] px-6 py-3 rounded-full">
+                        <span className="text-sm line-through text-gray-500 mr-2">₹999</span>
+                        <span className="text-2xl font-serif text-[#D9A6FF] font-medium">₹499</span>
+                      </div>
+                    </div>
+                    <p className="text-center text-gray-700 text-sm">
+                      One-time payment • Lifetime access • No recurring fees
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <p className="text-center text-gray-700">
+                      Join our growing community of over 500 members who are on a journey to better intimacy and relationships.
+                    </p>
+                    
+                    <div className="pt-4">
+                      <a 
+                        href="https://payments.cashfree.com/forms/intimatetalks"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full bg-[#D9A6FF] hover:bg-[#C88DF7] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                      >
+                        Join Now
+                      </a>
+                    </div>
+                    
+                    <p className="text-xs text-center text-gray-600">
+                      After payment, you'll receive an invite link to join our private Telegram group.
+                      Your privacy is our priority.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Content - Appears second on mobile */}
+              <div className="order-last md:order-first p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
                 {/* Title and Intro */}
                 <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
                   <div className="text-[#D9A6FF] text-sm font-medium mb-1">Join Our Community</div>
@@ -58,64 +116,6 @@ const IntimateTalks = () => {
                       <span>Participate in regular Q&A sessions with me</span>
                     </li>
                   </ul>
-                </div>
-              </div>
-
-              {/* Right Column - Image and CTA */}
-              <div className="p-6 md:p-8 bg-[#FAFAFA]">
-                <div className="w-full max-w-sm mx-auto mb-6">
-                  <div className="relative">
-                    <div className="bg-[#F9E5FF] rounded-xl p-4 mb-4 text-center">
-                      <p className="text-[#5D4777] font-medium uppercase text-sm tracking-wide">MY EXCLUSIVE PRODUCT</p>
-                    </div>
-                    <img 
-                      src="/telegram.png" 
-                      alt="Intimate Talks Telegram Group" 
-                      className="w-full h-auto rounded-2xl shadow-sm"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://via.placeholder.com/400x400";
-                        target.onerror = null;
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6 border border-[#F0F0F5]">
-                  <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
-                    <h2 className="font-serif text-xl text-center mb-4">Join Intimate Talks Today!</h2>
-                    <div className="flex justify-center my-4">
-                      <div className="bg-[#F9E5FF] px-6 py-3 rounded-full">
-                        <span className="text-sm line-through text-gray-500 mr-2">₹999</span>
-                        <span className="text-2xl font-serif text-[#D9A6FF] font-medium">₹499</span>
-                      </div>
-                    </div>
-                    <p className="text-center text-gray-700 text-sm">
-                      One-time payment • Lifetime access • No recurring fees
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <p className="text-center text-gray-700">
-                      Join our growing community of over 500 members who are on a journey to better intimacy and relationships.
-                    </p>
-                    
-                    <div className="pt-4">
-                      <a 
-                        href="https://payments.cashfree.com/forms/intimatetalks"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full bg-[#D9A6FF] hover:bg-[#C88DF7] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
-                      >
-                        Join Now
-                      </a>
-                    </div>
-                    
-                    <p className="text-xs text-center text-gray-600">
-                      After payment, you'll receive an invite link to join our private Telegram group.
-                      Your privacy is our priority.
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>

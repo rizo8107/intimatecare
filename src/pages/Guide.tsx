@@ -20,8 +20,86 @@ const Guide = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Column - Content */}
-                <div className="flex flex-col">
+                {/* Image Column - Appears first on mobile */}
+                <div className="order-first md:order-last">
+                  <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-[#F0F0F5]">
+                    <div className="relative">
+                      <div className="bg-[#FFE5EC] p-4 text-center">
+                        <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">DIGITAL DOWNLOAD</p>
+                      </div>
+                      <img 
+                        src="/69.jpg" 
+                        alt="69 Position E-Guide" 
+                        className="w-full h-auto"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "https://via.placeholder.com/400x500";
+                          target.onerror = null;
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <BookOpen size={18} className="text-[#FF7A9A] mr-2" />
+                          <span className="text-gray-700 font-medium">Digital E-Book</span>
+                        </div>
+                        <div className="text-xl font-serif font-medium text-[#FF7A9A]">₹1,499</div>
+                      </div>
+                      
+                      <div className="flex items-center text-sm text-gray-600 mb-6">
+                        <Download size={16} className="mr-2" />
+                        <span>69 illustrated positions with detailed instructions</span>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-6 mt-4">
+                      <a 
+                        href="https://payments.cashfree.com/forms/69positionsebbok"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                      >
+                        Buy Now
+                      </a>
+                      <p className="text-xs text-center text-gray-500 mt-2">
+                        After purchase, you'll receive an email with the download link for your guide.
+                        Your information is securely processed and will never be shared with third parties.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mt-6">
+                    <h3 className="font-serif text-lg font-medium text-gray-800 mb-4 text-center">What Readers Are Saying</h3>
+                    <div className="space-y-4">
+                      <div className="bg-white p-4 rounded-lg border border-[#F0F0F5] shadow-sm">
+                        <p className="italic text-gray-600 text-sm">
+                          "This guide transformed our bedroom experience! The instructions are clear, 
+                          the illustrations are helpful, and the tips really work. Worth every penny!"
+                        </p>
+                        <div className="flex items-center mt-3">
+                          <div className="w-6 h-6 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-xs font-bold mr-2">C</div>
+                          <span className="text-xs font-medium text-gray-700">Couple from Mumbai</span>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white p-4 rounded-lg border border-[#F0F0F5] shadow-sm">
+                        <p className="italic text-gray-600 text-sm">
+                          "I bought this for my partner and me to try something new. We've had so much 
+                          fun exploring these positions together. It's rekindled our passion!"
+                        </p>
+                        <div className="flex items-center mt-3">
+                          <div className="w-6 h-6 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-xs font-bold mr-2">R</div>
+                          <span className="text-xs font-medium text-gray-700">Reader from Delhi</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Content Column - Appears second on mobile */}
+                <div className="order-last md:order-first flex flex-col">
                   <div className="mb-6">
                     <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">What is the 69 Position Guide?</h2>
                     <p className="text-gray-700 mb-4">
@@ -80,97 +158,6 @@ const Guide = () => {
                       I've included practical tips based on real feedback from couples who have successfully 
                       incorporated these positions into their intimate lives.
                     </p>
-                  </div>
-                </div>
-                
-                {/* Right Column - Image and CTA */}
-                <div className="flex flex-col">
-                  <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-6">
-                    <div className="flex justify-center mb-6">
-                      <div className="relative">
-                        <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center absolute top-0 left-0 right-0 z-10">
-                          <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">MY EXCLUSIVE PRODUCT</p>
-                        </div>
-                        <img 
-                          src="/69.jpg" 
-                          alt="69 Position E-Guide Cover" 
-                          className="w-full max-w-sm rounded-2xl shadow-sm mt-12"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "https://via.placeholder.com/400x500";
-                            target.onerror = null;
-                          }}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="text-center mt-4 mb-6">
-                      <div className="inline-block bg-[#FFE5EC] px-6 py-3 rounded-full">
-                        <span className="text-sm line-through text-gray-500 mr-2">₹2,499</span>
-                        <span className="text-2xl font-serif text-[#FF7A9A] font-medium">₹1,499</span>
-                      </div>
-                      <p className="text-center text-gray-600 text-sm mt-2">
-                        One-time payment • Instant digital download • PDF format
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <div className="flex items-center text-gray-700 text-sm">
-                        <div className="bg-[#FFE5EC] text-[#FF7A9A] w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                          <Download size={16} />
-                        </div>
-                        <span>Instant download after purchase</span>
-                      </div>
-                      
-                      <div className="flex items-center text-gray-700 text-sm">
-                        <div className="bg-[#FFE5EC] text-[#FF7A9A] w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                          <BookOpen size={16} />
-                        </div>
-                        <span>69 illustrated positions with detailed instructions</span>
-                      </div>
-                    </div>
-                    
-                    <div className="pt-6 mt-4">
-                      <a 
-                        href="https://payments.cashfree.com/forms/69positionsebbok"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
-                      >
-                        Buy Now
-                      </a>
-                      <p className="text-xs text-center text-gray-500 mt-2">
-                        After purchase, you'll receive an email with the download link for your guide.
-                        Your information is securely processed and will never be shared with third parties.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm">
-                    <h3 className="font-serif text-lg font-medium text-gray-800 mb-4 text-center">What Readers Are Saying</h3>
-                    <div className="space-y-4">
-                      <div className="bg-white p-4 rounded-lg border border-[#F0F0F5] shadow-sm">
-                        <p className="italic text-gray-600 text-sm">
-                          "This guide transformed our bedroom experience! The instructions are clear, 
-                          the illustrations are helpful, and the tips really work. Worth every penny!"
-                        </p>
-                        <div className="flex items-center mt-3">
-                          <div className="w-6 h-6 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-xs font-bold mr-2">C</div>
-                          <span className="text-xs font-medium text-gray-700">Couple from Mumbai</span>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-white p-4 rounded-lg border border-[#F0F0F5] shadow-sm">
-                        <p className="italic text-gray-600 text-sm">
-                          "I bought this for my partner and me to try something new. We've had so much 
-                          fun exploring these positions together. It's rekindled our passion!"
-                        </p>
-                        <div className="flex items-center mt-3">
-                          <div className="w-6 h-6 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-xs font-bold mr-2">R</div>
-                          <span className="text-xs font-medium text-gray-700">Reader from Delhi</span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>

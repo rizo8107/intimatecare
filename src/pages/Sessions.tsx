@@ -11,8 +11,54 @@ const Sessions = () => {
         <div className="container-custom max-w-5xl">
           <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              {/* Left Column - Content */}
-              <div className="p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
+              {/* Image and CTA - Appears first on mobile */}
+              <div className="order-first md:order-last p-6 md:p-8 bg-[#FAFAFA]">
+                <div className="w-full max-w-sm mx-auto mb-6">
+                  <div className="relative">
+                    <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center">
+                      <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">PERSONAL CONSULTATION</p>
+                    </div>
+                    <img 
+                      src="/sessions.png" 
+                      alt="One-on-One Session" 
+                      className="w-full h-auto rounded-2xl shadow-sm"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/sessions.png/400x400";
+                        target.onerror = null;
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-[#F0F0F5]">
+                  <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
+                    <h2 className="font-serif text-xl text-center mb-4">Book Your Session</h2>
+                    <p className="text-center text-gray-700 text-sm">
+                      Select the option that best fits your needs
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <a 
+                      href="https://topmate.io/intimatecare/1102760"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                    >
+                      Book Now
+                    </a>
+                    
+                    <p className="text-xs text-center text-gray-600">
+                      After booking, you'll receive a confirmation email with details to join the call.
+                      Your privacy is our priority.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Content - Appears second on mobile */}
+              <div className="order-last md:order-first p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
                 {/* Title and Intro */}
                 <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
                   <div className="text-[#FF7A9A] text-sm font-medium mb-1">One-on-One Sessions</div>
@@ -63,52 +109,6 @@ const Sessions = () => {
                       <span>Get answers to questions you can't ask elsewhere</span>
                     </li>
                   </ul>
-                </div>
-              </div>
-
-              {/* Right Column - Image and CTA */}
-              <div className="p-6 md:p-8 bg-[#FAFAFA]">
-                <div className="w-full max-w-sm mx-auto mb-6">
-                  <div className="relative">
-                    <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center">
-                      <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">PERSONAL CONSULTATION</p>
-                    </div>
-                    <img 
-                      src="/sessions.png" 
-                      alt="One-on-One Session" 
-                      className="w-full h-auto rounded-2xl shadow-sm"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/sessions.png/400x400";
-                        target.onerror = null;
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6 border border-[#F0F0F5]">
-                  <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
-                    <h2 className="font-serif text-xl text-center mb-4">Book Your Session</h2>
-                    <p className="text-center text-gray-700 text-sm">
-                      Select the option that best fits your needs
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <a 
-                      href="https://topmate.io/intimatecare/1102760"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
-                    >
-                      Book Now
-                    </a>
-                    
-                    <p className="text-xs text-center text-gray-600">
-                      After booking, you'll receive a confirmation email with details to join the call.
-                      Your privacy is our priority.
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>
