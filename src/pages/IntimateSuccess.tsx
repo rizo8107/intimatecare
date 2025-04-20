@@ -60,6 +60,8 @@ const IntimateSuccess = () => {
   // Form state
   const [currentStep, setCurrentStep] = useState(0);
   const [formCompleted, setFormCompleted] = useState(false);
+  const [lastSubmissionTime, setLastSubmissionTime] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     gender: '',
     location: '',
@@ -371,13 +373,67 @@ const IntimateSuccess = () => {
     }
   };
 
+  // Function to submit form data to the webhook with debouncing
+  const submitFormToWebhook = async () => {
+    if (isSubmitting) {
+      console.log('Preventing duplicate submission');
+      return true; // Return success without submitting
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Prepare the form data to be sent
+      const formDataToSend = {
+        ...formData,
+        // Include timestamp and other metadata
+        timestamp: new Date().toISOString(),
+        source: 'intimate_talks'
+      };
+      
+      console.log('Submitting form data to webhook:', formDataToSend);
+      
+      // Send the form data to the webhook
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formDataToSend)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Form submission failed: ${response.status}`);
+      }
+      
+      console.log('Form data submitted successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error submitting form data:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to submit form data. Please try again.',
+        variant: 'destructive'
+      });
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Handle Telegram authentication
   const handleTelegramAuth = async (user: any) => {
     console.log('Telegram auth data:', user);
     setTelegramData(user);
     
-    // Submit form data to webhook again to ensure it's up to date
-    await submitFormToWebhook();
+    // If already submitting, don't trigger multiple webhook calls
+    if (isSubmitting) {
+      console.log('Already submitting data, waiting for completion...');
+      // Continue with telegram auth without redundant webhook call
+    } else {
+      // Submit form data to webhook again to ensure it's up to date
+      await submitFormToWebhook();
+    }
     
     try {
       let currentPhone = '';
@@ -525,47 +581,14 @@ const IntimateSuccess = () => {
     }
   };
 
-  // Function to submit form data to the webhook
-  const submitFormToWebhook = async () => {
-    try {
-      // Prepare the form data to be sent
-      const formDataToSend = {
-        ...formData,
-        // Include timestamp and other metadata
-        timestamp: new Date().toISOString(),
-        source: 'intimate_talks'
-      };
-      
-      console.log('Submitting form data to webhook:', formDataToSend);
-      
-      // Send the form data to the webhook
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formDataToSend)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Form submission failed: ${response.status}`);
-      }
-      
-      console.log('Form data submitted successfully!');
-      return true;
-    } catch (error) {
-      console.error('Error submitting form data:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to submit form data. Please try again.',
-        variant: 'destructive'
-      });
-      return false;
-    }
-  };
-
-  // Complete a step and go to the next one if all requirements are met
+  // Function to complete a step and go to the next one if all requirements are met
   const handleCompleteStep = async () => {
+    // Prevent multiple rapid submissions
+    if (isSubmitting) {
+      console.log('Already submitting, please wait...');
+      return;
+    }
+    
     // Check if current step is complete
     // Step 1: Basic information
     if (currentStep === 0) {
@@ -596,8 +619,11 @@ const IntimateSuccess = () => {
         return;
       }
       
-      // Update form data in webhook
-      await submitFormToWebhook();
+      // Only submit if we've made changes since last step
+      const now = Date.now();
+      if (now - lastSubmissionTime > 3000) {
+        await submitFormToWebhook();
+      }
       
       // Go to next step
       setCurrentStep(2);
@@ -613,7 +639,7 @@ const IntimateSuccess = () => {
         return;
       }
       
-      // Final form data submission to the webhook
+      // Final form data submission to the webhook - always submit at final step
       await submitFormToWebhook();
       
       // Verify phone number and proceed
