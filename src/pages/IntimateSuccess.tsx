@@ -375,23 +375,35 @@ const IntimateSuccess = () => {
 
   // Function to submit form data to the webhook with debouncing
   const submitFormToWebhook = async () => {
-    if (isSubmitting) {
-      console.log('Preventing duplicate submission');
+    // Use a more robust approach to prevent duplicate submissions
+    // This uses a timestamp stored in localStorage
+    const now = Date.now();
+    const lastSubmission = localStorage.getItem('lastFormSubmission');
+    const lastSubmissionTime = lastSubmission ? parseInt(lastSubmission) : 0;
+    
+    // Require at least 5 seconds between submissions
+    if (now - lastSubmissionTime < 5000) {
+      console.log('PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
       return true; // Return success without submitting
     }
     
+    // Set submission flag
     setIsSubmitting(true);
     
     try {
+      // Store current submission time in localStorage
+      localStorage.setItem('lastFormSubmission', now.toString());
+      
       // Prepare the form data to be sent
       const formDataToSend = {
         ...formData,
         // Include timestamp and other metadata
         timestamp: new Date().toISOString(),
-        source: 'intimate_talks'
+        source: 'intimate_talks',
+        submission_id: `${now}-${Math.random().toString(36).substring(2, 10)}` // Add unique ID
       };
       
-      console.log('Submitting form data to webhook:', formDataToSend);
+      console.log('SUBMITTING form data to webhook with ID:', formDataToSend.submission_id);
       
       // Send the form data to the webhook
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
@@ -406,7 +418,7 @@ const IntimateSuccess = () => {
         throw new Error(`Form submission failed: ${response.status}`);
       }
       
-      console.log('Form data submitted successfully!');
+      console.log('Form data submitted successfully with ID:', formDataToSend.submission_id);
       return true;
     } catch (error) {
       console.error('Error submitting form data:', error);
@@ -417,6 +429,7 @@ const IntimateSuccess = () => {
       });
       return false;
     } finally {
+      // Clear submission flag but maintain the localStorage timestamp
       setIsSubmitting(false);
     }
   };
@@ -487,6 +500,26 @@ const IntimateSuccess = () => {
     try {
       setLoading(true);
       
+      // Check for duplicate submission
+      const now = Date.now();
+      const lastTelegramSubmission = localStorage.getItem('lastTelegramSubmission');
+      const lastTelegramTime = lastTelegramSubmission ? parseInt(lastTelegramSubmission) : 0;
+      
+      // Require at least 5 seconds between Telegram submissions
+      if (now - lastTelegramTime < 5000) {
+        console.log('PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
+        // Still show success message
+        toast({
+          title: 'Success!',
+          description: 'You have been verified and added to the Intimate Talks group!',
+          variant: 'default'
+        });
+        return; // Return without submitting
+      }
+      
+      // Save current submission time
+      localStorage.setItem('lastTelegramSubmission', now.toString());
+      
       // Try to get phone from localStorage as a backup
       let backupPhone = '';
       try {
@@ -511,7 +544,12 @@ const IntimateSuccess = () => {
       // Ensure we have the latest form data
       const latestFormData = { ...formData };
       
+      // Generate a unique submission ID
+      const submissionId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}`;
+      
       // First, send to the form webhook to ensure form data is saved
+      console.log('SUBMITTING to form webhook with ID:', submissionId);
+      
       await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
         method: 'POST',
         headers: {
@@ -522,7 +560,8 @@ const IntimateSuccess = () => {
           telegram_id: userData.id,
           phone_number: reliablePhone,
           timestamp: new Date().toISOString(),
-          source: 'intimate_talks'
+          source: 'intimate_talks',
+          submission_id: submissionId
         })
       });
       
@@ -543,10 +582,11 @@ const IntimateSuccess = () => {
         verified_payment: paymentDataToSend ? true : false,
         payment_data: paymentDataToSend,
         customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || '',
-        form_data: latestFormData
+        form_data: latestFormData,
+        submission_id: submissionId
       };
       
-      console.log('Sending webhook payload:', JSON.stringify(payloadData));
+      console.log('SUBMITTING to Telegram webhook with ID:', submissionId);
       
       // Now send to the main telegram webhook for user verification
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
@@ -561,7 +601,7 @@ const IntimateSuccess = () => {
         throw new Error(`Webhook error: ${response.status}`);
       }
       
-      console.log('Webhook successfully called!');
+      console.log('Webhook successfully called with ID:', submissionId);
       
       toast({
         title: 'Success!',
