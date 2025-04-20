@@ -16,7 +16,6 @@ interface FormData {
   location: string;
   problems: string;
   joinReason: string;
-  telegramUsername: string;
   mobileNumber: string;
   email: string;
   referral: string;
@@ -82,6 +81,14 @@ const MembershipForm = () => {
     groupGuidelinesAgreement: false,
     guidelineReviewAgreement: false
   });
+
+  // Load form data from localStorage on component mount
+  useEffect(() => {
+    const storedFormData = localStorage.getItem('membershipFormData');
+    if (storedFormData) {
+      setFormData(JSON.parse(storedFormData));
+    }
+  }, []);
 
   // Parse query parameters from URL
   useEffect(() => {
@@ -364,3 +371,31 @@ const MembershipForm = () => {
       setLoading(false);
     }
   };
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target as HTMLInputElement;
+    
+    // For checkboxes, use checked property
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      const updatedFormData = {
+        ...formData,
+        [name]: checked
+      };
+      setFormData(updatedFormData);
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
+    } else {
+      const updatedFormData = {
+        ...formData,
+        [name]: value
+      };
+      setFormData(updatedFormData);
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
+    }
+  };
+};

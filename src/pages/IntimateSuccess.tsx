@@ -87,6 +87,14 @@ const IntimateSuccess = () => {
     guidelineReviewAgreement: false
   });
 
+  // Load form data from localStorage on component mount
+  useEffect(() => {
+    const storedFormData = localStorage.getItem('membershipFormData');
+    if (storedFormData) {
+      setFormData(JSON.parse(storedFormData));
+    }
+  }, []);
+
   // Parse query parameters from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -280,24 +288,37 @@ const IntimateSuccess = () => {
     setFormData({ ...formData, mobileNumber: value });
   };
 
-  // Function to handle form input changes
+  // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as HTMLInputElement;
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
-  };
-
-  // Function to handle checkbox changes
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    
-    setFormData(prev => ({
-      ...prev,
-      [name]: checked
-    }));
+    // For checkboxes, use checked property
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+      
+      // Save to localStorage for persistence
+      const updatedFormData = {
+        ...formData,
+        [name]: checked
+      };
+      localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      
+      // Save to localStorage for persistence
+      const updatedFormData = {
+        ...formData,
+        [name]: value
+      };
+      localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
+    }
   };
 
   // Function to go to next step
@@ -628,7 +649,7 @@ const IntimateSuccess = () => {
                 id="hookupAgreement"
                 name="hookupAgreement"
                 checked={formData.hookupAgreement}
-                onChange={handleCheckboxChange}
+                onChange={handleInputChange}
                 className="mt-1 mr-3"
               />
               <label htmlFor="hookupAgreement" className="text-sm text-gray-700">
@@ -642,7 +663,7 @@ const IntimateSuccess = () => {
                 id="privacyAgreement"
                 name="privacyAgreement"
                 checked={formData.privacyAgreement}
-                onChange={handleCheckboxChange}
+                onChange={handleInputChange}
                 className="mt-1 mr-3"
               />
               <label htmlFor="privacyAgreement" className="text-sm text-gray-700">
@@ -656,7 +677,7 @@ const IntimateSuccess = () => {
                 id="participationAgreement"
                 name="participationAgreement"
                 checked={formData.participationAgreement}
-                onChange={handleCheckboxChange}
+                onChange={handleInputChange}
                 className="mt-1 mr-3"
               />
               <label htmlFor="participationAgreement" className="text-sm text-gray-700">
@@ -670,7 +691,7 @@ const IntimateSuccess = () => {
                 id="respectAgreement"
                 name="respectAgreement"
                 checked={formData.respectAgreement}
-                onChange={handleCheckboxChange}
+                onChange={handleInputChange}
                 className="mt-1 mr-3"
               />
               <label htmlFor="respectAgreement" className="text-sm text-gray-700">
@@ -684,7 +705,7 @@ const IntimateSuccess = () => {
                 id="contentAgreement"
                 name="contentAgreement"
                 checked={formData.contentAgreement}
-                onChange={handleCheckboxChange}
+                onChange={handleInputChange}
                 className="mt-1 mr-3"
               />
               <label htmlFor="contentAgreement" className="text-sm text-gray-700">
@@ -700,7 +721,7 @@ const IntimateSuccess = () => {
             id="additionalGuidelinesAgreement"
             name="additionalGuidelinesAgreement"
             checked={formData.additionalGuidelinesAgreement}
-            onChange={handleCheckboxChange}
+            onChange={handleInputChange}
             className="mt-1 mr-3"
           />
           <label htmlFor="additionalGuidelinesAgreement" className="text-sm text-gray-700">
