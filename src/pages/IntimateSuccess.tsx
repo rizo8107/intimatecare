@@ -373,26 +373,39 @@ const IntimateSuccess = () => {
     }
   };
 
-  // Function to submit form data to the webhook with debouncing
+  // Function to submit form data to the webhook with strict debouncing
   const submitFormToWebhook = async () => {
-    // Use a more robust approach to prevent duplicate submissions
-    // This uses a timestamp stored in localStorage
-    const now = Date.now();
-    const lastSubmission = localStorage.getItem('lastFormSubmission');
-    const lastSubmissionTime = lastSubmission ? parseInt(lastSubmission) : 0;
-    
-    // Require at least 5 seconds between submissions
-    if (now - lastSubmissionTime < 5000) {
-      console.log('PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
-      return true; // Return success without submitting
-    }
-    
-    // Set submission flag
-    setIsSubmitting(true);
-    
+    // GLOBAL SUBMISSION LOCK
+    // This uses a shared global window variable to lock submissions across the entire application
     try {
+      if ((window as any).__formSubmissionLock) {
+        console.log('🔒 GLOBAL LOCK ACTIVE - Submission already in progress');
+        return true; // Return success without submitting
+      }
+      
+      // Set global lock
+      (window as any).__formSubmissionLock = true;
+      
+      // Use localStorage for additional protection
+      const now = Date.now();
+      const lastSubmission = localStorage.getItem('lastFormSubmission');
+      const lastSubmissionTime = lastSubmission ? parseInt(lastSubmission) : 0;
+      
+      // Require at least 5 seconds between submissions
+      if (now - lastSubmissionTime < 5000) {
+        console.log('🚫 PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
+        (window as any).__formSubmissionLock = false; // Release lock
+        return true; // Return success without submitting
+      }
+      
+      // Set submission flag
+      setIsSubmitting(true);
+      
       // Store current submission time in localStorage
       localStorage.setItem('lastFormSubmission', now.toString());
+      
+      // Generate a unique ID with less chance of collision
+      const uniqueId = `${now}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
       
       // Prepare the form data to be sent
       const formDataToSend = {
@@ -400,10 +413,10 @@ const IntimateSuccess = () => {
         // Include timestamp and other metadata
         timestamp: new Date().toISOString(),
         source: 'intimate_talks',
-        submission_id: `${now}-${Math.random().toString(36).substring(2, 10)}` // Add unique ID
+        submission_id: uniqueId
       };
       
-      console.log('SUBMITTING form data to webhook with ID:', formDataToSend.submission_id);
+      console.log('✅ SUBMITTING form data to webhook with ID:', uniqueId);
       
       // Send the form data to the webhook
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
@@ -418,10 +431,10 @@ const IntimateSuccess = () => {
         throw new Error(`Form submission failed: ${response.status}`);
       }
       
-      console.log('Form data submitted successfully with ID:', formDataToSend.submission_id);
+      console.log('✅ Form data submitted successfully with ID:', uniqueId);
       return true;
     } catch (error) {
-      console.error('Error submitting form data:', error);
+      console.error('❌ Error submitting form data:', error);
       toast({
         title: 'Error',
         description: 'Failed to submit form data. Please try again.',
@@ -429,19 +442,23 @@ const IntimateSuccess = () => {
       });
       return false;
     } finally {
-      // Clear submission flag but maintain the localStorage timestamp
+      // Clear all submission flags
       setIsSubmitting(false);
+      // Release global lock with a small delay to prevent race conditions
+      setTimeout(() => {
+        (window as any).__formSubmissionLock = false;
+      }, 500);
     }
   };
 
-  // Handle Telegram authentication
+  // Function to handle Telegram authentication
   const handleTelegramAuth = async (user: any) => {
     console.log('Telegram auth data:', user);
     setTelegramData(user);
     
     // If already submitting, don't trigger multiple webhook calls
     if (isSubmitting) {
-      console.log('Already submitting data, waiting for completion...');
+      console.log('Already submitting, please wait...');
       // Continue with telegram auth without redundant webhook call
     } else {
       // Submit form data to webhook again to ensure it's up to date
@@ -498,6 +515,20 @@ const IntimateSuccess = () => {
   // Function to send data to the backend webhook
   const sendTelegramDataToBackend = async (userData: any) => {
     try {
+      // Check for global submission lock
+      if ((window as any).__telegramSubmissionLock) {
+        console.log('🔒 GLOBAL TELEGRAM LOCK ACTIVE - Submission already in progress');
+        // Still show success message
+        toast({
+          title: 'Success!',
+          description: 'You have been verified and added to the Intimate Talks group!',
+          variant: 'default'
+        });
+        return; // Return without submitting
+      }
+      
+      // Set global telegram submission lock
+      (window as any).__telegramSubmissionLock = true;
       setLoading(true);
       
       // Check for duplicate submission
@@ -507,7 +538,7 @@ const IntimateSuccess = () => {
       
       // Require at least 5 seconds between Telegram submissions
       if (now - lastTelegramTime < 5000) {
-        console.log('PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
+        console.log('🚫 PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
         // Still show success message
         toast({
           title: 'Success!',
@@ -544,11 +575,11 @@ const IntimateSuccess = () => {
       // Ensure we have the latest form data
       const latestFormData = { ...formData };
       
-      // Generate a unique submission ID
-      const submissionId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}`;
+      // Generate a unique submission ID with less chance of collision
+      const uniqueId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
       
       // First, send to the form webhook to ensure form data is saved
-      console.log('SUBMITTING to form webhook with ID:', submissionId);
+      console.log('✅ SUBMITTING to form webhook with ID:', uniqueId);
       
       await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
         method: 'POST',
@@ -561,7 +592,7 @@ const IntimateSuccess = () => {
           phone_number: reliablePhone,
           timestamp: new Date().toISOString(),
           source: 'intimate_talks',
-          submission_id: submissionId
+          submission_id: uniqueId
         })
       });
       
@@ -583,10 +614,10 @@ const IntimateSuccess = () => {
         payment_data: paymentDataToSend,
         customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || '',
         form_data: latestFormData,
-        submission_id: submissionId
+        submission_id: uniqueId
       };
       
-      console.log('SUBMITTING to Telegram webhook with ID:', submissionId);
+      console.log('✅ SUBMITTING to Telegram webhook with ID:', uniqueId);
       
       // Now send to the main telegram webhook for user verification
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
@@ -601,7 +632,7 @@ const IntimateSuccess = () => {
         throw new Error(`Webhook error: ${response.status}`);
       }
       
-      console.log('Webhook successfully called with ID:', submissionId);
+      console.log('✅ Webhook successfully called with ID:', uniqueId);
       
       toast({
         title: 'Success!',
@@ -610,7 +641,7 @@ const IntimateSuccess = () => {
       });
       
     } catch (error) {
-      console.error('Error in webhook call:', error);
+      console.error('❌ Error in webhook call:', error);
       toast({
         title: 'Error',
         description: 'There was an error verifying your account. Please try again.',
@@ -618,6 +649,10 @@ const IntimateSuccess = () => {
       });
     } finally {
       setLoading(false);
+      // Release global telegram lock with a small delay to prevent race conditions
+      setTimeout(() => {
+        (window as any).__telegramSubmissionLock = false;
+      }, 500);
     }
   };
 
