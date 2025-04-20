@@ -155,42 +155,22 @@ const IntimateSuccess = () => {
       toast({
         title: 'Error',
         description: 'Could not verify payment status. Please try again later.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setVerificationLoading(false);
     }
   };
 
-  // Function to handle phone number verification
+  // Verify phone number against Supabase database
   const verifyPhoneNumber = async () => {
-    console.log('Verifying phone number:', formData.mobileNumber);
-    
-    if (!formData.mobileNumber || formData.mobileNumber.length < 10) {
-      toast({
-        title: 'Phone number required',
-        description: 'Please enter a valid 10-digit phone number to continue.',
-        variant: 'destructive'
-      });
-      return false;
-    }
-    
     try {
       setVerificationLoading(true);
       
-      // Store the phone number in local storage as a backup
-      try {
-        localStorage.setItem('verified_phone', formData.mobileNumber);
-        console.log('Stored phone in localStorage:', formData.mobileNumber);
-      } catch (e) {
-        console.error('Failed to store phone in localStorage', e);
-      }
+      // First, send the current form data to the form webhook
+      await submitFormToWebhook();
       
-      // For development, auto-verify the phone number
-      // setFormCompleted(true);
-      // return true;
-      
-      // In production, verify with Supabase:
+      // Proceed with phone verification
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
@@ -200,7 +180,7 @@ const IntimateSuccess = () => {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to verify phone number');
+        throw new Error('Failed to fetch payment data');
       }
       
       const payments = await response.json();
@@ -242,19 +222,18 @@ const IntimateSuccess = () => {
         return true;
       } else {
         toast({
-          title: 'Verification failed',
-          description: 'We could not find a payment associated with this phone number. Please contact support.',
+          title: 'Verification Failed',
+          description: 'We could not find a payment associated with this phone number. Please check your number or contact support.',
           variant: 'destructive'
         });
         return false;
       }
-      
     } catch (error) {
-      console.error('Error verifying phone number:', error);
+      console.error('Error during phone verification:', error);
       toast({
         title: 'Error',
         description: 'Could not verify your phone number. Please try again later.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return false;
     } finally {
@@ -392,55 +371,59 @@ const IntimateSuccess = () => {
     }
   };
 
-  // Function to handle Telegram auth callback
-  const handleTelegramAuth = (user: any) => {
-    console.log('Telegram auth success:', user);
-    console.log('Current formData state:', formData);
+  // Handle Telegram authentication
+  const handleTelegramAuth = async (user: any) => {
+    console.log('Telegram auth data:', user);
+    setTelegramData(user);
     
-    // Store the phone number in local storage as a backup
+    // Submit form data to webhook again to ensure it's up to date
+    await submitFormToWebhook();
+    
     try {
-      localStorage.setItem('verified_phone', formData.mobileNumber);
-      console.log('Stored phone in localStorage:', formData.mobileNumber);
-    } catch (e) {
-      console.error('Failed to store phone in localStorage', e);
+      let currentPhone = '';
+      
+      // Try to get the verified phone from various sources
+      if (formData.mobileNumber) {
+        currentPhone = formData.mobileNumber;
+      } else if (localStorage.getItem('verifiedPhone')) {
+        currentPhone = localStorage.getItem('verifiedPhone') || '';
+      }
+      
+      if (!currentPhone) {
+        toast({
+          title: 'Missing Phone Number',
+          description: 'Please complete the form with your phone number first.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      // Create a deep copy of matchedPayment to avoid reference issues
+      const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
+      
+      // Combine user data
+      const combinedUserData = {
+        ...user,
+        telegram_id: user.id,
+        phone_number: currentPhone,
+        verified_phone: currentPhone,
+        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
+        amount: amount || (matchedPayment?.amount || ''),
+        customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
+        matched_payment: paymentDataCopy,
+        form_data: formData
+      };
+      
+      // Send the combined data to the backend
+      sendTelegramDataToBackend(combinedUserData);
+    } catch (error) {
+      console.error('Error in telegram auth handling:', error);
+      toast({
+        title: 'Error',
+        description: 'There was an error processing your Telegram login. Please try again.',
+        variant: 'destructive'
+      });
     }
-    
-    // First store the Telegram data in state
-    setTelegramData({
-      ...user,
-      phone_number: formData.mobileNumber,
-      verified_phone: formData.mobileNumber
-    });
-    
-    // Explicitly get the phone number from the input field if possible
-    let currentPhone = formData.mobileNumber;
-    const phoneInput = document.getElementById('phoneNumber');
-    if (phoneInput && 'value' in phoneInput) {
-      currentPhone = (phoneInput as HTMLInputElement).value || formData.mobileNumber;
-    }
-    
-    console.log('Final phone number to be sent:', currentPhone);
-    
-    // Create a deep copy of the matched payment to avoid reference issues
-    const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
-    
-    // Create combined user data with all necessary information
-    const combinedUserData = {
-      ...user,
-      chat_id: user.id,
-      user_id: user.id,
-      telegram_id: user.id,
-      phone_number: currentPhone,
-      verified_phone: currentPhone,
-      payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
-      amount: amount || (matchedPayment?.amount || ''),
-      customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
-      matched_payment: paymentDataCopy,
-      form_data: formData
-    };
-    
-    // Send the combined data to the backend
-    sendTelegramDataToBackend(combinedUserData);
   };
 
   // Function to send data to the backend webhook
@@ -451,30 +434,13 @@ const IntimateSuccess = () => {
       // Try to get phone from localStorage as a backup
       let backupPhone = '';
       try {
-        backupPhone = localStorage.getItem('verified_phone') || '';
+        backupPhone = localStorage.getItem('verifiedPhone') || '';
       } catch (e) {
-        console.error('Failed to read from localStorage', e);
+        console.error('Failed to get phone from localStorage', e);
       }
       
-      // Debug: Log all state variables to check consistency
-      console.log('[DEBUG] Phone number state:', formData.mobileNumber);
-      
-      // Safely access the input value
-      let inputValue = '';
-      const phoneInput = document.getElementById('phoneNumber');
-      if (phoneInput && 'value' in phoneInput) {
-        inputValue = (phoneInput as HTMLInputElement).value;
-      }
-      console.log('[DEBUG] Phone number from input:', inputValue);
-      console.log('[DEBUG] Phone number from localStorage:', backupPhone);
-      console.log('[DEBUG] Phone number in userData:', userData.phone_number);
-      console.log('[DEBUG] Matched payment state:', matchedPayment);
-      console.log('[DEBUG] Form completed state:', formCompleted);
-      console.log('[DEBUG] Payment verified state:', paymentVerified);
-      
-      // Get the most reliable phone number
-      const reliablePhone = userData.phone_number || inputValue || formData.mobileNumber || backupPhone;
-      console.log('[DEBUG] Most reliable phone number:', reliablePhone);
+      // Find the most reliable phone number from all possible sources
+      const reliablePhone = userData.phone_number || userData.verified_phone || formData.mobileNumber || backupPhone || '';
       
       // Log important data before sending
       console.log('Raw Telegram user data:', userData);
@@ -485,6 +451,24 @@ const IntimateSuccess = () => {
       // Deep clone matchedPayment to avoid any reference issues
       const paymentDataToSend = userData.matched_payment || 
                                (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
+      
+      // Ensure we have the latest form data
+      const latestFormData = { ...formData };
+      
+      // First, send to the form webhook to ensure form data is saved
+      await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...latestFormData,
+          telegram_id: userData.id,
+          phone_number: reliablePhone,
+          timestamp: new Date().toISOString(),
+          source: 'intimate_talks'
+        })
+      });
       
       // Add payment details to the payload with the most reliable phone number
       const payloadData = {
@@ -503,41 +487,140 @@ const IntimateSuccess = () => {
         verified_payment: paymentDataToSend ? true : false,
         payment_data: paymentDataToSend,
         customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || '',
-        form_data: formData
+        form_data: latestFormData
       };
       
       console.log('Sending webhook payload:', JSON.stringify(payloadData));
       
+      // Now send to the main telegram webhook for user verification
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payloadData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Webhook error: ${response.status}`);
+      }
+      
+      console.log('Webhook successfully called!');
+      
+      toast({
+        title: 'Success!',
+        description: 'You have been verified and added to the Intimate Talks group!',
+        variant: 'default'
+      });
+      
+    } catch (error) {
+      console.error('Error in webhook call:', error);
+      toast({
+        title: 'Error',
+        description: 'There was an error verifying your account. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to submit form data to the webhook
+  const submitFormToWebhook = async () => {
+    try {
+      // Prepare the form data to be sent
+      const formDataToSend = {
+        ...formData,
+        // Include timestamp and other metadata
+        timestamp: new Date().toISOString(),
+        source: 'intimate_talks'
+      };
+      
+      console.log('Submitting form data to webhook:', formDataToSend);
+      
+      // Send the form data to the webhook
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payloadData),
+        body: JSON.stringify(formDataToSend)
       });
       
-      // Log response status
-      console.log('Webhook response status:', response.status);
-      
-      if (response.ok) {
-        toast({
-          title: 'Success!',
-          description: 'You have successfully joined the Intimate Talks community. Check your Telegram for the group link.',
-        });
-      } else {
-        const errorText = await response.text();
-        console.error('Webhook error response:', errorText);
-        throw new Error(`Failed to process Telegram login: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`Form submission failed: ${response.status}`);
       }
+      
+      console.log('Form data submitted successfully!');
+      return true;
     } catch (error) {
-      console.error('Error sending Telegram data:', error);
+      console.error('Error submitting form data:', error);
       toast({
         title: 'Error',
-        description: 'There was a problem joining the group. Please contact support.',
-        variant: 'destructive',
+        description: 'Failed to submit form data. Please try again.',
+        variant: 'destructive'
       });
-    } finally {
-      setLoading(false);
+      return false;
+    }
+  };
+
+  // Complete a step and go to the next one if all requirements are met
+  const handleCompleteStep = async () => {
+    // Check if current step is complete
+    // Step 1: Basic information
+    if (currentStep === 0) {
+      if (!formData.gender || !formData.location || !formData.problems || !formData.joinReason) {
+        toast({
+          title: 'Incomplete information',
+          description: 'Please fill out all required fields to continue.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      // Submit form data to the webhook after completing step 1
+      await submitFormToWebhook();
+      
+      // Go to next step
+      setCurrentStep(1);
+    } 
+    // Step 2: Terms and conditions
+    else if (currentStep === 1) {
+      if (!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || 
+          !formData.respectAgreement || !formData.contentAgreement) {
+        toast({
+          title: 'Missing agreements',
+          description: 'You must agree to all the terms to continue.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      // Update form data in webhook
+      await submitFormToWebhook();
+      
+      // Go to next step
+      setCurrentStep(2);
+    } 
+    // Step 3: Contact information
+    else if (currentStep === 2) {
+      if (!formData.mobileNumber || !formData.email) {
+        toast({
+          title: 'Incomplete information',
+          description: 'Please provide your mobile number and email to continue.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      // Final form data submission to the webhook
+      await submitFormToWebhook();
+      
+      // Verify phone number and proceed
+      const verified = await verifyPhoneNumber();
+      if (!verified) return;
+      
+      setCurrentStep(3);
     }
   };
 
@@ -620,7 +703,7 @@ const IntimateSuccess = () => {
       <div className="mt-6 flex justify-end">
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
-          onClick={nextStep}
+          onClick={handleCompleteStep}
           disabled={!formData.gender || !formData.location || !formData.problems || !formData.joinReason}
         >
           Next <ArrowRight className="ml-2 h-4 w-4" />
@@ -740,7 +823,7 @@ const IntimateSuccess = () => {
         
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
-          onClick={nextStep}
+          onClick={handleCompleteStep}
           disabled={!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || !formData.respectAgreement || !formData.contentAgreement || !formData.additionalGuidelinesAgreement}
         >
           Next <ArrowRight className="ml-2 h-4 w-4" />
@@ -821,7 +904,7 @@ const IntimateSuccess = () => {
         
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
-          onClick={nextStep}
+          onClick={handleCompleteStep}
           disabled={!formData.mobileNumber || !formData.email}
         >
           Submit <ArrowRight className="ml-2 h-4 w-4" />
