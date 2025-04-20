@@ -414,7 +414,8 @@ const IntimateSuccess = () => {
       payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
       amount: amount || (matchedPayment?.amount || ''),
       customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
-      matched_payment: paymentDataCopy
+      matched_payment: paymentDataCopy,
+      form_data: formData
     };
     
     // Send the combined data to the backend
@@ -458,6 +459,7 @@ const IntimateSuccess = () => {
       console.log('Raw Telegram user data:', userData);
       console.log('User ID from Telegram:', userData.id);
       console.log('Final phone number being sent:', reliablePhone);
+      console.log('Form data being sent:', formData);
       
       // Deep clone matchedPayment to avoid any reference issues
       const paymentDataToSend = userData.matched_payment || 
@@ -479,7 +481,8 @@ const IntimateSuccess = () => {
         verified_phone: reliablePhone,
         verified_payment: paymentDataToSend ? true : false,
         payment_data: paymentDataToSend,
-        customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || ''
+        customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || '',
+        form_data: formData
       };
       
       console.log('Sending webhook payload:', JSON.stringify(payloadData));
