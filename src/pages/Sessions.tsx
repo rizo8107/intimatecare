@@ -20,12 +20,12 @@ const Sessions = () => {
                       <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">AUDIO BASED PERSONAL CONSULTATION</p>
                     </div>
                     <img 
-                      src="/working.webp" 
+                      src="/sessions.webp" 
                       alt="One-on-One Session" 
                       className="w-full h-auto rounded-2xl shadow-sm"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = "/working.webp/400x400";
+                        target.src = "/sessions.webp/400x400";
                         target.onerror = null;
                       }}
                     />
