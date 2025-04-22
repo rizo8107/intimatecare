@@ -2,8 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import { Check, CheckCircle, MessageCircle, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
-import { trackEvent, trackFormStart, trackFormStepComplete, trackFormSubmit, EventCategory } from '@/utils/analytics';
-import { trackFormEvent, trackTelegramEvent } from '@/components/ClarityEvents';
 
 // Add type declaration for telegramLoginCallback
 declare global {
@@ -18,6 +16,7 @@ interface FormData {
   location: string;
   problems: string;
   joinReason: string;
+  telegramUsername: string;
   mobileNumber: string;
   email: string;
   referral: string;
@@ -62,6 +61,7 @@ const MembershipForm = () => {
     location: '',
     problems: '',
     joinReason: '',
+    telegramUsername: '',
     mobileNumber: '',
     email: '',
     referral: '',
@@ -84,22 +84,10 @@ const MembershipForm = () => {
     guidelineReviewAgreement: false
   });
 
-  // Load form data from localStorage on component mount
-  useEffect(() => {
-    const storedFormData = localStorage.getItem('membershipFormData');
-    if (storedFormData) {
-      setFormData(JSON.parse(storedFormData));
-    }
-  }, []);
-
   // Parse query parameters from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setQueryParams(params);
-    
-    // Track form view/start
-    trackFormStart('membership_form');
-    trackFormEvent('membership_form', 'init', 'start');
     
     // Define the auth callback globally
     window.telegramLoginCallback = handleTelegramAuth;
@@ -250,11 +238,6 @@ const MembershipForm = () => {
   // Function to handle Telegram auth callback
   const handleTelegramAuth = (user: any) => {
     console.log('Telegram auth success:', user);
-    console.log('Current formData state:', formData);
-    
-    // Track Telegram authentication attempt
-    trackEvent('telegram_auth_attempt', EventCategory.CONVERSION, 'membership_form');
-    trackTelegramEvent('login', true);
     
     // Store the phone number in local storage as a backup
     try {
@@ -382,31 +365,3 @@ const MembershipForm = () => {
       setLoading(false);
     }
   };
-
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    
-    // For checkboxes, use checked property
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      const updatedFormData = {
-        ...formData,
-        [name]: checked
-      };
-      setFormData(updatedFormData);
-      
-      // Save to localStorage for persistence
-      localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
-    } else {
-      const updatedFormData = {
-        ...formData,
-        [name]: value
-      };
-      setFormData(updatedFormData);
-      
-      // Save to localStorage for persistence
-      localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
-    }
-  };
-};

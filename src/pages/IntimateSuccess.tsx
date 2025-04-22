@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import { Check, CheckCircle, MessageCircle, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
+import { trackEvent, trackFormStart, trackFormStepComplete, trackFormSubmit, trackTelegramConnect, EventCategory } from '@/utils/analytics';
+import { trackFormEvent, trackTelegramEvent, trackButtonClick } from '@/components/ClarityEvents';
 
 // Add type declaration for telegramLoginCallback
 declare global {
@@ -101,6 +103,10 @@ const IntimateSuccess = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setQueryParams(params);
+    
+    // Track page view for analytics
+    trackFormStart('intimate_success_form');
+    trackFormEvent('intimate_success_form', 'init', 'start');
     
     // Define the auth callback globally
     window.telegramLoginCallback = handleTelegramAuth;
@@ -234,7 +240,7 @@ const IntimateSuccess = () => {
       console.error('Error during phone verification:', error);
       toast({
         title: 'Error',
-        description: 'Could not verify your phone number. Please try again later.',
+        description: 'Could not verify your phone number. Please try again.',
         variant: 'destructive',
       });
       return false;

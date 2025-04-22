@@ -15,6 +15,9 @@ import Freebie from "./pages/Freebie";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import IntimateSuccess from "./pages/IntimateSuccess";
+import GoogleAnalytics from "./components/GoogleAnalytics";
+import ClarityEvents from "./components/ClarityEvents";
+import { initClarity } from "./utils/clarity";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,8 @@ const ScrollToTop = () => {
   return null;
 };
 
+initClarity();
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -38,6 +43,8 @@ const App = () => (
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <ScrollToTop />
+          <GoogleAnalytics />
+          <ClarityEvents />
           <main className="flex-grow pt-16 md:pt-20">
             <Routes>
               <Route path="/" element={<Index />} />
