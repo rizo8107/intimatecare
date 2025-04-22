@@ -15,80 +15,106 @@ const SessionsPreview = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {/* Free Session */}
-          <div className="bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-            <div className="p-6 md:p-8">
-              <h3 className="font-serif text-xl font-medium text-gray-800 mb-3">Free First Session</h3>
-              <p className="text-3xl font-serif text-[#FF7A9A] mb-4">₹0</p>
-              <ul className="space-y-3 mb-6 text-gray-700">
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>1 hour of open, non-judgmental audio conversation</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>Discuss any topic you're comfortable with</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>Get to know my coaching approach</span>
-                </li>
-              </ul>
-              <Link to="/sessions" className="block text-center py-3 px-6 bg-[#FF7A9A] text-white rounded-full hover:bg-[#FF5A8A] transition-colors font-medium">
-                Book Free Session
-              </Link>
-            </div>
-          </div>
-          
-          {/* Regular Session */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {/* Regular Session Card */}
           <div className="bg-white rounded-3xl shadow-md overflow-hidden relative">
             <div className="absolute top-0 right-0 bg-[#FF7A9A] text-white px-4 py-1 rounded-bl-2xl text-sm font-medium">
-              Popular
+              Audio-based session
             </div>
-            <div className="p-6 md:p-8">
-              <h3 className="font-serif text-xl font-medium text-gray-800 mb-3">30-Minute Session</h3>
-              <p className="text-3xl font-serif text-[#FF7A9A] mb-4">₹1,500</p>
-              <ul className="space-y-3 mb-6 text-gray-700">
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>30 minutes of focused discussion</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>Personalized advice and guidance</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>Follow-up resource recommendations</span>
-                </li>
-              </ul>
-              <Link to="/sessions" className="block text-center py-3 px-6 bg-[#FF7A9A] text-white rounded-full hover:bg-[#FF5A8A] transition-colors font-medium">
+            <div className="p-6 md:p-8 flex flex-col h-full">
+              <div className="mb-4">
+                <img 
+                  src="/working.webp" 
+                  alt="One-on-One Session" 
+                  className="w-full h-auto rounded-2xl shadow-sm"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/working.webp/400x400";
+                    target.onerror = null;
+                  }}
+                />
+              </div>
+              <h3 className="font-serif text-xl font-medium text-gray-800 mb-3">Sex Education Consultation Session</h3>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                <div className="flex items-center mb-2 md:mb-0">
+                  <Clock className="w-4 h-4 text-[#FF7A9A] mr-2" />
+                  <span className="text-gray-700">Duration: 45 minutes</span>
+                </div>
+                <div>
+                  <p className="text-xl font-serif text-[#FF7A9A] font-medium">₹999</p>
+                </div>
+              </div>
+              
+              <div className="mb-6 flex-grow">
+                <h4 className="font-medium text-[#853f92] mb-2">Why This Session Matters:</h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="text-[#FF7A9A] mr-2">✓</span>
+                    <span>Because most of us were never taught how to talk about sex — let alone understand it without shame or confusion.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#FF7A9A] mr-2">✓</span>
+                    <span>Because real questions about pleasure, consent, comfort, and curiosity deserve real answers.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#FF7A9A] mr-2">✓</span>
+                    <span>Because knowing your body and boundaries isn't just about sex — it's about confidence, connection, and choice.</span>
+                  </li>
+                </ul>
+              </div>
+              <Link to="/sessions" className="block text-center py-3 px-6 bg-[#FF7A9A] text-white rounded-full hover:bg-[#FF5A8A] transition-colors font-medium mt-auto">
                 Book Session
               </Link>
             </div>
           </div>
           
-          {/* Student Session */}
-          <div className="bg-white rounded-3xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-            <div className="p-6 md:p-8">
-              <h3 className="font-serif text-xl font-medium text-gray-800 mb-3">Student Special</h3>
-              <p className="text-3xl font-serif text-[#FF7A9A] mb-4">₹500</p>
-              <ul className="space-y-3 mb-6 text-gray-700">
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>30 minutes of focused guidance</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>Help with porn addiction recovery</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FF7A9A] mr-2">✓</span>
-                  <span>Breaking unhealthy patterns</span>
-                </li>
-              </ul>
-              <Link to="/sessions" className="block text-center py-3 px-6 bg-[#FF7A9A] text-white rounded-full hover:bg-[#FF5A8A] transition-colors font-medium">
+          {/* Student Session Card */}
+          <div className="bg-white rounded-3xl shadow-md overflow-hidden relative">
+            <div className="absolute top-0 right-0 bg-[#E5F2FF] text-[#3B82F6] px-4 py-1 rounded-bl-2xl text-sm font-medium">
+              For Students Only
+            </div>
+            <div className="p-6 md:p-8 flex flex-col h-full">
+              <div className="mb-4">
+                <img 
+                  src="/students.webp" 
+                  alt="Student Session" 
+                  className="w-full h-auto rounded-2xl shadow-sm"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/students.webp/400x400";
+                    target.onerror = null;
+                  }}
+                />
+              </div>
+              <h3 className="font-serif text-xl font-medium text-gray-800 mb-3 pr-24">Student Special: Sex Education Session</h3>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                <div className="flex items-center mb-2 md:mb-0">
+                  <Clock className="w-4 h-4 text-[#3B82F6] mr-2" />
+                  <span className="text-gray-700">Duration: 45 minutes</span>
+                </div>
+                <div>
+                  <p className="text-xl font-serif text-[#3B82F6] font-medium">₹499</p>
+                </div>
+              </div>
+              
+              <div className="mb-6 flex-grow">
+                <h4 className="font-medium text-[#853f92] mb-2">Why This Session Matters:</h4>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="text-[#3B82F6] mr-2">✓</span>
+                    <span>Because pleasure is not a luxury — it's part of well-being.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#3B82F6] mr-2">✓</span>
+                    <span>Because healthy intimacy starts with informed conversations — and this is your space to start that.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#3B82F6] mr-2">✓</span>
+                    <span>Because real questions about pleasure, consent, comfort, and curiosity deserve real answers.</span>
+                  </li>
+                </ul>
+              </div>
+              <Link to="/student-booking" className="block text-center py-3 px-6 bg-[#3B82F6] text-white rounded-full hover:bg-[#2563EB] transition-colors font-medium mt-auto">
                 Book Student Session
               </Link>
             </div>

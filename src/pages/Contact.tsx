@@ -218,8 +218,8 @@ const Contact = () => {
                         </div>
                         <div>
                           <h3 className="font-medium text-gray-800 mb-1">Email</h3>
-                          <a href="mailto:contact@khushboobist.com" className="text-[#FF7A9A] hover:text-[#FF5A84] transition-colors">
-                            contact@khushboobist.com
+                          <a href="mailto:teamkhushboobist@gmail.com" className="text-[#FF7A9A] hover:text-[#FF5A84] transition-colors">
+                            teamkhushboobist@gmail.com
                           </a>
                         </div>
                       </div>
@@ -242,7 +242,7 @@ const Contact = () => {
                       <div className="flex space-x-4">
                         <a 
                           href="https://instagram.com" 
-                          target="_blank" 
+                          target="https://www.instagram.com/khushboobist__/" 
                           rel="noopener noreferrer" 
                           className="bg-[#FFE5EC] hover:bg-[#FFD6E3] transition-colors p-3 rounded-full"
                           aria-label="Instagram"
@@ -251,22 +251,14 @@ const Contact = () => {
                         </a>
                         <a 
                           href="https://youtube.com" 
-                          target="_blank" 
+                          target="https://www.youtube.com/@SexedwithKhushboo" 
                           rel="noopener noreferrer" 
                           className="bg-[#FFE5EC] hover:bg-[#FFD6E3] transition-colors p-3 rounded-full"
                           aria-label="YouTube"
                         >
                           <Youtube size={20} className="text-[#FF7A9A]" />
                         </a>
-                        <a 
-                          href="https://twitter.com" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="bg-[#FFE5EC] hover:bg-[#FFD6E3] transition-colors p-3 rounded-full"
-                          aria-label="Twitter"
-                        >
-                          <Twitter size={20} className="text-[#FF7A9A]" />
-                        </a>
+                       
                       </div>
                     </div>
                   </div>

@@ -62,14 +62,11 @@ const Footer = () => {
               Your Go-To Sex Educator & Intimacy Coach – Let's Make Pleasure a Priority!
             </p>
             <div className="flex space-x-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/70 transition-colors">
+              <a href="https://www.instagram.com/khushboobist__/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/70 transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/70 transition-colors">
+              <a href="https://www.youtube.com/@SexedwithKhushboo" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/70 transition-colors">
                 <Youtube size={20} />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/70 transition-colors">
-                <Twitter size={20} />
               </a>
             </div>
           </div>
@@ -115,8 +112,8 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center space-x-2">
                 <Mail size={16} className="text-white" />
-                <a href="mailto:contact@khushboobist.com" className="text-white/80 hover:text-white transition-colors">
-                  contact@khushboobist.com
+                <a href="mailto:teamkhushboobist@gmail.com" className="text-white/80 hover:text-white transition-colors">
+                  teamkhushboobist@gmail.com
                 </a>
               </li>
               <li className="flex items-center space-x-2">

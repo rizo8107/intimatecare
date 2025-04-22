@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { Link } from 'react-router-dom';
 import { Calendar, Clock, Video, MessageCircle, CheckCircle } from 'lucide-react';
 
 const Sessions = () => {
@@ -16,15 +17,15 @@ const Sessions = () => {
                 <div className="w-full max-w-sm mx-auto mb-6">
                   <div className="relative">
                     <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center">
-                      <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">PERSONAL CONSULTATION</p>
+                      <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">AUDIO BASED PERSONAL CONSULTATION</p>
                     </div>
                     <img 
-                      src="/sessions.png" 
+                      src="/working.webp" 
                       alt="One-on-One Session" 
                       className="w-full h-auto rounded-2xl shadow-sm"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = "/sessions.png/400x400";
+                        target.src = "/working.webp/400x400";
                         target.onerror = null;
                       }}
                     />
@@ -121,99 +122,129 @@ const Sessions = () => {
                 Available Session Types
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Free First Session */}
-                <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow">
-                  <h3 className="font-serif text-xl font-medium text-gray-800 mb-2">Free First Session</h3>
-                  <div className="text-2xl font-serif text-[#FF7A9A] font-medium mb-4">₹0</div>
-                  
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">1 hour of open, non-judgmental audio conversation</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">Discuss any topic you're comfortable with</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">Get to know my coaching approach</span>
-                    </li>
-                  </ul>
-                  
-                  <a 
-                    href="https://topmate.io/khushboo_intimatecare" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2.5 px-4 rounded-full text-center font-medium text-sm transition-colors"
-                  >
-                    Book Free Session
-                  </a>
-                </div>
-                
-                {/* 30-Minute Session */}
-                <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow relative">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Regular Session Card */}
+                <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow relative flex flex-col h-full">
                   <div className="absolute top-3 right-3 bg-[#FF7A9A] text-white text-xs px-2 py-1 rounded-full">
-                    Popular
+                    Featured
                   </div>
                   
-                  <h3 className="font-serif text-xl font-medium text-gray-800 mb-2">30-Minute Session</h3>
-                  <div className="text-2xl font-serif text-[#FF7A9A] font-medium mb-4">₹1,500</div>
+                  <div className="mb-4">
+                    <img 
+                      src="/working.webp" 
+                      alt="One-on-One Session" 
+                      className="w-full h-auto rounded-2xl shadow-sm"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/working.webp/400x400";
+                        target.onerror = null;
+                      }}
+                    />
+                  </div>
                   
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">30 minutes of focused discussion</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">Personalized advice and guidance</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">Follow-up resource recommendations</span>
-                    </li>
-                  </ul>
+                  <h3 className="font-serif text-xl font-medium text-gray-800 mb-3">Sex Education Consultation Session</h3>
+                  
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                    <div className="flex items-center mb-3 md:mb-0">
+                      <Clock className="w-5 h-5 text-[#FF7A9A] mr-2" />
+                      <span className="text-gray-700">Duration: 45 minutes</span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-serif text-[#FF7A9A] font-medium">₹999</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-[#FFE5EC] p-4 rounded-lg mb-4 flex-grow">
+                    <h4 className="font-medium text-[#853f92] mb-3">Why This Session Matters:</h4>
+                    <ul className="space-y-3 mb-2">
+                      <li className="flex items-start">
+                        <span className="text-[#FF7A9A] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because most of us were never taught how to talk about sex — let alone understand it without shame or confusion.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-[#FF7A9A] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because real questions about pleasure, consent, comfort, and curiosity deserve real answers.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-[#FF7A9A] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because knowing your body and boundaries isn't just about sex — it's about confidence, connection, and choice.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-[#FF7A9A] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because pleasure is not a luxury — it's part of well-being.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-[#FF7A9A] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because healthy intimacy starts with informed conversations — and this is your space to start that.</span>
+                      </li>
+                    </ul>
+                  </div>
                   
                   <a 
                     href="https://topmate.io/khushboo_intimatecare" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2.5 px-4 rounded-full text-center font-medium text-sm transition-colors"
+                    className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-4 rounded-full text-center font-medium transition-colors"
                   >
-                    Book Session
+                    Book Your Session Now
                   </a>
                 </div>
                 
-                {/* Student Special */}
-                <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow">
-                  <h3 className="font-serif text-xl font-medium text-gray-800 mb-2">Student Special</h3>
-                  <div className="text-2xl font-serif text-[#FF7A9A] font-medium mb-4">₹500</div>
+                {/* Student Session Card */}
+                <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow relative flex flex-col h-full">
+                  <div className="absolute top-3 right-3 bg-[#E5F2FF] text-[#3B82F6] text-xs px-2 py-1 rounded-full">
+                    For Students Only
+                  </div>
                   
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">30 minutes of focused guidance</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">Help with porn addiction recovery</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-green-500 mr-2">✓</span>
-                      <span className="text-gray-700 text-sm">Breaking unhealthy patterns</span>
-                    </li>
-                  </ul>
+                  <div className="mb-4">
+                    <img 
+                      src="/students.webp" 
+                      alt="Student Session" 
+                      className="w-full h-auto rounded-2xl shadow-sm"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/students.webp/400x400";
+                        target.onerror = null;
+                      }}
+                    />
+                  </div>
                   
-                  <a 
-                    href="https://topmate.io/khushboo_intimatecare" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2.5 px-4 rounded-full text-center font-medium text-sm transition-colors"
+                  <h3 className="font-serif text-xl font-medium text-gray-800 mb-3 pr-24">Student Special: Sex Education Session</h3>
+                  
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                    <div className="flex items-center mb-3 md:mb-0">
+                      <Clock className="w-5 h-5 text-[#3B82F6] mr-2" />
+                      <span className="text-gray-700">Duration: 45 minutes</span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-serif text-[#3B82F6] font-medium">₹499</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-[#E5F2FF] p-4 rounded-lg mb-4 flex-grow">
+                    <h4 className="font-medium text-[#853f92] mb-3">Why This Session Matters:</h4>
+                    <ul className="space-y-3 mb-2">
+                      <li className="flex items-start">
+                        <span className="text-[#3B82F6] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because pleasure is not a luxury — it's part of well-being.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-[#3B82F6] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because healthy intimacy starts with informed conversations — and this is your space to start that.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-[#3B82F6] mr-2">✓</span>
+                        <span className="text-gray-700 text-sm">Because real questions about pleasure, consent, comfort, and curiosity deserve real answers.</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <Link 
+                    to="/student-booking"
+                    className="block w-full bg-[#3B82F6] hover:bg-[#2563EB] text-white py-3 px-4 rounded-full text-center font-medium transition-colors mt-auto"
                   >
                     Book Student Session
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

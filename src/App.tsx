@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Sessions from "./pages/Sessions";
+import StudentBooking from "./pages/StudentBooking";
 import IntimateTalks from "./pages/IntimateTalks";
 import Guide from "./pages/Guide";
 import Freebie from "./pages/Freebie";
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/sessions" element={<Sessions />} />
+              <Route path="/student-booking" element={<StudentBooking />} />
               <Route path="/intimatetalks" element={<IntimateTalks />} />
               <Route path="/guide" element={<Guide />} />
               <Route path="/freebie" element={<Freebie />} />
