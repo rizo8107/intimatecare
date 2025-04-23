@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://khushboobist.com/sitemap.xml
+Sitemap: https://intimatecare.in/sitemap.xml

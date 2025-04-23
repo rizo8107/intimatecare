@@ -49,7 +49,7 @@ const Issues = () => {
         <title>Sexual Wellness Issues & Solutions | Khushboo Bist</title>
         <meta name="description" content="Expert guidance from Khushboo Bist on common sexual issues including low desire, pain during sex, communication problems, and more. Find personalized solutions for your intimate concerns." />
         <meta name="keywords" content="sexual issues, sex problems, low libido, painful sex, erectile dysfunction, premature ejaculation, orgasm difficulties, sex therapy, Khushboo Bist" />
-        <link rel="canonical" href="https://khushboobist.com/issues" />
+        <link rel="canonical" href="https://intimatecare.in/issues" />
         
         {/* Schema.org structured data for FAQ page */}
         <script type="application/ld+json">
