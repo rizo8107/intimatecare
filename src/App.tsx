@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { HelmetProvider } from "react-helmet-async";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Index from "./pages/Index";
@@ -16,6 +17,7 @@ import Freebie from "./pages/Freebie";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import IntimateSuccess from "./pages/IntimateSuccess";
+import Issues from "./pages/Issues";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import { initClarity } from "./utils/clarity";
@@ -37,11 +39,12 @@ initClarity();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="flex flex-col min-h-screen">
+    <HelmetProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="flex flex-col min-h-screen">
           <Navbar />
           <ScrollToTop />
           <GoogleAnalytics />
@@ -57,13 +60,15 @@ const App = () => (
               <Route path="/freebie" element={<Freebie />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/intimate-success" element={<IntimateSuccess />} />
+              <Route path="/issues" element={<Issues />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 

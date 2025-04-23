@@ -75,6 +75,9 @@ const Navbar = () => {
             <NavLink to="/intimatetalks" active={isActive('/intimatetalks')}>
               Intimate Talks
             </NavLink>
+            <NavLink to="/issues" active={isActive('/issues')}>
+              Sexual Issues
+            </NavLink>
             <NavLink to="/guide" active={isActive('/guide')}>
               69 Positions
             </NavLink>
@@ -121,6 +124,9 @@ const Navbar = () => {
             </MobileNavLink>
             <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>
               Intimate Talks
+            </MobileNavLink>
+            <MobileNavLink to="/issues" active={isActive('/issues')} onClick={closeMenu}>
+              Sexual Issues
             </MobileNavLink>
             <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>
               69 Positions
