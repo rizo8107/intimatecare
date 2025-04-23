@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle } from "lucide-react";
-import { Helmet } from "react-helmet";
 
 const Issues = () => {
   const commonIssues = [
@@ -45,48 +44,6 @@ const Issues = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Sexual Wellness Issues & Solutions | Khushboo Bist</title>
-        <meta name="description" content="Expert guidance from Khushboo Bist on common sexual issues including low desire, pain during sex, communication problems, and more. Find personalized solutions for your intimate concerns." />
-        <meta name="keywords" content="sexual issues, sex problems, low libido, painful sex, erectile dysfunction, premature ejaculation, orgasm difficulties, sex therapy, Khushboo Bist" />
-        <link rel="canonical" href="https://intimatecare.in/issues" />
-        
-        {/* Schema.org structured data for FAQ page */}
-        <script type="application/ld+json">
-          {`
-            {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "How can Khushboo Bist help with low sexual desire?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Khushboo Bist offers personalized coaching sessions to help identify the root causes of low desire, which may include stress, relationship dynamics, hormonal factors, or past experiences. Through evidence-based approaches, she helps clients reconnect with their bodies and rediscover pleasure."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "What solutions does Khushboo Bist provide for pain during intercourse?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Khushboo Bist works with clients experiencing painful sex by addressing both physical and psychological factors. She provides education about anatomy, recommends appropriate lubricants, teaches relaxation techniques, and helps couples explore comfortable positions and alternative forms of intimacy."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "How does Khushboo Bist address erectile dysfunction and performance anxiety?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Khushboo Bist takes a holistic approach to erectile difficulties, addressing psychological factors like performance anxiety while providing education about physical health factors. Her coaching includes mindfulness techniques, communication strategies, and pleasure-focused approaches rather than performance-focused ones."
-                  }
-                }
-              ]
-            }
-          `}
-        </script>
-      </Helmet>
       
       <div className="bg-gradient-to-b from-pink-50 to-white">
         {/* Hero Section */}
