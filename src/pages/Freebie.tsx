@@ -40,6 +40,16 @@ const Freebie = () => {
           description: "Your free guides are ready below!",
         });
         
+        // Track the form submission event with Meta Pixel
+        if (window.fbq) {
+          window.fbq('track', 'Lead', {
+            content_name: 'Intimacy Guide',
+            content_category: 'Freebie',
+            value: 1.00,
+            currency: 'INR'
+          });
+        }
+        
         // Save the user's name for the success page
         setUserName(name);
         

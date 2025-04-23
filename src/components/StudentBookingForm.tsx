@@ -126,6 +126,16 @@ const StudentBookingForm = () => {
           description: "We'll contact you soon to confirm your session.",
         });
         
+        // Track the form submission event with Meta Pixel
+        if (window.fbq) {
+          window.fbq('track', 'CompleteRegistration', {
+            content_name: 'Student Session Booking',
+            content_category: 'Student',
+            value: 499.00,
+            currency: 'INR'
+          });
+        }
+        
         // Reset form
         setFormData({
           name: '',
