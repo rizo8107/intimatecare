@@ -10,10 +10,6 @@ deploy:
       source: /etc/localtime
       target: /etc/localtime
       read_only: true
-    - type: bind
-      source: /etc/letsencrypt
-      target: /etc/letsencrypt
-      read_only: true
   resources:
     limits:
       memory: 1G
@@ -26,3 +22,4 @@ domains:
   - domain: intimatecare.in
     primary: true
   - domain: www.intimatecare.in
+    redirect: intimatecare.in

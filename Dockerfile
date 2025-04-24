@@ -19,9 +19,6 @@ RUN npm run build
 # Production stage
 FROM nginx:alpine
 
-# Create directory for SSL certificates
-RUN mkdir -p /etc/letsencrypt/live/intimatecare.in
-
 # Copy built assets from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
