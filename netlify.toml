@@ -7,3 +7,16 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Domain redirects - ensure both www and non-www versions work
+[[redirects]]
+  from = "https://intimatecare.in/*"
+  to = "https://www.intimatecare.in/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://intimatecare.in/*"
+  to = "https://www.intimatecare.in/:splat"
+  status = 301
+  force = true

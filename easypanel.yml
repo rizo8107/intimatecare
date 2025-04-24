@@ -19,5 +19,9 @@ env:
   - name: NODE_ENV
     value: production
 domains:
+  - domain: www.intimatecare.in
+    primary: true
+  - domain: intimatecare.in
+    redirect: www.intimatecare.in
   - domain: intimatecare.khushboobist.com
-    primary: true 
+    primary: false
