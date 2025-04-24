@@ -5,15 +5,11 @@ deploy:
   build: true
   ports:
     - "80:80"
-    - "443:443"
   volumes:
     - type: bind
       source: /etc/localtime
       target: /etc/localtime
       read_only: true
-    - type: bind
-      source: ./ssl
-      target: /etc/nginx/ssl
   resources:
     limits:
       memory: 1G
@@ -24,7 +20,4 @@ env:
     value: production
 domains:
   - domain: intimatecare.in
-    primary: true
-    https: true
-  - domain: www.intimatecare.in
-    https: true
+    primary: true 
