@@ -5,7 +5,6 @@ deploy:
   build: true
   ports:
     - "80:80"
-    - "443:443"
   volumes:
     - type: bind
       source: /etc/localtime
@@ -26,6 +25,4 @@ env:
 domains:
   - domain: intimatecare.in
     primary: true
-    https: true
   - domain: www.intimatecare.in
-    https: true
