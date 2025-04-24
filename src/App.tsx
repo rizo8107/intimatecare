@@ -17,6 +17,8 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import IntimateSuccess from "./pages/IntimateSuccess";
 import Issues from "./pages/Issues";
+import JoinGroup from "./pages/JoinGroup";
+import TelegramTest from "./pages/TelegramTest";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import { initClarity } from "./utils/clarity";
@@ -51,14 +53,17 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
-              <Route path="/sessions" element={<Sessions />} />
+              <Route path="/issues" element={<Issues />} />
               <Route path="/student-booking" element={<StudentBooking />} />
-              <Route path="/intimatetalks" element={<IntimateTalks />} />
+              <Route path="/join-group" element={<JoinGroup />} />
+              <Route path="/telegram-test" element={<TelegramTest />} />
               <Route path="/guide" element={<Guide />} />
               <Route path="/freebie" element={<Freebie />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/intimate-success" element={<IntimateSuccess />} />
               <Route path="/issues" element={<Issues />} />
+              <Route path="/sessions" element={<Sessions />} />
+              <Route path="/intimatetalks" element={<IntimateTalks />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

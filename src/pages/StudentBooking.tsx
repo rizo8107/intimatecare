@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import StudentBookingForm from '@/components/StudentBookingForm';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -42,8 +40,16 @@ const StudentBooking = () => {
               </ul>
             </div>
             
-            <div className="border-t border-gray-200 pt-6">
-              <StudentBookingForm />
+            <div className="border-t border-gray-200 pt-6 text-center">
+              <p className="mb-4 text-gray-700">Click the button below to book your student session through our booking platform:</p>
+              <a 
+                href="https://topmate.io/intimatecare" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block bg-[#3B82F6] hover:bg-[#2563EB] text-white py-3 px-8 rounded-full text-center font-medium transition-colors"
+              >
+                Book Student Session (₹499)
+              </a>
             </div>
           </div>
         </div>
