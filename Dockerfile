@@ -1,4 +1,4 @@
-# Use Node.js as the base image
+# Build stage
 FROM node:18-alpine as build
 
 # Set working directory
@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Create directory for SSL certificates
-RUN mkdir -p /etc/nginx/ssl
+RUN mkdir -p /etc/letsencrypt/live/intimatecare.in
 
 # Copy built assets from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html

@@ -13,4 +13,4 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ./ssl:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt:ro
