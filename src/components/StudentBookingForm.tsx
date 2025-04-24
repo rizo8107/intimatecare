@@ -8,6 +8,7 @@ interface FormData {
   college: string;
   course: string;
   year: string;
+  location: string;
   preferredDate: string;
   preferredTime: string;
   concerns: string;
@@ -21,6 +22,7 @@ const StudentBookingForm = () => {
     college: '',
     course: '',
     year: '',
+    location: '',
     preferredDate: '',
     preferredTime: '',
     concerns: ''
@@ -70,7 +72,7 @@ const StudentBookingForm = () => {
   };
   
   const validateStep2 = () => {
-    if (!formData.college || !formData.course || !formData.year) {
+    if (!formData.college || !formData.course || !formData.year || !formData.location) {
       toast({
         title: "Required fields missing",
         description: "Please fill in all required fields.",
@@ -144,6 +146,7 @@ const StudentBookingForm = () => {
           college: '',
           course: '',
           year: '',
+          location: '',
           preferredDate: '',
           preferredTime: '',
           concerns: ''
@@ -304,6 +307,22 @@ const StudentBookingForm = () => {
                 <option value="5th Year">5th Year</option>
                 <option value="Postgraduate">Postgraduate</option>
               </select>
+            </div>
+            
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                Location/City <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="e.g., Mumbai, Delhi, Bangalore"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                required
+              />
             </div>
             
             <div className="flex justify-between pt-4">
