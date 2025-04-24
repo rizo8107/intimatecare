@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import { Check, CheckCircle, MessageCircle, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -98,6 +98,31 @@ const IntimateSuccess = () => {
       setFormData(JSON.parse(storedFormData));
     }
   }, []);
+  
+  // Initialize Telegram login widget
+  useEffect(() => {
+    const container = telegramLoginContainerRef.current;
+    if (container) {
+      // Clear any existing content
+      container.innerHTML = '';
+      
+      // Create the script element for Telegram login widget
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://telegram.org/js/telegram-widget.js?22';
+      script.setAttribute('data-telegram-login', 'IntimateCareTalksBot');
+      script.setAttribute('data-size', 'large');
+      script.setAttribute('data-radius', '8');
+      script.setAttribute('data-request-access', 'write');
+      script.setAttribute('data-userpic', 'false');
+      script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
+      
+      // Append the script to the container
+      container.appendChild(script);
+      
+      console.log('Telegram login widget initialized');
+    }
+  }, []);
 
   // Parse query parameters from URL
   useEffect(() => {
@@ -108,8 +133,16 @@ const IntimateSuccess = () => {
     trackFormStart('intimate_success_form');
     trackFormEvent('intimate_success_form', 'init', 'start');
     
-    // Define the auth callback globally
-    window.telegramLoginCallback = handleTelegramAuth;
+    // Define a simple auth callback globally that just logs the data
+    window.telegramLoginCallback = (user) => {
+      console.log('Telegram auth data received:', user);
+      setTelegramData(user);
+      toast({
+        title: 'Telegram Login Received',
+        description: 'Please use the Telegram Test page to test the webhook functionality',
+        variant: 'default'
+      });
+    };
     
     // Check if payment exists in Supabase
     const paymentId = params.get('payment_id');
@@ -457,66 +490,7 @@ const IntimateSuccess = () => {
     }
   };
 
-  // Function to handle Telegram authentication
-  const handleTelegramAuth = async (user: any) => {
-    console.log('Telegram auth data:', user);
-    setTelegramData(user);
-    
-    // If already submitting, don't trigger multiple webhook calls
-    if (isSubmitting) {
-      console.log('Already submitting, please wait...');
-      // Continue with telegram auth without redundant webhook call
-    } else {
-      // Submit form data to webhook again to ensure it's up to date
-      await submitFormToWebhook();
-    }
-    
-    try {
-      let currentPhone = '';
-      
-      // Try to get the verified phone from various sources
-      if (formData.mobileNumber) {
-        currentPhone = formData.mobileNumber;
-      } else if (localStorage.getItem('verifiedPhone')) {
-        currentPhone = localStorage.getItem('verifiedPhone') || '';
-      }
-      
-      if (!currentPhone) {
-        toast({
-          title: 'Missing Phone Number',
-          description: 'Please complete the form with your phone number first.',
-          variant: 'destructive'
-        });
-        return;
-      }
-      
-      // Create a deep copy of matchedPayment to avoid reference issues
-      const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
-      
-      // Combine user data
-      const combinedUserData = {
-        ...user,
-        telegram_id: user.id,
-        phone_number: currentPhone,
-        verified_phone: currentPhone,
-        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
-        amount: amount || (matchedPayment?.amount || ''),
-        customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
-        matched_payment: paymentDataCopy,
-        form_data: formData
-      };
-      
-      // Send the combined data to the backend
-      sendTelegramDataToBackend(combinedUserData);
-    } catch (error) {
-      console.error('Error in telegram auth handling:', error);
-      toast({
-        title: 'Error',
-        description: 'There was an error processing your Telegram login. Please try again.',
-        variant: 'destructive'
-      });
-    }
-  };
+
 
   // Function to send data to the backend webhook
   const sendTelegramDataToBackend = async (userData: any) => {
