@@ -77,7 +77,7 @@ const TelegramTest = () => {
       setLoading(true);
       
       // Send data to the webhook
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook-test/telegram-success-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

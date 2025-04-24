@@ -133,15 +133,82 @@ const IntimateSuccess = () => {
     trackFormStart('intimate_success_form');
     trackFormEvent('intimate_success_form', 'init', 'start');
     
-    // Define a simple auth callback globally that just logs the data
-    window.telegramLoginCallback = (user) => {
+    // Define the auth callback globally
+    window.telegramLoginCallback = async (user) => {
       console.log('Telegram auth data received:', user);
       setTelegramData(user);
-      toast({
-        title: 'Telegram Login Received',
-        description: 'Please use the Telegram Test page to test the webhook functionality',
-        variant: 'default'
-      });
+      
+      try {
+        setLoading(true);
+        
+        // Get latest form data
+        const latestFormData = { ...formData };
+        
+        // Get phone from various sources
+        let reliablePhone = '';
+        if (latestFormData.mobileNumber) {
+          reliablePhone = latestFormData.mobileNumber;
+        } else if (localStorage.getItem('verifiedPhone')) {
+          reliablePhone = localStorage.getItem('verifiedPhone') || '';
+        }
+        
+        // Generate a unique submission ID
+        const now = Date.now();
+        const uniqueId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}`;
+        
+        // Create the payload in the same format as before
+        const payloadData = {
+          ...user,
+          chat_id: user.id,
+          user_id: user.id,
+          telegram_id: user.id,
+          phone_number: reliablePhone,
+          verified_phone: reliablePhone,
+          payment_id: paymentId || '',
+          amount: amount || '',
+          customer_name: '',
+          matched_payment: null,
+          form_data: latestFormData,
+          source: 'intimate_talks',
+          auth_date_formatted: new Date(user.auth_date * 1000).toISOString(),
+          command: '/user_join_verified',
+          verified_payment: false,
+          payment_data: null
+        };
+        
+        console.log('Sending data to webhook:', payloadData);
+        
+        // Send to the webhook
+        const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payloadData)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Webhook error: ${response.status}`);
+        }
+        
+        const responseText = await response.text();
+        console.log('Webhook response:', responseText);
+        
+        toast({
+          title: 'Success!',
+          description: 'You have been verified and added to the Intimate Talks group!',
+          variant: 'default'
+        });
+      } catch (error) {
+        console.error('Error in webhook call:', error);
+        toast({
+          title: 'Error',
+          description: 'There was an error verifying your account. Please try again.',
+          variant: 'destructive'
+        });
+      } finally {
+        setLoading(false);
+      }
     };
     
     // Check if payment exists in Supabase
@@ -154,7 +221,7 @@ const IntimateSuccess = () => {
       // Clean up global callback
       delete window.telegramLoginCallback;
     };
-  }, [location]);
+  }, [location, formData, amount, paymentId]);
 
   // Verify payment with Supabase
   const verifyPayment = async (paymentId: string) => {
