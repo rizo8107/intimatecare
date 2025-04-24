@@ -217,7 +217,7 @@ const Sessions = () => {
                       <span className="text-gray-700">Duration: 45 minutes</span>
                     </div>
                     <div>
-                      <div className="text-2xl font-serif text-[#3B82F6] font-medium">₹499</div>
+                      <div className="text-2xl font-serif text-[#3B82F6] font-medium">₹999</div>
                     </div>
                   </div>
                   
