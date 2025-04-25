@@ -128,12 +128,6 @@ const Footer = () => {
                   teamkhushboobist@gmail.com
                 </a>
               </li>
-              <li className="flex items-center space-x-2">
-                <Phone size={16} className="text-white" />
-                <a href="tel:+919876543210" className="text-white/80 hover:text-white transition-colors">
-                  +91 98765 43210
-                </a>
-              </li>
             </ul>
             
             <div className="mt-6">
