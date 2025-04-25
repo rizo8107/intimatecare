@@ -41,7 +41,7 @@ const SessionsPreview = () => {
                   <span className="text-gray-700">Duration: 45 minutes</span>
                 </div>
                 <div>
-                  <p className="text-xl font-serif text-[#FF7A9A] font-medium">₹999</p>
+                  <p className="text-xl font-serif text-[#FF7A9A] font-medium">₹699</p>
                 </div>
               </div>
               
@@ -93,7 +93,7 @@ const SessionsPreview = () => {
                   <span className="text-gray-700">Duration: 45 minutes</span>
                 </div>
                 <div>
-                  <p className="text-xl font-serif text-[#3B82F6] font-medium">₹499</p>
+                  <p className="text-xl font-serif text-[#3B82F6] font-medium">₹399</p>
                 </div>
               </div>
               
