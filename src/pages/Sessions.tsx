@@ -126,7 +126,7 @@ const Sessions = () => {
                 {/* Regular Session Card */}
                 <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow relative flex flex-col h-full">
                   <div className="absolute top-3 right-3 bg-[#FF7A9A] text-white text-xs px-2 py-1 rounded-full">
-                    Featured
+                    First Session
                   </div>
                   
                   <div className="mb-4">
@@ -150,7 +150,7 @@ const Sessions = () => {
                       <span className="text-gray-700">Duration: 45 minutes</span>
                     </div>
                     <div>
-                      <div className="text-2xl font-serif text-[#FF7A9A] font-medium">₹999</div>
+                      <div className="text-2xl font-serif text-[#FF7A9A] font-medium">₹699</div>
                     </div>
                   </div>
                   
