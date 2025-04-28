@@ -171,7 +171,7 @@ const Contact = () => {
                       >
                         {loading ? "Sending..." : "Send Message"}
                       </button>
-                      <p className="text-xs text-gray-500 mt-2 text-center">
+                      <p className="text-xs text-gray-500 mt-2 text-center">f
                         Fields marked with * are required
                       </p>
                     </div>
@@ -201,7 +201,7 @@ const Contact = () => {
                       <h3 className="font-medium text-gray-800 mb-4">Connect on Social Media</h3>
                       <div className="flex space-x-4">
                         <a 
-                          href="https://instagram.com" 
+                          href="https://www.instagram.com/khushboobist__/" 
                           target="https://www.instagram.com/khushboobist__/" 
                           rel="noopener noreferrer" 
                           className="bg-[#FFE5EC] hover:bg-[#FFD6E3] transition-colors p-3 rounded-full"
@@ -210,7 +210,7 @@ const Contact = () => {
                           <Instagram size={20} className="text-[#FF7A9A]" />
                         </a>
                         <a 
-                          href="https://youtube.com" 
+                          href="https://www.youtube.com/@SexedwithKhushboo" 
                           target="https://www.youtube.com/@SexedwithKhushboo" 
                           rel="noopener noreferrer" 
                           className="bg-[#FFE5EC] hover:bg-[#FFD6E3] transition-colors p-3 rounded-full"
