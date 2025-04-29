@@ -36,14 +36,12 @@ const IntimateTalks = () => {
                         <span className="text-2xl font-serif text-[#D9A6FF] font-medium">₹999</span>
                       </div>
                     </div>
-                    <p className="text-center text-gray-700 text-sm">
-                      One-time payment • Lifetime access • No recurring fees
-                    </p>
+                   
                   </div>
                   
                   <div className="space-y-6">
                     <p className="text-center text-gray-700">
-                      Join our growing community of over 500 members who are on a journey to better intimacy and relationships.
+                      Join our growing community of over 100+ members who are on a journey to better intimacy and relationships.
                     </p>
                     
                     <div className="pt-4">
