@@ -179,7 +179,7 @@ const IntimateSuccess = () => {
       await submitFormToWebhook();
       
       // Proceed with phone verification
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
+      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
         headers: {
           'apikey': ANON_KEY,
