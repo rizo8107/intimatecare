@@ -138,7 +138,7 @@ const MembershipForm = () => {
       }
       
       const payments = await response.json();
-      console.log('Payments data:', payments);
+      console.log('Payment verification data received');
       
       const verified = payments.some((payment: any) => payment.payment_id === paymentId);
       setPaymentVerified(verified);
@@ -180,9 +180,9 @@ const MembershipForm = () => {
       // Store the phone number in local storage as a backup
       try {
         localStorage.setItem('verified_phone', formData.mobileNumber);
-        console.log('Stored phone in localStorage:', formData.mobileNumber);
+        console.log('Phone information stored in localStorage');
       } catch (e) {
-        console.error('Failed to store phone in localStorage', e);
+        console.error('Failed to store data in localStorage', e);
       }
       
       // For development, auto-verify the phone number
@@ -203,7 +203,7 @@ const MembershipForm = () => {
       }
       
       const payments = await response.json();
-      console.log('Payments data for phone verification:', payments);
+      console.log('Payment verification data received');
       
       // Find a payment that matches the phone number
       const matchedPayment = payments.find((payment: any) => 
@@ -212,7 +212,7 @@ const MembershipForm = () => {
         payment.customer_phone === formData.mobileNumber
       );
       
-      console.log('Matched payment:', matchedPayment);
+      console.log('Payment verification completed');
       
       if (matchedPayment) {
         setMatchedPayment(matchedPayment);
@@ -259,9 +259,9 @@ const MembershipForm = () => {
     // Store the phone number in local storage as a backup
     try {
       localStorage.setItem('verified_phone', formData.mobileNumber);
-      console.log('Stored phone in localStorage:', formData.mobileNumber);
+      console.log('Phone verification completed');
     } catch (e) {
-      console.error('Failed to store phone in localStorage', e);
+      console.error('Failed to store verification data', e);
     }
     
     // First store the Telegram data in state
@@ -307,22 +307,19 @@ const MembershipForm = () => {
         console.error('Failed to read from localStorage', e);
       }
       
-      // Debug: Log all state variables to check consistency
-      console.log('[DEBUG] Phone number state:', formData.mobileNumber);
-      console.log('[DEBUG] Phone number from localStorage:', backupPhone);
-      console.log('[DEBUG] Phone number in userData:', userData.phone_number);
-      console.log('[DEBUG] Matched payment state:', matchedPayment);
-      console.log('[DEBUG] Phone verified state:', phoneVerified);
-      console.log('[DEBUG] Payment verified state:', paymentVerified);
+      // Debug information - remove sensitive data
+      console.log('[DEBUG] Verification process started');
       
-      // Get the most reliable phone number
-      const reliablePhone = userData.phone_number || formData.mobileNumber || backupPhone;
-      console.log('[DEBUG] Most reliable phone number:', reliablePhone);
+      // Get phone from various sources (without logging the actual numbers)
+      const reliablePhone = userData.phone_number || userData.verified_phone || formData.mobileNumber || backupPhone || '';
+      
+      console.log('[DEBUG] Verification state checked');
+      
+      // Get the most reliable phone number to use
+      console.log('Verification data prepared for submission');
       
       // Log important data before sending
-      console.log('Raw Telegram user data:', userData);
-      console.log('User ID from Telegram:', userData.id);
-      console.log('Final phone number being sent:', reliablePhone);
+      console.log('Preparing Telegram verification data');
       
       // Deep clone matchedPayment to avoid any reference issues
       const paymentDataToSend = userData.matched_payment || 

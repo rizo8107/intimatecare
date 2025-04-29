@@ -41,8 +41,8 @@ interface FormData {
 }
 
 // Supabase API keys
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q';
+const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const SERVICE_ROLE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
 
 const IntimateSuccess = () => {
   const location = useLocation();
@@ -119,8 +119,6 @@ const IntimateSuccess = () => {
       
       // Append the script to the container
       container.appendChild(script);
-      
-      console.log('Telegram login widget initialized');
     }
   }, []);
 
@@ -135,7 +133,6 @@ const IntimateSuccess = () => {
     
     // Define the auth callback globally
     window.telegramLoginCallback = async (user) => {
-      console.log('Telegram auth data received:', user);
       setTelegramData(user);
       
       try {
@@ -176,8 +173,6 @@ const IntimateSuccess = () => {
           payment_data: null
         };
         
-        console.log('Sending data to webhook:', payloadData);
-        
         // Send to the webhook
         const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
           method: 'POST',
@@ -192,7 +187,6 @@ const IntimateSuccess = () => {
         }
         
         const responseText = await response.text();
-        console.log('Webhook response:', responseText);
         
         toast({
           title: 'Success!',
@@ -235,8 +229,8 @@ const IntimateSuccess = () => {
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE'
+          'apikey': ANON_KEY,
+          'Authorization': `Bearer ${ANON_KEY}`
         }
       });
       
@@ -245,7 +239,6 @@ const IntimateSuccess = () => {
       }
       
       const payments = await response.json();
-      console.log('Payments data:', payments);
       
       const verified = payments.some((payment: any) => payment.payment_id === paymentId);
       setPaymentVerified(verified);
@@ -254,7 +247,7 @@ const IntimateSuccess = () => {
         toast({
           title: 'Payment verification failed',
           description: 'We could not verify your payment. Please contact support.',
-          variant: 'destructive'
+          variant: 'destructive',
         });
       }
       */
@@ -292,7 +285,7 @@ const IntimateSuccess = () => {
       }
       
       const payments = await response.json();
-      console.log('Payments data for phone verification:', payments);
+      console.log('Verification process started');
       
       // Find a payment that matches the phone number
       const matchedPayment = payments.find((payment: any) => {
@@ -310,19 +303,12 @@ const IntimateSuccess = () => {
         const paymentPhoneNumber = normalizePhone(payment.phone_number);
         const customerPhone = normalizePhone(payment.customer_phone);
         
-        console.log('Comparing phones:', {
-          input: formattedInputPhone,
-          payment: paymentPhone,
-          paymentNumber: paymentPhoneNumber,
-          customer: customerPhone
-        });
-        
         return formattedInputPhone === paymentPhone || 
                formattedInputPhone === paymentPhoneNumber ||
                formattedInputPhone === customerPhone;
       });
       
-      console.log('Matched payment:', matchedPayment);
+      console.log('Verification process completed');
       
       if (matchedPayment) {
         setMatchedPayment(matchedPayment);
@@ -485,7 +471,7 @@ const IntimateSuccess = () => {
     // This uses a shared global window variable to lock submissions across the entire application
     try {
       if ((window as any).__formSubmissionLock) {
-        console.log('🔒 GLOBAL LOCK ACTIVE - Submission already in progress');
+        console.log('GLOBAL LOCK ACTIVE - Submission already in progress');
         return true; // Return success without submitting
       }
       
@@ -499,7 +485,7 @@ const IntimateSuccess = () => {
       
       // Require at least 5 seconds between submissions
       if (now - lastSubmissionTime < 5000) {
-        console.log('🚫 PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
+        console.log('PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
         (window as any).__formSubmissionLock = false; // Release lock
         return true; // Return success without submitting
       }
@@ -522,7 +508,7 @@ const IntimateSuccess = () => {
         submission_id: uniqueId
       };
       
-      console.log('✅ SUBMITTING form data to webhook with ID:', uniqueId);
+      console.log('SUBMITTING form data to webhook with ID:', uniqueId);
       
       // Send the form data to the webhook
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
@@ -537,10 +523,10 @@ const IntimateSuccess = () => {
         throw new Error(`Form submission failed: ${response.status}`);
       }
       
-      console.log('✅ Form data submitted successfully with ID:', uniqueId);
+      console.log('Form data submitted successfully with ID:', uniqueId);
       return true;
     } catch (error) {
-      console.error('❌ Error submitting form data:', error);
+      console.error('Error submitting form data:', error);
       toast({
         title: 'Error',
         description: 'Failed to submit form data. Please try again.',
@@ -564,7 +550,7 @@ const IntimateSuccess = () => {
     try {
       // Check for global submission lock
       if ((window as any).__telegramSubmissionLock) {
-        console.log('🔒 GLOBAL TELEGRAM LOCK ACTIVE - Submission already in progress');
+        console.log('GLOBAL TELEGRAM LOCK ACTIVE - Submission already in progress');
         // Still show success message
         toast({
           title: 'Success!',
@@ -585,7 +571,7 @@ const IntimateSuccess = () => {
       
       // Require at least 5 seconds between Telegram submissions
       if (now - lastTelegramTime < 5000) {
-        console.log('🚫 PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
+        console.log('PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
         // Still show success message
         toast({
           title: 'Success!',
@@ -610,10 +596,7 @@ const IntimateSuccess = () => {
       const reliablePhone = userData.phone_number || userData.verified_phone || formData.mobileNumber || backupPhone || '';
       
       // Log important data before sending
-      console.log('Raw Telegram user data:', userData);
-      console.log('User ID from Telegram:', userData.id);
-      console.log('Final phone number being sent:', reliablePhone);
-      console.log('Form data being sent:', formData);
+      console.log('Raw Telegram user data received');
       
       // Deep clone matchedPayment to avoid any reference issues
       const paymentDataToSend = userData.matched_payment || 
@@ -626,7 +609,7 @@ const IntimateSuccess = () => {
       const uniqueId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
       
       // First, send to the form webhook to ensure form data is saved
-      console.log('✅ SUBMITTING to form webhook with ID:', uniqueId);
+      console.log('SUBMITTING to form webhook with ID:', uniqueId);
       
       await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
         method: 'POST',
@@ -664,7 +647,7 @@ const IntimateSuccess = () => {
         submission_id: uniqueId
       };
       
-      console.log('✅ SUBMITTING to Telegram webhook with ID:', uniqueId);
+      console.log('SUBMITTING to Telegram webhook with ID:', uniqueId);
       
       // Now send to the main telegram webhook for user verification
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
@@ -679,7 +662,7 @@ const IntimateSuccess = () => {
         throw new Error(`Webhook error: ${response.status}`);
       }
       
-      console.log('✅ Webhook successfully called with ID:', uniqueId);
+      console.log('Webhook successfully called with ID:', uniqueId);
       
       toast({
         title: 'Success!',
@@ -688,7 +671,7 @@ const IntimateSuccess = () => {
       });
       
     } catch (error) {
-      console.error('❌ Error in webhook call:', error);
+      console.error('Error in webhook call:', error);
       toast({
         title: 'Error',
         description: 'There was an error verifying your account. Please try again.',
@@ -1161,8 +1144,10 @@ const IntimateSuccess = () => {
     script.src = 'https://telegram.org/js/telegram-widget.js?22';
     script.setAttribute('data-telegram-login', 'KB_initmatetalks_bot');
     script.setAttribute('data-size', 'large');
-    script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
+    script.setAttribute('data-radius', '8');
     script.setAttribute('data-request-access', 'write');
+    script.setAttribute('data-userpic', 'false');
+    script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
     script.setAttribute('data-auth-url', window.location.href);
     script.setAttribute('data-userpic', 'false');
     script.setAttribute('data-radius', '8');
