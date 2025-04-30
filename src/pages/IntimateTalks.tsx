@@ -33,10 +33,21 @@ const IntimateTalks = () => {
                     <h2 className="font-serif text-xl text-center mb-4">Join Intimate Talks Today!</h2>
                     <div className="flex justify-center my-4">
                       <div className="bg-[#F9E5FF] px-6 py-3 rounded-full">
-                        <span className="text-sm line-through text-gray-500 mr-2">₹1999</span>
-                        <span className="text-2xl font-serif text-[#D9A6FF] font-medium">₹999</span>
-                        <p className="text-[#5D4777] font-medium uppercase text-sm tracking-wide">1 Month Subscription</p>
-                      </div>
+  {/* Original Price */}
+  <span className="text-sm line-through text-gray-500 mr-2">
+    ₹1999
+  </span>
+
+  {/* Discounted Price */}
+  <span className="text-2xl font-serif text-[#D9A6FF] font-medium">
+    ₹999
+  </span>
+
+  {/* Subscription Description */}
+  <p className="text-[#5D4777] font-medium uppercase text-sm tracking-wide">
+    1 Month Subscription
+  </p>
+</div>
                     </div>
                    
                   </div>
