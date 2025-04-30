@@ -13,6 +13,7 @@ const IntimateTalks = () => {
                   <div className="relative">
                     <div className="bg-[#F9E5FF] rounded-xl p-4 mb-4 text-center">
                       <p className="text-[#5D4777] font-medium uppercase text-sm tracking-wide">MY EXCLUSIVE PRODUCT</p>
+                      <p className="text-[#5D4777] font-medium uppercase text-sm tracking-wide">1 Month Subscription</p>
                     </div>
                     <img 
                       src="/telegram.png" 
