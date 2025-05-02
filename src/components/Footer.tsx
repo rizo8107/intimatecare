@@ -154,7 +154,20 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-white/20 pt-8 text-center text-sm text-white/80">
-          <p> {new Date().getFullYear()} Khushboo Bist. All rights reserved.</p>
+          <p className="mb-4"> {new Date().getFullYear()} Khushboo Bist. All rights reserved.</p>
+          <div className="flex justify-center space-x-4">
+            <Link to="/terms-conditions" className="text-white/80 hover:text-white transition-colors">
+              Terms & Conditions
+            </Link>
+            <span>|</span>
+            <Link to="/cancellation-refund" className="text-white/80 hover:text-white transition-colors">
+              Cancellation & Refund
+            </Link>
+            <span>|</span>
+            <Link to="/contact" className="text-white/80 hover:text-white transition-colors">
+              Contact Us
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

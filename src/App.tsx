@@ -19,6 +19,8 @@ import IntimateSuccess from "./pages/IntimateSuccess";
 import Issues from "./pages/Issues";
 import JoinGroup from "./pages/JoinGroup";
 import TelegramTest from "./pages/TelegramTest";
+import TermsConditions from "./pages/TermsConditions";
+import CancellationRefund from "./pages/CancellationRefund";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import { initClarity } from "./utils/clarity";
@@ -64,6 +66,8 @@ const App = () => (
               <Route path="/issues" element={<Issues />} />
               <Route path="/sessions" element={<Sessions />} />
               <Route path="/intimatetalks" element={<IntimateTalks />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
+              <Route path="/cancellation-refund" element={<CancellationRefund />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
