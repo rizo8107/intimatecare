@@ -117,7 +117,16 @@ const IntimateSuccess = () => {
       
       // Append the script to the container
       container.appendChild(script);
+      
+      console.log('Telegram login widget initialized');
     }
+    
+    return () => {
+      // Clean up if needed
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
   }, []);
 
   // Parse query parameters from URL
