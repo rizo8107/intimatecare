@@ -112,9 +112,7 @@ const IntimateSuccess = () => {
       script.src = 'https://telegram.org/js/telegram-widget.js?22';
       script.setAttribute('data-telegram-login', 'KB_intimate_bot');
       script.setAttribute('data-size', 'large');
-      script.setAttribute('data-radius', '8');
       script.setAttribute('data-request-access', 'write');
-      script.setAttribute('data-userpic', 'false');
       script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
       
       // Append the script to the container
