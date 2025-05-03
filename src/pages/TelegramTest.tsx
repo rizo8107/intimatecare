@@ -36,7 +36,7 @@ const TelegramTest = () => {
       const script = document.createElement('script');
       script.async = true;
       script.src = 'https://telegram.org/js/telegram-widget.js?22';
-      script.setAttribute('data-telegram-login', 'IntimateCareTalksBot');
+      script.setAttribute('data-telegram-login', 'KB_intimate_bot');
       script.setAttribute('data-size', 'large');
       script.setAttribute('data-radius', '8');
       script.setAttribute('data-request-access', 'write');
