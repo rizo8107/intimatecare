@@ -7,6 +7,7 @@ import TelegramPreview from "@/components/TelegramPreview";
 import GuidePreview from "@/components/GuidePreview";
 import FreebieSection from "@/components/FreebieSection";
 import NewsletterSection from "@/components/NewsletterSection";
+import YouTubeSection from "@/components/YouTubeSection";
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
       <FeatureSection />
       <AboutPreview />
       <SessionsPreview />
+      <YouTubeSection />
       <TelegramPreview />
       <GuidePreview />
       <FreebieSection />
