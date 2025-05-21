@@ -1,7 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import sharp from 'sharp';
+import { globSync } from 'glob';
+import { fileURLToPath } from 'url';
+
+// Get the directory name in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration
 const config = {
@@ -24,7 +29,7 @@ if (!fs.existsSync(config.outputDir)) {
 }
 
 // Find all images
-const imageFiles = glob.sync(`${config.inputDir}/**/*.{${config.formats.join(',')}}`, { nodir: true });
+const imageFiles = globSync(`${config.inputDir}/**/*.{${config.formats.join(',')}}`, { nodir: true });
 
 // Process each image
 async function processImages() {
