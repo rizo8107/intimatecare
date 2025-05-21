@@ -4,11 +4,14 @@ FROM node:18-alpine as build
 # Set working directory
 WORKDIR /app
 
+# Install system dependencies for image processing
+RUN apk add --no-cache python3 make g++ libc6-compat
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Copy all files
 COPY . .

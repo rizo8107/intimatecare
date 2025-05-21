@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import { Calendar, Clock, Video, MessageCircle, CheckCircle } from 'lucide-react';
+import OptimizedImage from '@/components/ui/optimized-image';
 
 const Sessions = () => {
   const [activeTab, setActiveTab] = useState('sessions');
@@ -19,15 +20,12 @@ const Sessions = () => {
                     <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center">
                       <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">AUDIO BASED PERSONAL CONSULTATION</p>
                     </div>
-                    <img 
+                    <OptimizedImage 
                       src="/sessions.webp" 
                       alt="One-on-One Session" 
                       className="w-full h-auto rounded-2xl shadow-sm"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/sessions.webp/400x400";
-                        target.onerror = null;
-                      }}
+                      width={600}
+                      height={400}
                     />
                   </div>
                 </div>

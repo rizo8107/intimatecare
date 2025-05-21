@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import OptimizedImage from './ui/optimized-image';
 
 const TelegramPreview = () => {
   return (
@@ -64,15 +65,14 @@ const TelegramPreview = () => {
             {/* Column 2 - Image */}
             <div className="p-6 md:p-8 flex items-center justify-center">
               <div className="w-full max-w-sm">
-                <img 
+                <OptimizedImage 
                   src="/telegram.png" 
                   alt="Intimate Talks Telegram Group" 
                   className="w-full h-auto rounded-2xl shadow-sm"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "https://via.placeholder.com/400x400";
-                    target.onerror = null;
-                  }}
+                  width={400}
+                  height={400}
+                  blurEffect={true}
+                  objectFit="contain"
                 />
               </div>
             </div>

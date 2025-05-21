@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
 import useIsTablet from "../hooks/useIsTablet";
+import OptimizedImage from "./ui/optimized-image";
 
 export default function Hero() {
   const isMobile = useIsMobile();
@@ -39,10 +40,13 @@ export default function Hero() {
       
       {/* Full-width image at bottom with no spacing */}
       <div className="w-full order-2 md:absolute md:right-0 md:bottom-0 md:top-0 md:w-1/2 h-[450px] sm:h-[550px] md:h-full">
-        <img 
+        <OptimizedImage 
           src="/hero_banner/single-hero.png" 
           alt="Khushboo Bist - Sex Educator and Intimacy Coach" 
           className="w-full h-full object-cover object-top sm:object-center"
+          width={800}
+          height={1200}
+          blurEffect={true}
         />
       </div>
       

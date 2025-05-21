@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Calendar, Clock, Video, MessageCircle, CheckCircle } from 'lucide-react';
+import OptimizedImage from './ui/optimized-image';
 
 const SessionsPreview = () => {
   return (

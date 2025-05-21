@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import OptimizedImage from './ui/optimized-image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink } from 'lucide-react';
@@ -130,10 +131,13 @@ const YouTubeSection = () => {
               {videos.slice(1).map((video) => (
                 <Card key={video.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   <div className="relative aspect-video cursor-pointer" onClick={() => handleVideoClick(video.id)}>
-                    <img 
+                    <OptimizedImage 
                       src={video.thumbnail} 
-                      alt={video.title}
-                      className="object-cover w-full h-full"
+                      alt={video.title} 
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      width={320}
+                      height={180}
+                      blurEffect={true}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-16 h-16 rounded-full bg-primary/80 flex items-center justify-center">
