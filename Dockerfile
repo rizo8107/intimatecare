@@ -11,7 +11,7 @@ RUN apk add --no-cache python3 make g++ libc6-compat
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # Copy all files
 COPY . .
