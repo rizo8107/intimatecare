@@ -139,7 +139,7 @@ const StudentBookingForm = () => {
       submissionData.append('sessionType', 'Student Special');
       submissionData.append('price', '₹499');
 
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook-test/studenform', {
         method: 'POST',
         // Headers are not explicitly set for 'multipart/form-data'; fetch does this automatically.
         body: submissionData,
