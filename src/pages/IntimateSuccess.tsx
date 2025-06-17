@@ -275,8 +275,8 @@ const IntimateSuccess = () => {
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
         headers: {
-          'apikey': ANON_KEY,
-          'Authorization': `Bearer ${ANON_KEY}`
+          'apikey': VITE_SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${VITE_SUPABASE_ANON_KEY}`
         }
       });
       
@@ -706,31 +706,7 @@ const IntimateSuccess = () => {
         return;
       }
       
-      // Automatically set all agreement fields to true
-      const updatedFormData = {
-        ...formData,
-        hookupAgreement: true,
-        privacyAgreement: true,
-        participationAgreement: true,
-        respectAgreement: true,
-        contentAgreement: true,
-        nonJudgmentalAgreement: true,
-        participateAgreement: true,
-        sensitiveTopicsAgreement: true,
-        anonymityAgreement: true,
-        liabilityAgreement: true,
-        explicitLanguageAgreement: true,
-        additionalGuidelinesAgreement: true,
-        privacySettingsAgreement: true,
-        impliedSignatureAgreement: true,
-        groupGuidelinesAgreement: true,
-        guidelineReviewAgreement: true
-      };
-      
-      // Update form data with all agreements set to true
-      setFormData(updatedFormData);
-      
-      // Submit updated form data to the webhook after completing step 1
+      // Submit form data to the webhook after completing step 1
       await submitFormToWebhook();
       
       // Go to next step
@@ -738,7 +714,17 @@ const IntimateSuccess = () => {
     } 
     // Step 2: Terms and conditions
     else if (currentStep === 1) {
-      // All agreements are automatically set to true, so no validation needed
+      if (!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || 
+          !formData.respectAgreement || !formData.contentAgreement || !formData.nonJudgmentalAgreement || 
+          !formData.participateAgreement || !formData.sensitiveTopicsAgreement || !formData.anonymityAgreement || 
+          !formData.liabilityAgreement || !formData.explicitLanguageAgreement || !formData.additionalGuidelinesAgreement) {
+        toast({
+          title: 'Missing agreements',
+          description: 'You must agree to all the terms to continue.',
+          variant: 'destructive'
+        });
+        return;
+      }
       
       // Only submit if we've made changes since last step
       const now = Date.now();
@@ -1060,6 +1046,10 @@ const IntimateSuccess = () => {
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
+          disabled={!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || 
+                   !formData.respectAgreement || !formData.contentAgreement || !formData.nonJudgmentalAgreement || 
+                   !formData.participateAgreement || !formData.sensitiveTopicsAgreement || !formData.anonymityAgreement || 
+                   !formData.liabilityAgreement || !formData.explicitLanguageAgreement || !formData.additionalGuidelinesAgreement}
         >
           Next <ArrowRight className="ml-2 h-4 w-4" />
         </button>
