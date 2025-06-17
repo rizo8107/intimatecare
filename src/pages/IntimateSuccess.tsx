@@ -706,7 +706,31 @@ const IntimateSuccess = () => {
         return;
       }
       
-      // Submit form data to the webhook after completing step 1
+      // Automatically set all agreement fields to true
+      const updatedFormData = {
+        ...formData,
+        hookupAgreement: true,
+        privacyAgreement: true,
+        participationAgreement: true,
+        respectAgreement: true,
+        contentAgreement: true,
+        nonJudgmentalAgreement: true,
+        participateAgreement: true,
+        sensitiveTopicsAgreement: true,
+        anonymityAgreement: true,
+        liabilityAgreement: true,
+        explicitLanguageAgreement: true,
+        additionalGuidelinesAgreement: true,
+        privacySettingsAgreement: true,
+        impliedSignatureAgreement: true,
+        groupGuidelinesAgreement: true,
+        guidelineReviewAgreement: true
+      };
+      
+      // Update form data with all agreements set to true
+      setFormData(updatedFormData);
+      
+      // Submit updated form data to the webhook after completing step 1
       await submitFormToWebhook();
       
       // Go to next step
@@ -714,15 +738,7 @@ const IntimateSuccess = () => {
     } 
     // Step 2: Terms and conditions
     else if (currentStep === 1) {
-      if (!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || 
-          !formData.respectAgreement || !formData.contentAgreement) {
-        toast({
-          title: 'Missing agreements',
-          description: 'You must agree to all the terms to continue.',
-          variant: 'destructive'
-        });
-        return;
-      }
+      // All agreements are automatically set to true, so no validation needed
       
       // Only submit if we've made changes since last step
       const now = Date.now();
@@ -926,10 +942,94 @@ const IntimateSuccess = () => {
                 <span className="font-medium">5. Content Restrictions:</span> Group content should contribute positively and be relevant to our discussions on intimacy. Sharing of memes, jokes, or pornographic materials is strictly prohibited to maintain the group's focus on constructive dialogue.
               </label>
             </div>
+            
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="nonJudgmentalAgreement"
+                name="nonJudgmentalAgreement"
+                checked={formData.nonJudgmentalAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="nonJudgmentalAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">6. Non-Judgmental Environment:</span> It is essential to create an environment where members feel safe to share openly without fear of judgment. Shaming, finger-pointing, or making judgmental comments is strictly prohibited.
+              </label>
+            </div>
+            
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="participateAgreement"
+                name="participateAgreement"
+                checked={formData.participateAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="participateAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">7. Active Participation:</span> Active involvement from all members enriches our group dynamics. Prolonged inactivity may result in membership revocation to ensure an engaged community.
+              </label>
+            </div>
+            
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="sensitiveTopicsAgreement"
+                name="sensitiveTopicsAgreement"
+                checked={formData.sensitiveTopicsAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="sensitiveTopicsAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">8. Sensitive Topics:</span> Discussions on sensitive subjects must be approached with sensitivity and appropriate language to respect the diversity of perspectives among members.
+              </label>
+            </div>
+            
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="anonymityAgreement"
+                name="anonymityAgreement"
+                checked={formData.anonymityAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="anonymityAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">9. Anonymity Protection:</span> Protecting members' identities is crucial. Revealing any member's identity without explicit consent is a serious violation of privacy and will not be tolerated.
+              </label>
+            </div>
+            
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="liabilityAgreement"
+                name="liabilityAgreement"
+                checked={formData.liabilityAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="liabilityAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">10. Liability Disclaimer:</span> The Company and the influencers affiliated with this group shall not be held liable for the actions of any User. Although the Company provides a platform for discussion and the influencers offer guidance, they bear no responsibility for individual user actions or behaviours in any way.
+              </label>
+            </div>
+            
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="explicitLanguageAgreement"
+                name="explicitLanguageAgreement"
+                checked={formData.explicitLanguageAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="explicitLanguageAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">11. Explicit Language Prohibition:</span> The use of sexually explicit language or any content that could trigger sexually inappropriate reactions is strictly forbidden within the group. Such actions may constitute criminal offenses under the Indian Penal Code (IPC), and offenders will be subject to legal prosecution and appropriate punishment as per the law.
+              </label>
+            </div>
           </div>
         </div>
         
-        <div className="flex items-start">
+        <div className="flex items-start mt-4">
           <input
             type="checkbox"
             id="additionalGuidelinesAgreement"
@@ -939,7 +1039,12 @@ const IntimateSuccess = () => {
             className="mt-1 mr-3"
           />
           <label htmlFor="additionalGuidelinesAgreement" className="text-sm text-gray-700">
-            <span className="font-medium">Additional Guidelines:</span> I have read and agree to all additional guidelines, including the private messaging policy, legal action for harassment, limitation of liability, prohibition of sexually triggering language, and moderation and termination/refund policy.
+            <span className="font-medium">Additional Guidelines:</span> I have read and agree to all additional guidelines, including the following:
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li>Private Messaging Policy: Private messaging or 'DM' of other members without their explicit permission is not allowed. Members wishing to send private messages must seek permission in a transparent manner within the group.</li>
+              <li>Legal Action for Harassment: Should any member face harassment within the group, and upon thorough investigation, if the allegations are found to be true, the company will take legal action under the applicable laws.</li>
+              <li>Limitation of Liability: Neither the Company nor the influencers associated with this group shall be held liable for the actions of any User.</li>
+            </ul>
           </label>
         </div>
       </div>
@@ -955,7 +1060,6 @@ const IntimateSuccess = () => {
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
-          disabled={!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || !formData.respectAgreement || !formData.contentAgreement || !formData.additionalGuidelinesAgreement}
         >
           Next <ArrowRight className="ml-2 h-4 w-4" />
         </button>
