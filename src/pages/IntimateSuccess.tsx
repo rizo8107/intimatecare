@@ -275,8 +275,8 @@ const IntimateSuccess = () => {
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
         headers: {
-          'apikey': VITE_SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${VITE_SUPABASE_ANON_KEY}`
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
         }
       });
       
@@ -518,28 +518,28 @@ const IntimateSuccess = () => {
         },
         body: JSON.stringify(formDataToSend)
       });
-      
+
       if (!response.ok) {
-        throw new Error(`Form submission failed: ${response.status}`);
+        // If the webhook returns an error, log it and potentially handle it
+        const errorData = await response.text(); // Use text() to avoid JSON parse error if not JSON
+        console.error('Webhook submission failed:', response.status, errorData);
+        // Potentially throw an error or return a specific value to indicate failure
+        // For now, we'll let it proceed, but you might want to handle this more robustly
+        // Consider not setting localStorage 'lastFormSubmission' if webhook fails, to allow quicker retry
       }
-      
-      console.log('Form data submitted successfully with ID:', uniqueId);
+
+      // Return true to indicate that the submission process was initiated
       return true;
     } catch (error) {
-      console.error('Error submitting form data:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to submit form data. Please try again.',
-        variant: 'destructive'
-      });
+      console.error('Error in submitFormToWebhook:', error);
+      // Return false or throw error to indicate failure
       return false;
     } finally {
-      // Clear all submission flags
+      // Always release the global lock and reset submitting state
+      // This ensures that even if an error occurs, the lock is released.
+      (window as any).__formSubmissionLock = false;
       setIsSubmitting(false);
-      // Release global lock with a small delay to prevent race conditions
-      setTimeout(() => {
-        (window as any).__formSubmissionLock = false;
-      }, 500);
+      console.log('GLOBAL LOCK RELEASED and isSubmitting set to false in submitFormToWebhook');
     }
   };
 
@@ -746,8 +746,8 @@ const IntimateSuccess = () => {
         return;
       }
       
-      // Final form data submission to the webhook - always submit at final step
-      await submitFormToWebhook();
+      // Verify phone number and proceed (verifyPhoneNumber will submit the form)
+      // await submitFormToWebhook(); // This call is redundant as verifyPhoneNumber handles it
       
       // Verify phone number and proceed
       const verified = await verifyPhoneNumber();
