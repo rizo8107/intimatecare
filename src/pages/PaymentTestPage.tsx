@@ -35,6 +35,7 @@ const PaymentTestPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentOutcome, setPaymentOutcome] = useState<any | null>(null); // To store result.paymentDetails
   const [paymentError, setPaymentError] = useState<any | null>(null);   // To store result.error
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);   // New state for checking status
   // No longer need paymentHtml state as we'll invoke SDK directly
 
   const generateOrderId = () => {
@@ -188,6 +189,64 @@ const PaymentTestPage: React.FC = () => {
     setIsLoading(false);
   };
 
+  const handleCheckStatus = async () => {
+    if (!paymentOutcome?.order_id) {
+      toast({
+        title: 'Error',
+        description: 'Order ID not found to check status.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsCheckingStatus(true);
+    setPaymentError(null);
+
+    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook-test/verify';
+    const username = 'nirmal@lifedemy.in'; // Same credentials as before
+    const password = 'Life@123';
+
+    try {
+      const response = await fetch(verifyWebhookUrl, {
+        method: 'POST', // Assuming POST with JSON body
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(`${username}:${password}`),
+        },
+        body: JSON.stringify({ order_id: paymentOutcome.order_id }),
+      });
+
+      if (response.ok) {
+        const statusData = await response.json();
+        // Assuming statusData is the new paymentOutcome object or has a similar structure
+        // If the structure from /verify is different, this might need adjustment
+        setPaymentOutcome(statusData); 
+        toast({
+          title: 'Status Updated',
+          description: `Payment status for order ${statusData.order_id} is now ${statusData.order_status}.`,
+          variant: 'default',
+        });
+      } else {
+        const errorText = await response.text();
+        setPaymentError(`Failed to verify payment status. Server responded with ${response.status}. ${errorText}`);
+        toast({
+          title: 'Verification Error',
+          description: `Could not verify payment status. ${errorText}`,
+          variant: 'destructive',
+        });
+      }
+    } catch (error: any) {
+      console.error('Check status fetch error:', error);
+      setPaymentError(`Error checking payment status: ${error.message}`);
+      toast({
+        title: 'Network Error',
+        description: 'Could not connect to verify payment status.',
+        variant: 'destructive',
+      });
+    }
+    setIsCheckingStatus(false);
+  };
+
   return (
     <div className="container mx-auto p-4 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6 text-center">Payment Testing Page (Hidden)</h1>
@@ -249,6 +308,11 @@ const PaymentTestPage: React.FC = () => {
           <p className="text-sm"><strong>Message:</strong> {paymentOutcome.paymentMessage || 'No specific message.'}</p>
           <p className="text-sm"><strong>Amount:</strong> {paymentOutcome.order_amount} {paymentOutcome.order_currency}</p>
           <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'N/A'}</p>
+          {(paymentOutcome.paymentMessage === 'Payment finished. Check status.' || paymentOutcome.order_status === 'PENDING') && (
+            <Button onClick={handleCheckStatus} disabled={isCheckingStatus} className="mt-4">
+              {isCheckingStatus ? 'Checking...' : 'Check Payment Status'}
+            </Button>
+          )}
         </div>
       )}
     </div>
