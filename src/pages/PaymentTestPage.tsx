@@ -33,8 +33,8 @@ const PaymentTestPage: React.FC = () => {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [orderStatus, setOrderStatus] = useState<string | null>(null);
-  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null); // To store the order_id for status check
+  const [paymentOutcome, setPaymentOutcome] = useState<any | null>(null); // To store result.paymentDetails
+  const [paymentError, setPaymentError] = useState<any | null>(null);   // To store result.error
   // No longer need paymentHtml state as we'll invoke SDK directly
 
   const generateOrderId = () => {
@@ -54,8 +54,6 @@ const PaymentTestPage: React.FC = () => {
     setIsLoading(true);
     setPaymentHtml(null);
     const order_id = generateOrderId();
-    setCurrentOrderId(order_id); // Store the generated order_id
-    setOrderStatus(null); // Reset status on new attempt
     const customer_id = `${customerName.replace(/\s+/g, '_')}_${order_id}`;
 
     const payload = {
@@ -107,34 +105,45 @@ const PaymentTestPage: React.FC = () => {
                 redirectTarget: "_modal", // This ensures it opens as a modal
               };
               cashfree.checkout(checkoutOptions).then((result: any) => {
+                setPaymentOutcome(null); // Clear previous outcome
+                setPaymentError(null);   // Clear previous error
+
                 if (result.error) {
-                  console.error("Cashfree payment error:", result.error);
+                  console.error("Cashfree payment error or user closed modal:", result.error);
+                  setPaymentError(result.error);
                   toast({
-                    title: 'Payment Error',
-                    description: result.error.message || 'An error occurred during payment.',
-                    variant: 'destructive',
+                    title: result.error.message ? 'Payment Error' : 'Payment Incomplete',
+                    description: result.error.message || 'User closed the payment modal or an error occurred.',
+                    variant: 'default', // Changed from 'warning' to 'default'
                   });
                 }
                 if (result.redirect) {
+                  // This typically means the SDK couldn't open the modal and had to redirect the whole page.
+                  // We might not get further JS execution here if the page redirects away.
                   console.log("Cashfree payment will be redirected (inAppBrowser scenario).");
                 }
                 if (result.paymentDetails) {
-                  console.log("Cashfree payment completed:", result.paymentDetails);
-                  toast({
-                    title: 'Payment Complete',
-                    description: result.paymentDetails.paymentMessage || 'Payment processed.',
-                  });
-                  // Handle successful payment (e.g., navigate to a success page, update order status)
-                  if (result.paymentDetails.orderId) {
-                    checkOrderStatus(result.paymentDetails.orderId); // Use orderId from Cashfree's response
-                  } else if (currentOrderId) {
-                    checkOrderStatus(currentOrderId); // Fallback to initially generated orderId
+                  console.log("Cashfree payment details received:", result.paymentDetails);
+                  setPaymentOutcome(result.paymentDetails);
+                  const status = result.paymentDetails.order_status || 'UNKNOWN';
+                  let toastVariant: 'default' | 'destructive' = 'default'; // Removed 'warning' from type
+                  let toastTitle = `Payment Status: ${status}`;
+
+                  if (status === 'PAID') {
+                    toastVariant = 'default';
+                  } else if (status === 'FAILED' || status === 'USER_DROPPED' || status === 'CANCELLED') {
+                    toastVariant = 'destructive';
+                  } else { // For PENDING, UNKNOWN, etc.
+                    toastVariant = 'default'; // Use 'default' for non-critical, non-success statuses
+                    toastTitle = `Payment ${status.toLowerCase()}`; // e.g., Payment pending
                   }
-                }
-                // If user closes modal or there's an error without paymentDetails
-                if (result.error && currentOrderId) {
-                  // Check status even if user closes, as payment might be pending or even successful via other means
-                  checkOrderStatus(currentOrderId);
+                  toast({
+                    title: toastTitle,
+                    description: result.paymentDetails.paymentMessage || `Order ID: ${result.paymentDetails.order_id}`,
+                    variant: toastVariant,
+                  });
+                  // You can add further logic here based on order_status,
+                  // e.g., redirecting to a success/failure page.
                 }
               });
             } else {
@@ -187,45 +196,6 @@ const PaymentTestPage: React.FC = () => {
     setIsLoading(false);
   };
 
-  const checkOrderStatus = async (orderIdToCheck: string) => {
-    if (!orderIdToCheck) return;
-    setIsLoading(true); // Can use a different loading state for status check if needed
-    try {
-      // IMPORTANT: This is a HYPOTHETICAL backend endpoint YOU NEED TO CREATE.
-      // It should securely call Cashfree's Get Order Status API.
-      const statusResponse = await fetch(`https://backend-n8n.7za6uc.easypanel.host/webhook-test/check-cashfree-order-status?order_id=${orderIdToCheck}`, {
-        method: 'GET',
-        // Add any necessary headers for your backend endpoint, e.g., auth if you secure it
-      });
-      if (statusResponse.ok) {
-        const statusData = await statusResponse.json(); // Expecting { "orderStatus": "Success" | "Pending" | "Failure" }
-        setOrderStatus(statusData.orderStatus || 'Status unclear');
-        toast({
-          title: 'Order Status Fetched',
-          description: `Payment status: ${statusData.orderStatus}`,
-        });
-      } else {
-        const errorText = await statusResponse.text();
-        console.error('Error fetching order status from backend:', statusResponse.status, errorText);
-        setOrderStatus('Failed to fetch status');
-        toast({
-          title: 'Status Check Error',
-          description: `Could not fetch order status from backend. ${errorText}`,
-          variant: 'destructive',
-        });
-      }
-    } catch (error: any) {
-      console.error('Error in checkOrderStatus:', error);
-      setOrderStatus('Error checking status');
-      toast({
-        title: 'Status Check Failed',
-        description: error.message || 'An error occurred while checking payment status.',
-        variant: 'destructive',
-      });
-    }
-    setIsLoading(false);
-  };
-
   return (
     <div className="container mx-auto p-4 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6 text-center">Payment Testing Page (Hidden)</h1>
@@ -270,16 +240,25 @@ const PaymentTestPage: React.FC = () => {
         </Button>
       </div>
 
-      {orderStatus && (
-        <div className="mt-6 p-4 border rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">Payment Status:</h3>
-          <p className={`text-xl ${orderStatus === 'Success' ? 'text-green-600' : orderStatus === 'Pending' ? 'text-yellow-600' : 'text-red-600'}`}>
-            {orderStatus}
-          </p>
+      {paymentError && (
+        <div className="mt-6 p-4 border rounded-lg shadow-sm bg-red-50 border-red-200">
+          <h3 className="text-lg font-semibold text-red-700 mb-2">Payment Error/Cancelled</h3>
+          <p className="text-sm text-red-600"><strong>Code:</strong> {paymentError.code}</p>
+          <p className="text-sm text-red-600"><strong>Message:</strong> {paymentError.message || 'User may have closed the payment window.'}</p>
         </div>
       )}
 
-      {/* iframe is no longer needed as payment will be a direct modal popup */}
+      {paymentOutcome && (
+        <div className="mt-6 p-4 border rounded-lg shadow-sm bg-green-50 border-green-200">
+          <h3 className="text-lg font-semibold text-green-700 mb-2">Payment Outcome</h3>
+          <p className="text-sm"><strong>Order ID:</strong> {paymentOutcome.order_id}</p>
+          <p className="text-sm"><strong>Status:</strong> <span className={`font-semibold ${paymentOutcome.order_status === 'PAID' ? 'text-green-600' : 'text-orange-600'}`}>{paymentOutcome.order_status}</span></p>
+          <p className="text-sm"><strong>Cashfree Payment ID:</strong> {paymentOutcome.cf_payment_id}</p>
+          <p className="text-sm"><strong>Message:</strong> {paymentOutcome.paymentMessage || 'No specific message.'}</p>
+          <p className="text-sm"><strong>Amount:</strong> {paymentOutcome.order_amount} {paymentOutcome.order_currency}</p>
+          <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'N/A'}</p>
+        </div>
+      )}
     </div>
   );
 };
