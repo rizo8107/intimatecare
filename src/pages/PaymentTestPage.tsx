@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,22 +21,28 @@ const loadCashfreeSDK = (): Promise<void> => {
   });
 };
 
-
+// Declare global window interface for Cashfree
 declare global {
   interface Window {
     Cashfree: any; // Or a more specific type if available
   }
 }
 
-const PaymentTestPage: React.FC = () => {
+function PaymentTestPage() {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [paymentOutcome, setPaymentOutcome] = useState<any | null>(null); // To store result.paymentDetails
   const [paymentError, setPaymentError] = useState<any | null>(null);   // To store result.error
-  const [isCheckingStatus, setIsCheckingStatus] = useState(false);   // New state for checking status
-  // No longer need paymentHtml state as we'll invoke SDK directly
+  const [storedCfOrderId, setStoredCfOrderId] = useState<string | null>(null); // State for cf_order_id from initial webhook
+  const [isPollingStatus, setIsPollingStatus] = useState(false); // Indicates if auto-polling is active
+  const pollingTimeoutIdRef = useRef<NodeJS.Timeout | null>(null); // Using ref for timeout ID
+  const pollingActiveRef = useRef(false); // Ref to control polling loop
+
+  const POLLING_INTERVAL = 5000; // 5 seconds
+  const MAX_POLLING_ATTEMPTS = 12; // For 1 minute (12 * 5s = 60s)
+  const FINAL_PAYMENT_STATUSES = ['PAID', 'FAILED', 'EXPIRED', 'CANCELLED', 'USER_DROPPED', 'VOID', 'ERROR', 'SUCCESS']; // SUCCESS from SDK can be final
 
   const generateOrderId = () => {
     return `ORDER_${Date.now()}_${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
@@ -64,9 +70,12 @@ const PaymentTestPage: React.FC = () => {
       customer_email: customerEmail,
     };
 
-    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook-test/studentpay';
+    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/studentpay';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
+
+    // This variable will hold the order ID and be accessible in the .then() callback, avoiding stale state.
+    let cfOrderIdFromWebhook: string | null = null;
 
     try {
       const response = await fetch(webhookUrl, {
@@ -79,16 +88,26 @@ const PaymentTestPage: React.FC = () => {
       });
 
       if (response.ok) {
-        const responseData = await response.json(); // Webhook might return an array or an object
+        const responseData = await response.json();
         let paymentSessionIdFromWebhook: string | null = null;
 
-        if (Array.isArray(responseData) && responseData.length > 0) {
-          // If it's an array, take the payment_session_id from the first object
-          if (responseData[0] && responseData[0].payment_session_id) {
-            paymentSessionIdFromWebhook = responseData[0].payment_session_id;
+        if (Array.isArray(responseData) && responseData.length > 0 && responseData[0].payment_session_id) {
+          paymentSessionIdFromWebhook = responseData[0].payment_session_id;
+          cfOrderIdFromWebhook = responseData[0].cf_order_id; // Assign to the higher-scoped variable
+
+          if (cfOrderIdFromWebhook) {
+            setStoredCfOrderId(cfOrderIdFromWebhook); // Set state for UI display purposes
+          } else {
+            console.error("cf_order_id not found in initial webhook response");
+            toast({
+              title: 'Webhook Error',
+              description: 'Critical: cf_order_id missing from initial payment setup response.',
+              variant: 'destructive',
+            });
+            setIsLoading(false);
+            return;
           }
         } else if (responseData && responseData.payment_session_id) {
-          // If it's a direct object (less likely based on your sample, but good to check)
           paymentSessionIdFromWebhook = responseData.payment_session_id;
         }
 
@@ -97,53 +116,23 @@ const PaymentTestPage: React.FC = () => {
           try {
             await loadCashfreeSDK();
             if (window.Cashfree) {
-              const cashfree = window.Cashfree({
-                mode: "production", // IMPORTANT: Change to "sandbox" if using test/sandbox session IDs
-              });
+              const cashfree = window.Cashfree({ mode: "sandbox" });
               const checkoutOptions = {
                 paymentSessionId: paymentSessionId,
-                redirectTarget: "_modal", // This ensures it opens as a modal
+                redirectTarget: "_modal",
               };
               cashfree.checkout(checkoutOptions).then((result: any) => {
-                setPaymentOutcome(null); // Clear previous outcome
-                setPaymentError(null);   // Clear previous error
+                setIsLoading(false); // Set loading to false only after modal closes
+                console.log('Cashfree SDK onSuccess FULL result:', JSON.stringify(result, null, 2));
 
-                if (result.error) {
-                  console.error("Cashfree payment error or user closed modal:", result.error);
-                  setPaymentError(result.error);
-                  toast({
-                    title: result.error.message ? 'Payment Error' : 'Payment Incomplete',
-                    description: result.error.message || 'User closed the payment modal or an error occurred.',
-                    variant: 'default', // Changed from 'warning' to 'default'
-                  });
-                }
-                if (result.redirect) {
-                  // This typically means the SDK couldn't open the modal and had to redirect the whole page.
-                  // We might not get further JS execution here if the page redirects away.
-                  console.log("Cashfree payment will be redirected (inAppBrowser scenario).");
-                }
-                if (result.paymentDetails) {
-                  console.log("Cashfree payment details received:", result.paymentDetails);
-                  setPaymentOutcome(result.paymentDetails);
-                  const status = result.paymentDetails.order_status || 'UNKNOWN';
-                  let toastVariant: 'default' | 'destructive' = 'default'; // Removed 'warning' from type
-                  let toastTitle = `Payment Status: ${status}`;
-
-                  if (status === 'PAID') {
-                    toastVariant = 'default';
-                  } else if (status === 'FAILED' || status === 'USER_DROPPED' || status === 'CANCELLED') {
-                    toastVariant = 'destructive';
-                  } else { // For PENDING, UNKNOWN, etc.
-                    toastVariant = 'default'; // Use 'default' for non-critical, non-success statuses
-                    toastTitle = `Payment ${status.toLowerCase()}`; // e.g., Payment pending
-                  }
-                  toast({
-                    title: toastTitle,
-                    description: result.paymentDetails.paymentMessage || `Order ID: ${result.paymentDetails.order_id}`,
-                    variant: toastVariant,
-                  });
-                  // You can add further logic here based on order_status,
-                  // e.g., redirecting to a success/failure page.
+                // Use the local variable `cfOrderIdFromWebhook` to avoid stale state from closure
+                if (cfOrderIdFromWebhook) {
+                  console.log('Cashfree modal closed. Starting polling with cfOrderIdFromWebhook:', cfOrderIdFromWebhook);
+                  toast({ title: 'Verifying Payment', description: 'Payment modal closed. Checking status...', variant: 'default' });
+                  startPaymentStatusPolling(cfOrderIdFromWebhook);
+                } else {
+                  console.error('CRITICAL: Cannot poll for status because cfOrderIdFromWebhook is missing after modal close.');
+                  toast({ title: 'Error', description: 'Payment outcome unclear and no Order ID to verify.', variant: 'destructive' });
                 }
               });
             } else {
@@ -151,11 +140,8 @@ const PaymentTestPage: React.FC = () => {
             }
           } catch (sdkError: any) {
             console.error("Cashfree SDK or checkout error:", sdkError);
-            toast({
-              title: 'SDK Error',
-              description: sdkError.message || 'Could not initialize payment.',
-              variant: 'destructive',
-            });
+            toast({ title: 'SDK Error', description: sdkError.message || 'Could not initialize payment.', variant: 'destructive' });
+            setIsLoading(false); // Also set loading false on SDK error
           }
         } else {
           let errorDescription = 'The webhook did not return a valid payment_session_id.';
@@ -168,6 +154,7 @@ const PaymentTestPage: React.FC = () => {
             description: errorDescription,
             variant: 'destructive',
           });
+          setIsLoading(false);
         }
       } else {
         const errorText = await response.text();
@@ -177,6 +164,7 @@ const PaymentTestPage: React.FC = () => {
           description: `Failed to fetch payment page. Status: ${response.status}. ${errorText}`,
           variant: 'destructive',
         });
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Network or other error:', error);
@@ -185,67 +173,114 @@ const PaymentTestPage: React.FC = () => {
         description: 'An error occurred while contacting the webhook.',
         variant: 'destructive',
       });
+      setIsLoading(false);
     }
-    setIsLoading(false);
+    // DO NOT set isLoading to false here, as the modal is still open. It's handled in the .then() and catch blocks.
   };
 
-  const handleCheckStatus = async () => {
-    if (!paymentOutcome?.order_id) {
-      toast({
-        title: 'Error',
-        description: 'Order ID not found to check status.',
-        variant: 'destructive',
-      });
-      return;
+  const pollForPaymentStatus = async (currentCfOrderId: string, attempt: number) => {
+    // Use the ref to check if polling should continue.
+    if (!pollingActiveRef.current) {
+        console.log('Polling was stopped externally or component unmounted.');
+        if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
+        return;
     }
 
-    setIsCheckingStatus(true);
-    setPaymentError(null);
+    console.log(`Polling for order ${currentCfOrderId}, attempt ${attempt + 1}`);
+    setPaymentError(null); // Clear previous errors
 
-    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook-test/verify';
-    const username = 'nirmal@lifedemy.in'; // Same credentials as before
+    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/verify';
+    const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 
     try {
       const response = await fetch(verifyWebhookUrl, {
-        method: 'POST', // Assuming POST with JSON body
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Basic ' + btoa(`${username}:${password}`),
         },
-        body: JSON.stringify({ order_id: paymentOutcome.order_id }),
+        body: JSON.stringify({ order_id: currentCfOrderId }),
       });
 
       if (response.ok) {
         const statusData = await response.json();
-        // Assuming statusData is the new paymentOutcome object or has a similar structure
-        // If the structure from /verify is different, this might need adjustment
-        setPaymentOutcome(statusData); 
-        toast({
-          title: 'Status Updated',
-          description: `Payment status for order ${statusData.order_id} is now ${statusData.order_status}.`,
-          variant: 'default',
-        });
+        setPaymentOutcome(statusData); // Update with the latest status
+
+        // CORRECTED: Check 'payment_status' from the webhook response, not 'order_status'
+        if (FINAL_PAYMENT_STATUSES.includes(statusData.payment_status) || attempt + 1 >= MAX_POLLING_ATTEMPTS) {
+          // Stop polling
+          pollingActiveRef.current = false;
+          setIsPollingStatus(false);
+          if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
+          
+          toast({
+            title: 'Payment Status Finalized',
+            description: `Order ${statusData.order_id}: ${statusData.payment_status}. ${statusData.payment_message || ''}`,
+            variant: statusData.payment_status === 'PAID' || statusData.payment_status === 'SUCCESS' ? 'default' : 'destructive',
+          });
+        } else {
+          // Schedule next poll only if polling is still active
+          if(pollingActiveRef.current) {
+            pollingTimeoutIdRef.current = setTimeout(() => pollForPaymentStatus(currentCfOrderId, attempt + 1), POLLING_INTERVAL);
+          }
+        }
       } else {
         const errorText = await response.text();
-        setPaymentError(`Failed to verify payment status. Server responded with ${response.status}. ${errorText}`);
-        toast({
-          title: 'Verification Error',
-          description: `Could not verify payment status. ${errorText}`,
-          variant: 'destructive',
-        });
+        setPaymentError(`Polling error: ${response.status}. ${errorText}`);
+        // Stop polling
+        pollingActiveRef.current = false;
+        setIsPollingStatus(false);
+        if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
+        toast({ title: 'Polling Error', description: `Could not verify status: ${errorText}`, variant: 'destructive' });
       }
     } catch (error: any) {
-      console.error('Check status fetch error:', error);
-      setPaymentError(`Error checking payment status: ${error.message}`);
-      toast({
-        title: 'Network Error',
-        description: 'Could not connect to verify payment status.',
-        variant: 'destructive',
-      });
+      console.error('Polling fetch error:', error);
+      setPaymentError(`Polling network error: ${error.message}`);
+      // Stop polling
+      pollingActiveRef.current = false;
+      setIsPollingStatus(false);
+      if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
+      toast({ title: 'Polling Network Error', description: 'Connection failed while checking status.', variant: 'destructive' });
     }
-    setIsCheckingStatus(false);
   };
+
+  const startPaymentStatusPolling = (cfOrderIdToPoll: string) => {
+    if (pollingActiveRef.current) {
+      console.log('Polling already in progress for:', cfOrderIdToPoll);
+      return; 
+    }
+    console.log('Starting payment status polling for order:', cfOrderIdToPoll);
+    
+    // Set ref and state to start polling
+    pollingActiveRef.current = true;
+    setIsPollingStatus(true);
+    
+    if (pollingTimeoutIdRef.current) {
+      clearTimeout(pollingTimeoutIdRef.current); // Clear any existing timeout just in case
+    }
+    pollForPaymentStatus(cfOrderIdToPoll, 0); // Start the first poll immediately
+  };
+
+  // Manual check status function, can be triggered by button if polling is not active or failed
+  const handleManualCheckStatus = () => {
+    if (storedCfOrderId) {
+      startPaymentStatusPolling(storedCfOrderId);
+    } else {
+      toast({ title: 'Error', description: 'Cashfree Order ID not found to check status.', variant: 'destructive'});
+    }
+  };
+
+  useEffect(() => {
+    // Cleanup polling on component unmount
+    return () => {
+      pollingActiveRef.current = false; // Signal polling to stop
+      if (pollingTimeoutIdRef.current) {
+        clearTimeout(pollingTimeoutIdRef.current);
+      }
+      console.log('PaymentTestPage unmounted, ensuring polling is stopped.');
+    };
+  }, []); // Empty dependency array means this runs once on mount and cleanup on unmount.
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
@@ -303,20 +338,26 @@ const PaymentTestPage: React.FC = () => {
         <div className="mt-6 p-4 border rounded-lg shadow-sm bg-green-50 border-green-200">
           <h3 className="text-lg font-semibold text-green-700 mb-2">Payment Outcome</h3>
           <p className="text-sm"><strong>Order ID:</strong> {paymentOutcome.order_id}</p>
-          <p className="text-sm"><strong>Status:</strong> <span className={`font-semibold ${paymentOutcome.order_status === 'PAID' ? 'text-green-600' : 'text-orange-600'}`}>{paymentOutcome.order_status}</span></p>
+          <p className="text-sm"><strong>Status:</strong> <span className={`font-semibold ${paymentOutcome.payment_status === 'PAID' || paymentOutcome.payment_status === 'SUCCESS' ? 'text-green-600' : 'text-orange-600'}`}>{paymentOutcome.payment_status}</span></p>
           <p className="text-sm"><strong>Cashfree Payment ID:</strong> {paymentOutcome.cf_payment_id}</p>
-          <p className="text-sm"><strong>Message:</strong> {paymentOutcome.paymentMessage || 'No specific message.'}</p>
+          <p className="text-sm"><strong>Message:</strong> {paymentOutcome.payment_message || 'No specific message.'}</p>
           <p className="text-sm"><strong>Amount:</strong> {paymentOutcome.order_amount} {paymentOutcome.order_currency}</p>
           <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'N/A'}</p>
-          {(paymentOutcome.paymentMessage === 'Payment finished. Check status.' || paymentOutcome.order_status === 'PENDING') && (
-            <Button onClick={handleCheckStatus} disabled={isCheckingStatus} className="mt-4">
-              {isCheckingStatus ? 'Checking...' : 'Check Payment Status'}
+          {isPollingStatus && (
+            <p className="mt-4 text-sm text-blue-600 animate-pulse">Verifying payment status, please wait...</p>
+          )}
+          {/* Show manual check button if not polling AND status is still ambiguous and not final */}
+          {!isPollingStatus && paymentOutcome && 
+           (paymentOutcome.payment_message === 'Payment finished. Check status.' || (paymentOutcome.payment_status && paymentOutcome.payment_status === 'PENDING')) && 
+           (!paymentOutcome.payment_status || !FINAL_PAYMENT_STATUSES.includes(paymentOutcome.payment_status)) && (
+            <Button onClick={handleManualCheckStatus} disabled={isPollingStatus} className="mt-4">
+              {isPollingStatus ? 'Checking...' : 'Check Payment Status Manually'}
             </Button>
           )}
         </div>
       )}
     </div>
   );
-};
+}
 
 export default PaymentTestPage;
