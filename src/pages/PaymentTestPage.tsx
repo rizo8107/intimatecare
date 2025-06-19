@@ -52,7 +52,6 @@ const PaymentTestPage: React.FC = () => {
     }
 
     setIsLoading(true);
-    setPaymentHtml(null);
     const order_id = generateOrderId();
     const customer_id = `${customerName.replace(/\s+/g, '_')}_${order_id}`;
 
@@ -183,13 +182,6 @@ const PaymentTestPage: React.FC = () => {
       toast({
         title: 'Request Error',
         description: 'An error occurred while contacting the webhook.',
-        variant: 'destructive',
-      }
-    } catch (fetchError: any) {
-      console.error('Webhook fetch error:', fetchError);
-      toast({
-        title: 'Webhook Request Error',
-        description: fetchError.message || 'Could not fetch payment session from webhook.',
         variant: 'destructive',
       });
     }
