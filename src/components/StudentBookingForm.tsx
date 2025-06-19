@@ -3,36 +3,48 @@ import { toast } from '@/hooks/use-toast';
 
 interface FormData {
   name: string;
+  gender: string;
   email: string;
   phone: string;
   college: string;
-  course: string;
-  year: string;
+  courseAndYear: string;
   location: string;
-  idCard: File | null; // Added ID Card
+  idCard: File | null;
   preferredDate: string;
   preferredTime: string;
-  concerns: string;
+  bringsToSession: string;
+  hopesToGain: string;
+  specificTopics: string;
+  spokenToSomeone: string;
+  lookingFor: string;
+  anythingElse: string;
+  joinWhatsappChannel: string;
 }
 
 const StudentBookingForm = () => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
+    gender: '',
     email: '',
     phone: '',
     college: '',
-    course: '',
-    year: '',
+    courseAndYear: '',
     location: '',
-    idCard: null, // Added ID Card
+    idCard: null,
     preferredDate: '',
     preferredTime: '',
-    concerns: ''
+    bringsToSession: '',
+    hopesToGain: '',
+    specificTopics: '',
+    spokenToSomeone: '',
+    lookingFor: '',
+    anythingElse: '',
+    joinWhatsappChannel: '',
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStep, setFormStep] = useState(1);
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     if (type === 'file') {
@@ -42,9 +54,9 @@ const StudentBookingForm = () => {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
-  
+
   const validateStep1 = () => {
-    if (!formData.name || !formData.email || !formData.phone) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.gender) {
       toast({
         title: "Required fields missing",
         description: "Please fill in all required fields.",
@@ -52,19 +64,17 @@ const StudentBookingForm = () => {
       });
       return false;
     }
-    
-    // Basic email validation
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast({
-        title: "Invalid email",
+        title: "Invalid email address",
         description: "Please enter a valid email address.",
         variant: "destructive"
       });
       return false;
     }
-    
-    // Basic phone validation (10 digits)
+
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(formData.phone)) {
       toast({
@@ -74,12 +84,11 @@ const StudentBookingForm = () => {
       });
       return false;
     }
-    
     return true;
   };
-  
+
   const validateStep2 = () => {
-    if (!formData.college || !formData.course || !formData.year || !formData.location) {
+    if (!formData.college || !formData.courseAndYear || !formData.location) {
       toast({
         title: "Required fields missing",
         description: "Please fill in all required fields for student information.",
@@ -97,7 +106,19 @@ const StudentBookingForm = () => {
     }
     return true;
   };
-  
+
+  const validateStep3 = () => {
+    if (!formData.preferredDate || !formData.preferredTime || !formData.bringsToSession || !formData.hopesToGain || !formData.specificTopics || !formData.spokenToSomeone || !formData.lookingFor || !formData.joinWhatsappChannel) {
+      toast({
+        title: "Required fields missing",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    return true;
+  };
+
   const nextStep = () => {
     if (formStep === 1 && validateStep1()) {
       setFormStep(2);
@@ -105,25 +126,20 @@ const StudentBookingForm = () => {
       setFormStep(3);
     }
   };
-  
+
   const prevStep = () => {
     setFormStep(formStep - 1);
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.preferredDate || !formData.preferredTime) {
-      toast({
-        title: "Required fields missing",
-        description: "Please select your preferred date and time.",
-        variant: "destructive"
-      });
+
+    if (!validateStep3()) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const submissionData = new FormData();
       Object.keys(formData).forEach(key => {
@@ -137,45 +153,47 @@ const StudentBookingForm = () => {
         }
       });
       submissionData.append('sessionType', 'Student Special');
-      submissionData.append('price', '₹499');
+      submissionData.append('price', '₹299');
 
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
         method: 'POST',
-        // Headers are not explicitly set for 'multipart/form-data'; fetch does this automatically.
         body: submissionData,
       });
-      
+
       if (response.ok) {
         toast({
           title: "Booking submitted successfully!",
           description: "We'll contact you soon to confirm your session.",
         });
-        
-        // Track the form submission event with Meta Pixel
+
         if (window.fbq) {
           window.fbq('track', 'CompleteRegistration', {
             content_name: 'Student Session Booking',
             content_category: 'Student',
-            value: 499.00,
+            value: 299.00,
             currency: 'INR'
           });
         }
-        
-        // Reset form
+
         setFormData({
           name: '',
+          gender: '',
           email: '',
           phone: '',
           college: '',
-          course: '',
-          year: '',
+          courseAndYear: '',
           location: '',
-          idCard: null, // Reset ID Card
+          idCard: null,
           preferredDate: '',
           preferredTime: '',
-          concerns: ''
+          bringsToSession: '',
+          hopesToGain: '',
+          specificTopics: '',
+          spokenToSomeone: '',
+          lookingFor: '',
+          anythingElse: '',
+          joinWhatsappChannel: '',
         });
-        // Also reset the file input visually if possible (requires a ref or other methods)
         const fileInput = document.getElementById('idCard') as HTMLInputElement;
         if (fileInput) {
           fileInput.value = '';
@@ -194,8 +212,7 @@ const StudentBookingForm = () => {
       setIsSubmitting(false);
     }
   };
-  
-  // Generate time slots from 9 AM to 8 PM
+
   const timeSlots = [];
   for (let hour = 9; hour <= 20; hour++) {
     const formattedHour = hour > 12 ? hour - 12 : hour;
@@ -205,25 +222,23 @@ const StudentBookingForm = () => {
       timeSlots.push(`${formattedHour}:30 ${amPm}`);
     }
   }
-  
-  // Get current date and format it for min attribute
+
   const today = new Date();
   const formattedToday = today.toISOString().split('T')[0];
-  
-  // Calculate date 30 days from now for max attribute
+
   const maxDate = new Date();
   maxDate.setDate(today.getDate() + 30);
   const formattedMaxDate = maxDate.toISOString().split('T')[0];
-  
+
   return (
     <div className="bg-white rounded-lg p-6 shadow-md">
       <h3 className="text-xl font-serif font-medium text-gray-800 mb-4">Book Your Student Session</h3>
-      
+
       <form onSubmit={handleSubmit}>
         {formStep === 1 && (
           <div className="space-y-4">
             <h4 className="font-medium text-[#3B82F6] mb-2">Personal Information</h4>
-            
+
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name <span className="text-red-500">*</span>
@@ -238,10 +253,25 @@ const StudentBookingForm = () => {
                 required
               />
             </div>
-            
+
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                Gender / Pronouns <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                required
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email <span className="text-red-500">*</span>
+                Email ID: (if any) <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -253,10 +283,10 @@ const StudentBookingForm = () => {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                Phone Number <span className="text-red-500">*</span>
+                Preferred Contact Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -269,7 +299,7 @@ const StudentBookingForm = () => {
               />
               <p className="text-xs text-gray-500 mt-1">10-digit number without spaces or dashes</p>
             </div>
-            
+
             <div className="pt-4">
               <button
                 type="button"
@@ -281,14 +311,14 @@ const StudentBookingForm = () => {
             </div>
           </div>
         )}
-        
+
         {formStep === 2 && (
           <div className="space-y-4">
             <h4 className="font-medium text-[#3B82F6] mb-2">Student Information</h4>
-            
+
             <div>
               <label htmlFor="college" className="block text-sm font-medium text-gray-700 mb-1">
-                College/University <span className="text-red-500">*</span>
+                College/University Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -300,47 +330,25 @@ const StudentBookingForm = () => {
                 required
               />
             </div>
-            
+
             <div>
-              <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">
-                Course/Program <span className="text-red-500">*</span>
+              <label htmlFor="courseAndYear" className="block text-sm font-medium text-gray-700 mb-1">
+                Course & Year: (e.g., BA Psychology, 2nd Year) <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                id="course"
-                name="course"
-                value={formData.course}
+                id="courseAndYear"
+                name="courseAndYear"
+                value={formData.courseAndYear}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
                 required
               />
             </div>
-            
-            <div>
-              <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
-                Year of Study <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="year"
-                name="year"
-                value={formData.year}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
-                required
-              >
-                <option value="">Select Year</option>
-                <option value="1st Year">1st Year</option>
-                <option value="2nd Year">2nd Year</option>
-                <option value="3rd Year">3rd Year</option>
-                <option value="4th Year">4th Year</option>
-                <option value="5th Year">5th Year</option>
-                <option value="Postgraduate">Postgraduate</option>
-              </select>
-            </div>
-            
+
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                Location/City <span className="text-red-500">*</span>
+                Location (City & State) <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -348,7 +356,6 @@ const StudentBookingForm = () => {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="e.g., Mumbai, Delhi, Bangalore"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
                 required
               />
@@ -357,7 +364,7 @@ const StudentBookingForm = () => {
             {/* ID Card Upload */}
             <div>
               <label htmlFor="idCard" className="block text-sm font-medium text-gray-700 mb-1">
-                Upload Student ID Card <span className="text-red-500">*</span>
+                Attach your valid College ID: (a clear photo or scan) <span className="text-red-500">*</span>
               </label>
               <input
                 type="file"
@@ -375,7 +382,7 @@ const StudentBookingForm = () => {
               <p className="font-semibold">Important Notice:</p>
               <p>Uploading your ID card is mandatory to avail the student pass. This helps us prevent misuse and ensure genuine student participation. Your details will be kept safe and confidential. Your wellness and privacy are our utmost concern.</p>
             </div>
-            
+
             <div className="flex justify-between pt-4">
               <button
                 type="button"
@@ -394,65 +401,169 @@ const StudentBookingForm = () => {
             </div>
           </div>
         )}
-        
+
         {formStep === 3 && (
           <div className="space-y-4">
             <h4 className="font-medium text-[#3B82F6] mb-2">Session Details</h4>
-            
+
             <div>
-              <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-1">
-                Preferred Date <span className="text-red-500">*</span>
+              <label htmlFor="bringsToSession" className="block text-sm font-medium text-gray-700 mb-1">
+                What brings you to this session? <span className="text-red-500">*</span>
               </label>
-              <input
-                type="date"
-                id="preferredDate"
-                name="preferredDate"
-                value={formData.preferredDate}
+              <textarea
+                id="bringsToSession"
+                name="bringsToSession"
+                value={formData.bringsToSession}
                 onChange={handleChange}
-                min={formattedToday}
-                max={formattedMaxDate}
+                rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">Select a date within the next 30 days</p>
             </div>
-            
+
             <div>
-              <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-1">
-                Preferred Time <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="preferredTime"
-                name="preferredTime"
-                value={formData.preferredTime}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
-                required
-              >
-                <option value="">Select Time</option>
-                {timeSlots.map((slot, index) => (
-                  <option key={index} value={slot}>
-                    {slot}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label htmlFor="concerns" className="block text-sm font-medium text-gray-700 mb-1">
-                What would you like to discuss? (Optional)
+              <label htmlFor="hopesToGain" className="block text-sm font-medium text-gray-700 mb-1">
+                What are you hoping to gain or understand better through this session? <span className="text-red-500">*</span>
               </label>
               <textarea
-                id="concerns"
-                name="concerns"
-                value={formData.concerns}
+                id="hopesToGain"
+                name="hopesToGain"
+                value={formData.hopesToGain}
                 onChange={handleChange}
-                rows={4}
+                rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
-              ></textarea>
-              <p className="text-xs text-gray-500 mt-1">Your information is kept strictly confidential</p>
+                required
+              />
             </div>
-            
+
+            <div>
+              <label htmlFor="specificTopics" className="block text-sm font-medium text-gray-700 mb-1">
+                Are there specific topics you’d like to explore? <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="specificTopics"
+                name="specificTopics"
+                value={formData.specificTopics}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="spokenToSomeone" className="block text-sm font-medium text-gray-700 mb-1">
+                Have you spoken to anyone about this before? Please specify who? <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="spokenToSomeone"
+                name="spokenToSomeone"
+                value={formData.spokenToSomeone}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="lookingFor" className="block text-sm font-medium text-gray-700 mb-1">
+                What are you truly looking for from this space? Please share in detail. <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="lookingFor"
+                name="lookingFor"
+                value={formData.lookingFor}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="anythingElse" className="block text-sm font-medium text-gray-700 mb-1">
+                Is there anything else you’d like me to know before we begin?
+              </label>
+              <textarea
+                id="anythingElse"
+                name="anythingElse"
+                value={formData.anythingElse}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  Preferred Date <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="preferredDate"
+                  name="preferredDate"
+                  value={formData.preferredDate}
+                  onChange={handleChange}
+                  min={formattedToday}
+                  max={formattedMaxDate}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-1">
+                  Preferred Time <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="preferredTime"
+                  name="preferredTime"
+                  value={formData.preferredTime}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                  required
+                >
+                  <option value="">Select a time</option>
+                  {timeSlots.map(slot => (
+                    <option key={slot} value={slot}>{slot}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Would you like to join our Free WhatsApp channel for educational & informative purposes ( session updates, webinars, insights, etc.,) <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center space-x-4 mt-2">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="joinWhatsappChannel"
+                    value="Yes"
+                    checked={formData.joinWhatsappChannel === 'Yes'}
+                    onChange={handleChange}
+                    className="form-radio h-4 w-4 text-[#3B82F6] border-gray-300 focus:ring-[#3B82F6]"
+                    required
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Yes</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="joinWhatsappChannel"
+                    value="No"
+                    checked={formData.joinWhatsappChannel === 'No'}
+                    onChange={handleChange}
+                    className="form-radio h-4 w-4 text-[#3B82F6] border-gray-300 focus:ring-[#3B82F6]"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">No</span>
+                </label>
+              </div>
+            </div>
+
             <div className="flex justify-between pt-4">
               <button
                 type="button"
@@ -464,18 +575,14 @@ const StudentBookingForm = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#3B82F6] text-white py-2 px-4 rounded-md hover:bg-[#2563EB] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-1/2 bg-[#3B82F6] text-white py-2 px-4 rounded-md hover:bg-[#2563EB] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Submitting...' : 'Book Session (₹499)'}
+                {isSubmitting ? 'Submitting...' : 'Book Now for ₹299'}
               </button>
             </div>
           </div>
         )}
       </form>
-      
-      <div className="mt-6 text-center text-sm text-gray-600">
-        <p>Need help? <a href="mailto:contact@intimatecare.com" className="text-[#3B82F6] hover:underline">Contact us</a></p>
-      </div>
     </div>
   );
 };

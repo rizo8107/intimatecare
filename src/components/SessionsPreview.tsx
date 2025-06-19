@@ -94,7 +94,7 @@ const SessionsPreview = () => {
                   <span className="text-gray-700">Duration: 45 minutes</span>
                 </div>
                 <div>
-                  <p className="text-xl font-serif text-[#3B82F6] font-medium">₹399</p>
+                  <p className="text-xl font-serif text-[#3B82F6] font-medium">₹299</p>
                 </div>
               </div>
               

@@ -20,7 +20,7 @@ const StudentBooking = () => {
                 Book Your Student Session
               </h1>
               <p className="text-gray-700 max-w-2xl mx-auto">
-                Take advantage of our special student rate of ₹499 for a 45-minute audio consultation session.
+                Take advantage of our special student rate of ₹299 for a 45-minute audio consultation session.
               </p>
             </div>
             
