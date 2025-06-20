@@ -233,9 +233,17 @@ const StudentBookingForm = () => {
     }
   };
   
-  // Format time for display
+  // Format time for display in 12-hour format
   const formatTimeForDisplay = (timeString: string) => {
-    return timeString.replace(/:00$/, ''); // Remove seconds if present
+    // First remove seconds if present
+    const timeWithoutSeconds = timeString.replace(/:00$/, '');
+    
+    // Convert to 12-hour format
+    const [hours, minutes] = timeWithoutSeconds.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+    
+    return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
   };
   
   // Get unique dates from available slots
@@ -762,7 +770,7 @@ const StudentBookingForm = () => {
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              Session booked for {formData.preferredDate} at {formData.preferredTime}
+              Session booked for {formData.preferredDate} at {formData.preferredTime && formData.preferredTime.split(' - ').map(formatTimeForDisplay).join(' - ')}
             </div>
           </div>
 
