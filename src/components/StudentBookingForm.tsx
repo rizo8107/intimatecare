@@ -391,7 +391,9 @@ const StudentBookingForm = () => {
         // Session Details
         session_type: 'Student Session',
         preferred_date: formData.preferredDate,
-        preferred_time: formData.preferredTime ? formData.preferredTime.split(' - ')[0] : null, // Extract just the start time from the range
+        // Split time range into start_time and end_time
+        start_time: formData.preferredTime ? formData.preferredTime.split(' - ')[0] : null,
+        end_time: formData.preferredTime ? formData.preferredTime.split(' - ')[1] : null,
         slot_id: formData.selectedSlotId,
         
         // Session Questions
