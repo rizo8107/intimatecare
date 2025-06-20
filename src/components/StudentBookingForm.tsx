@@ -391,9 +391,28 @@ const StudentBookingForm = () => {
         // Session Details
         session_type: 'Student Session',
         preferred_date: formData.preferredDate,
-        // Split time range into start_time and end_time
-        start_time: formData.preferredTime ? formData.preferredTime.split(' - ')[0] : null,
-        end_time: formData.preferredTime ? formData.preferredTime.split(' - ')[1] : null,
+        // Handle time values with proper validation and formatting
+        start_time: (() => {
+          // Extract start time or use default
+          const timeStr = formData.preferredTime || '';
+          const startTime = timeStr.split(' - ')[0] || '';
+          // Validate time format (HH:MM:SS or HH:MM)
+          if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(startTime)) {
+            return startTime.includes(':') ? startTime : `${startTime}:00`;
+          }
+          return '00:00:00';
+        })(),
+        end_time: (() => {
+          // Extract end time or use start time as fallback
+          const timeStr = formData.preferredTime || '';
+          const timeParts = timeStr.split(' - ');
+          const endTime = timeParts[1] || timeParts[0] || '';
+          // Validate time format (HH:MM:SS or HH:MM)
+          if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(endTime)) {
+            return endTime.includes(':') ? endTime : `${endTime}:00`;
+          }
+          return '00:00:00';
+        })(),
         slot_id: formData.selectedSlotId,
         
         // Session Questions
