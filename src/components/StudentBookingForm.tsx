@@ -650,7 +650,7 @@ const StudentBookingForm = () => {
           try {
             await loadCashfreeSDK();
             if (window.Cashfree) {
-              const cashfree = window.Cashfree({ mode: "sandbox" });
+              const cashfree = window.Cashfree({ mode: "production" });
               const checkoutOptions = {
                 paymentSessionId: paymentSessionId,
                 redirectTarget: "_modal",
