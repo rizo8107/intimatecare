@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background shapes -->
+  <circle cx="250" cy="250" r="200" fill="#FFE5EC" opacity="0.5"/>
+  <circle cx="250" cy="250" r="150" fill="#FFD1DC" opacity="0.3"/>
+  
+  <!-- Calendar illustration -->
+  <rect x="150" y="150" width="200" height="200" rx="10" fill="white" stroke="#FF7A9A" stroke-width="4"/>
+  <rect x="150" y="150" width="200" height="40" rx="10" fill="#FF7A9A"/>
+  
+  <!-- Calendar lines -->
+  <line x1="150" y1="190" x2="350" y2="190" stroke="#FF7A9A" stroke-width="4"/>
+  <line x1="200" y1="190" x2="200" y2="350" stroke="#FF7A9A" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="250" y1="190" x2="250" y2="350" stroke="#FF7A9A" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="300" y1="190" x2="300" y2="350" stroke="#FF7A9A" stroke-width="2" stroke-dasharray="4 4"/>
+  
+  <line x1="150" y1="230" x2="350" y2="230" stroke="#FF7A9A" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="150" y1="270" x2="350" y2="270" stroke="#FF7A9A" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="150" y1="310" x2="350" y2="310" stroke="#FF7A9A" stroke-width="2" stroke-dasharray="4 4"/>
+  
+  <!-- Highlighted date -->
+  <circle cx="250" cy="250" r="25" fill="#FF7A9A" opacity="0.3"/>
+  <text x="250" y="258" font-family="Arial" font-size="24" font-weight="bold" fill="#FF5A84" text-anchor="middle">30</text>
+  
+  <!-- Clock element -->
+  <circle cx="325" cy="175" r="12" fill="white" stroke="#FF7A9A" stroke-width="2"/>
+  <line x1="325" y1="175" x2="325" y2="168" stroke="#FF7A9A" stroke-width="2"/>
+  <line x1="325" y1="175" x2="330" y2="175" stroke="#FF7A9A" stroke-width="2"/>
+  
+  <!-- Coming Soon text -->
+  <text x="250" y="400" font-family="Arial" font-size="32" font-weight="bold" fill="#FF5A84" text-anchor="middle">COMING SOON</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="150" cy="120" r="10" fill="#FF7A9A" opacity="0.5"/>
+  <circle cx="350" cy="120" r="10" fill="#FF7A9A" opacity="0.5"/>
+  <circle cx="150" cy="380" r="10" fill="#FF7A9A" opacity="0.5"/>
+  <circle cx="350" cy="380" r="10" fill="#FF7A9A" opacity="0.5"/>
+</svg>

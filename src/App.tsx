@@ -22,6 +22,8 @@ import TelegramTest from "./pages/TelegramTest";
 import TermsConditions from "./pages/TermsConditions";
 import CancellationRefund from "./pages/CancellationRefund";
 import PaymentTestPage from './pages/PaymentTestPage';
+import ThirtyDayChallenge from './pages/ThirtyDayChallenge';
+import ComingSoon from './pages/ComingSoon';
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import { initClarity } from "./utils/clarity";
@@ -70,6 +72,8 @@ const App = () => (
               <Route path="/terms-conditions" element={<TermsConditions />} />
               <Route path="/cancellation-refund" element={<CancellationRefund />} />
               <Route path="/payment-test" element={<PaymentTestPage />} />
+              <Route path="/30-day-challenge" element={<ThirtyDayChallenge />} />
+              <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

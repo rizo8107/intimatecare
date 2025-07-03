@@ -63,23 +63,24 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            <NavLink to="/" active={isActive('/')}>
-              Home
-            </NavLink>
-            <NavLink to="/about" active={isActive('/about')}>
-              About
-            </NavLink>
+            {/* Home link hidden */}
+            {/* About link hidden */}
             <NavLink to="/sessions" active={isActive('/sessions')}>
               Sessions
             </NavLink>
             <NavLink to="/intimatetalks" active={isActive('/intimatetalks')}>
               Intimate Talks
             </NavLink>
-            <NavLink to="/issues" active={isActive('/issues')}>
-              Sexual Issues
-            </NavLink>
+            {/* Sexual Issues link hidden */}
             <NavLink to="/guide" active={isActive('/guide')}>
               69 Positions
+            </NavLink>
+            <NavLink to="/30-day-challenge" active={isActive('/30-day-challenge')}>
+              <span className="flex items-center">
+                <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">✨</span>
+                <span>30+ Day Challenge</span>
+                <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">HOT</span>
+              </span>
             </NavLink>
             <NavLink to="/contact" active={isActive('/contact')}>
               Contact
@@ -113,23 +114,24 @@ const Navbar = () => {
           }`}
         >
           <div className="bg-white rounded-xl shadow-sm p-4 space-y-1 border border-[#F0F0F5]">
-            <MobileNavLink to="/" active={isActive('/')} onClick={closeMenu}>
-              Home
-            </MobileNavLink>
-            <MobileNavLink to="/about" active={isActive('/about')} onClick={closeMenu}>
-              About
-            </MobileNavLink>
+            {/* Home link hidden */}
+            {/* About link hidden */}
             <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>
               Sessions
             </MobileNavLink>
             <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>
               Intimate Talks
             </MobileNavLink>
-            <MobileNavLink to="/issues" active={isActive('/issues')} onClick={closeMenu}>
-              Sexual Issues
-            </MobileNavLink>
+            {/* Sexual Issues link hidden */}
             <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>
               69 Positions
+            </MobileNavLink>
+            <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>
+              <span className="flex items-center">
+                <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">✨</span>
+                <span>30+ Day Challenge</span>
+                <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">HOT</span>
+              </span>
             </MobileNavLink>
             <MobileNavLink to="/contact" active={isActive('/contact')} onClick={closeMenu}>
               Contact
