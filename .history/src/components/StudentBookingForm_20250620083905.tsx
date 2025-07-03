@@ -233,17 +233,9 @@ const StudentBookingForm = () => {
     }
   };
   
-  // Format time for display in 12-hour format
+  // Format time for display
   const formatTimeForDisplay = (timeString: string) => {
-    // First remove seconds if present
-    const timeWithoutSeconds = timeString.replace(/:00$/, '');
-    
-    // Convert to 12-hour format
-    const [hours, minutes] = timeWithoutSeconds.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-    
-    return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
+    return timeString.replace(/:00$/, ''); // Remove seconds if present
   };
   
   // Get unique dates from available slots
@@ -314,7 +306,7 @@ const StudentBookingForm = () => {
     console.log(`Polling for order ${currentCfOrderId}, attempt ${attempt + 1}`);
     setPaymentError(null);
 
-    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/verify';
+    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/verifytest';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 
@@ -380,129 +372,51 @@ const StudentBookingForm = () => {
   // Submit form after successful payment
   const submitFormAfterPayment = async () => {
     try {
-      setIsLoading(true);
-      
-      // Prepare data for database insertion
-      const bookingData = {
-        // Personal Information
-        name: formData.name,
-        gender: formData.gender,
-        email: formData.email,
-        phone: `+91${formData.phone}`, // Add +91 prefix to phone number
-        
-        // Student Information
-        college: formData.college,
-        course_and_year: formData.courseAndYear,
-        location: formData.location,
-        id_card_filename: formData.idCard?.name || null,
-        
-        // Session Details
-        session_type: 'Student Session',
-        preferred_date: formData.preferredDate,
-        // Handle time values with proper validation and formatting
-        start_time: (() => {
-          // Extract start time or use default
-          const timeStr = formData.preferredTime || '';
-          const startTime = timeStr.split(' - ')[0] || '';
-          // Validate time format (HH:MM:SS or HH:MM)
-          if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(startTime)) {
-            return startTime.includes(':') ? startTime : `${startTime}:00`;
+      const submissionData = new FormData();
+      Object.keys(formData).forEach(key => {
+        const value = formData[key as keyof FormData];
+        if (value !== null && value !== undefined) {
+          if (value instanceof File) {
+            submissionData.append(key, value, value.name);
+          } else {
+            submissionData.append(key, String(value));
           }
-          return '00:00:00';
-        })(),
-        end_time: (() => {
-          // Extract end time or use start time as fallback
-          const timeStr = formData.preferredTime || '';
-          const timeParts = timeStr.split(' - ');
-          const endTime = timeParts[1] || timeParts[0] || '';
-          // Validate time format (HH:MM:SS or HH:MM)
-          if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(endTime)) {
-            return endTime.includes(':') ? endTime : `${endTime}:00`;
-          }
-          return '00:00:00';
-        })(),
-        slot_id: formData.selectedSlotId,
-        
-        // Session Questions
-        brings_to_session: formData.bringsToSession,
-        hopes_to_gain: formData.hopesToGain,
-        specific_topics: formData.specificTopics,
-        spoken_to_someone: formData.spokenToSomeone,
-        looking_for: formData.lookingFor,
-        anything_else: formData.anythingElse || '',
-        join_whatsapp_channel: formData.joinWhatsappChannel,
-        
-        // Payment Information
-        price: 299.00,
-        payment_status: 'PAID',
-        cf_order_id: storedCfOrderId,
-        cf_payment_id: paymentOutcome?.cf_payment_id || null,
-        payment_timestamp: new Date().toISOString(),
-        
-        // System Fields
-        status: 'BOOKED'
-      };
-      
-      // Insert booking data into the student_bookings table
-      const { data, error } = await supabase
-        .from('student_bookings')
-        .insert([bookingData])
-        .select();
-      
-      if (error) {
-        console.error('Error inserting booking:', error);
-        throw new Error(`Database error: ${error.message}`);
-      }
-      
-      // Set booking details for confirmation page
-      setBookingDetails(data?.[0] || bookingData);
-      setShowConfirmation(true);
-      
-      // Track successful booking with Facebook Pixel
-      if (window.fbq) {
-        window.fbq('track', 'CompleteRegistration', {
-          content_name: 'Student Session Booking',
-          content_category: 'Student',
-          value: 299.00,
-          currency: 'INR'
-        });
-      }
-      
-      // Show success toast
-      toast({
-        title: "Booking confirmed successfully!",
-        description: "Payment received. We'll contact you soon to confirm your session.",
+        }
       });
-      
-      // Also send data to webhook for backward compatibility
-      try {
-        const submissionData = new FormData();
-        Object.keys(formData).forEach(key => {
-          const value = formData[key as keyof FormData];
-          if (value !== null && value !== undefined) {
-            if (value instanceof File) {
-              submissionData.append(key, value, value.name);
-            } else {
-              submissionData.append(key, String(value));
-            }
-          }
-        });
-        submissionData.append('sessionType', 'Student Session');
-        submissionData.append('price', '₹299');
-        submissionData.append('paymentStatus', 'PAID');
-        submissionData.append('cfOrderId', storedCfOrderId);
+      submissionData.append('sessionType', 'Student Special');
+      submissionData.append('price', '₹299');
+      submissionData.append('paymentStatus', 'PAID');
+      submissionData.append('cfOrderId', storedCfOrderId);
+
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
+        method: 'POST',
+        body: submissionData,
+      });
+
+      if (response.ok) {
+        const bookingData = await response.json();
+        setBookingDetails(bookingData);
+        setShowConfirmation(true);
         
-        // Send to webhook in background (don't await)
-        fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
-          method: 'POST',
-          body: submissionData,
+        // Track successful booking with Facebook Pixel
+        if (window.fbq) {
+          window.fbq('track', 'CompleteRegistration', {
+            content_name: 'Student Session Booking',
+            content_category: 'Student',
+            value: 299.00,
+            currency: 'INR'
+          });
+        }
+        
+        // Show success toast
+        toast({
+          title: "Booking confirmed successfully!",
+          description: "Payment received. We'll contact you soon to confirm your session.",
         });
-      } catch (webhookError) {
-        // Just log webhook errors, don't fail the booking process
-        console.error('Webhook submission error:', webhookError);
+      } else {
+        throw new Error('Failed to submit form after payment');
       }
     } catch (error) {
-      console.error('Booking error:', error);
       toast({
         title: "Error submitting booking",
         description: "Payment was successful but booking submission failed. Please contact us.",
@@ -634,7 +548,7 @@ const StudentBookingForm = () => {
       customer_email: formData.email,
     };
 
-    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/studentpay';
+    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/bookingtest';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 
@@ -756,149 +670,74 @@ const StudentBookingForm = () => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-md">
       {showConfirmation ? (
-        <div className="max-w-3xl mx-auto">
-          {/* Success Header with Animation */}
-          <div className="text-center mb-10">
-            <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-r from-green-400 to-green-600 mb-6 shadow-lg animate-pulse">
-              <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="space-y-6">
+          <div className="text-center">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+              <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Booking Confirmed!</h2>
-            <p className="text-xl text-gray-600">Thank you for booking your student session with us.</p>
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Session booked for {formData.preferredDate} at {formData.preferredTime && formData.preferredTime.split(' - ').map(formatTimeForDisplay).join(' - ')}
-            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
+            <p className="text-lg text-gray-600 mb-6">Thank you for booking your student session with us.</p>
           </div>
 
-          {/* Main Content Cards */}
-          <div className="space-y-8">
-            {/* Payment Card */}
-            <div className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="bg-green-100 p-3 rounded-full mr-4">
-                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">Payment Successful</h3>
-                <div className="ml-auto bg-green-50 px-3 py-1 rounded-full">
-                  <span className="text-green-700 font-medium text-sm">₹299 PAID</span>
-                </div>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h4 className="text-lg font-semibold text-green-800 mb-4">Payment Details</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-600 mb-2"><strong>Session Type:</strong> Student Special</p>
+                <p className="text-gray-600 mb-2"><strong>Amount Paid:</strong> ₹299</p>
+                <p className="text-gray-600 mb-2"><strong>Payment Status:</strong> <span className="text-green-600 font-semibold">PAID</span></p>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500 mb-1">Order ID</p>
-                    <p className="font-medium">{paymentOutcome?.order_id || bookingDetails?.order_id}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Payment ID</p>
-                    <p className="font-medium">{paymentOutcome?.cf_payment_id || bookingDetails?.cf_payment_id}</p>
-                  </div>
-                </div>
-                <div>
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500 mb-1">Session Type</p>
-                    <p className="font-medium">Student Session</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Payment Time</p>
-                    <p className="font-medium">{paymentOutcome?.payment_time || bookingDetails?.payment_time ? new Date(paymentOutcome?.payment_time || bookingDetails?.payment_time).toLocaleString() : 'Just now'}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Booking Details Card */}
-            <div className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="bg-blue-100 p-3 rounded-full mr-4">
-                  <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">Your Information</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Full Name</p>
-                    <p className="font-medium">{formData.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Email Address</p>
-                    <p className="font-medium">{formData.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Phone Number</p>
-                    <p className="font-medium">{formData.phone}</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">College</p>
-                    <p className="font-medium">{formData.college}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Course & Year</p>
-                    <p className="font-medium">{formData.courseAndYear}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Location</p>
-                    <p className="font-medium">{formData.location}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* What's Next Card */}
-            <div className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="bg-purple-100 p-3 rounded-full mr-4">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">What's Next?</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">1</span>
-                  </div>
-                  <p>We'll contact you within 24 hours to confirm your session details</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">2</span>
-                  </div>
-                  <p>You'll receive a confirmation email with session link and guidelines</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">3</span>
-                  </div>
-                  <p>Please keep your college ID ready for verification during the session</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">4</span>
-                  </div>
-                  <p>If you need to reschedule, contact us at least 24 hours in advance</p>
-                </div>
+              <div>
+                <p className="text-gray-600 mb-2"><strong>Order ID:</strong> {paymentOutcome?.order_id || bookingDetails?.order_id}</p>
+                <p className="text-gray-600 mb-2"><strong>Payment ID:</strong> {paymentOutcome?.cf_payment_id || bookingDetails?.cf_payment_id}</p>
+                <p className="text-gray-600 mb-2"><strong>Payment Time:</strong> {paymentOutcome?.payment_time || bookingDetails?.payment_time ? new Date(paymentOutcome?.payment_time || bookingDetails?.payment_time).toLocaleString() : 'Just now'}</p>
               </div>
             </div>
           </div>
 
-          {/* Action Button */}
-          <div className="mt-10 text-center">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h4 className="text-lg font-semibold text-blue-800 mb-4">Your Booking Details</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-600 mb-2"><strong>Name:</strong> {formData.name}</p>
+                <p className="text-gray-600 mb-2"><strong>Email:</strong> {formData.email}</p>
+                <p className="text-gray-600 mb-2"><strong>Phone:</strong> {formData.phone}</p>
+                <p className="text-gray-600 mb-2"><strong>College:</strong> {formData.college}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 mb-2"><strong>Course & Year:</strong> {formData.courseAndYear}</p>
+                <p className="text-gray-600 mb-2"><strong>Location:</strong> {formData.location}</p>
+                <p className="text-gray-600 mb-2"><strong>Preferred Date:</strong> {formData.preferredDate}</p>
+                <p className="text-gray-600 mb-2"><strong>Preferred Time:</strong> {formData.preferredTime}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h4 className="text-lg font-semibold text-yellow-800 mb-3">What's Next?</h4>
+            <ul className="text-sm text-gray-700 space-y-2">
+              <li className="flex items-start">
+                <span className="text-yellow-600 mr-2">•</span>
+                <span>We'll contact you within 24 hours to confirm your session details</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-yellow-600 mr-2">•</span>
+                <span>You'll receive a confirmation email with session link and guidelines</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-yellow-600 mr-2">•</span>
+                <span>Please keep your college ID ready for verification during the session</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-yellow-600 mr-2">•</span>
+                <span>If you need to reschedule, contact us at least 24 hours in advance</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="text-center pt-4">
             <button
               onClick={() => {
                 // Reset all states to allow booking another session
@@ -934,11 +773,8 @@ const StudentBookingForm = () => {
                   fileInput.value = '';
                 }
               }}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+              className="bg-[#3B82F6] text-white py-3 px-6 rounded-md hover:bg-[#2563EB] transition-colors font-medium"
             >
-              <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
               Book Another Session
             </button>
           </div>
@@ -1348,7 +1184,7 @@ const StudentBookingForm = () => {
                     <p className="text-sm"><strong>Cashfree Payment ID:</strong> {paymentOutcome.cf_payment_id}</p>
                     <p className="text-sm"><strong>Message:</strong> {paymentOutcome.payment_message || 'No specific message.'}</p>
                     <p className="text-sm"><strong>Amount:</strong> {paymentOutcome.order_amount} {paymentOutcome.order_currency}</p>
-                    <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'Just now'}</p>
+                    <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'N/A'}</p>
                     {isPollingStatus && (
                       <p className="mt-4 text-sm text-blue-600 animate-pulse">Verifying payment status, please wait...</p>
                     )}

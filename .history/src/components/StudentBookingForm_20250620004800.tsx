@@ -1,37 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { toast } from '@/hooks/use-toast';
-import { createClient } from '@supabase/supabase-js';
-import { format, parseISO, isToday, isTomorrow, addDays } from 'date-fns';
-
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-// Add error checking for required Supabase configuration
-if (!supabaseKey) {
-  console.error('Supabase configuration missing. Please check your environment variables.');
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Interface for session types and slots
-interface SessionType {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  duration: number;
-}
-
-interface AvailableSlot {
-  id: number;
-  slot_date: string;
-  start_time: string;
-  end_time: string;
-  session_type_id: number;
-  status: string;
-  booking_status: boolean;
-}
 
 // Declare global Cashfree type
 declare global {
@@ -52,8 +20,6 @@ interface FormData {
   idCard: File | null;
   preferredDate: string;
   preferredTime: string;
-  sessionTypeId: number | null;
-  selectedSlotId: number | null;
   bringsToSession: string;
   hopesToGain: string;
   specificTopics: string;
@@ -75,8 +41,6 @@ const StudentBookingForm = () => {
     idCard: null,
     preferredDate: '',
     preferredTime: '',
-    sessionTypeId: null,
-    selectedSlotId: null,
     bringsToSession: '',
     hopesToGain: '',
     specificTopics: '',
@@ -100,14 +64,6 @@ const StudentBookingForm = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingDetails, setBookingDetails] = useState<any>(null);
   
-  // Session types and available slots state
-  const [sessionTypes, setSessionTypes] = useState<SessionType[]>([]);
-  const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
-  const [selectedSessionType, setSelectedSessionType] = useState<number | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
-  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
-  
   // Refs for polling control
   const pollingActiveRef = useRef(false);
   const pollingTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
@@ -117,151 +73,6 @@ const StudentBookingForm = () => {
   const MAX_POLLING_ATTEMPTS = 20;
   const POLLING_INTERVAL = 5000; // 5 seconds
 
-  // Fetch session types from Supabase
-  const fetchSessionTypes = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('session_types')
-        .select('*')
-        .order('id');
-      
-      if (error) {
-        throw error;
-      }
-      
-      if (data) {
-        setSessionTypes(data);
-        // Select the first session type by default if available
-        if (data.length > 0 && !selectedSessionType) {
-          setSelectedSessionType(data[0].id);
-          // Fetch available slots for the selected session type
-          fetchAvailableSlots(data[0].id);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching session types:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load session types. Please try again.',
-        variant: 'destructive'
-      });
-    }
-  };
-  
-  // Fetch available slots for a specific session type
-  const fetchAvailableSlots = async (sessionTypeId: number) => {
-    setIsLoadingSlots(true);
-    try {
-      const { data, error } = await supabase
-        .from('available_slots')
-        .select('*')
-        .eq('session_type_id', sessionTypeId)
-        .eq('status', 'available')
-        .eq('booking_status', false)
-        .gte('slot_date', new Date().toISOString().split('T')[0]) // Only future dates
-        .order('slot_date')
-        .order('start_time');
-      
-      if (error) {
-        throw error;
-      }
-      
-      if (data) {
-        setAvailableSlots(data);
-        // Clear any previously selected slot
-        setSelectedSlot(null);
-        setSelectedDate('');
-        
-        // Update form data
-        setFormData(prev => ({
-          ...prev,
-          preferredDate: '',
-          preferredTime: '',
-          selectedSlotId: null
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching available slots:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load available slots. Please try again.',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsLoadingSlots(false);
-    }
-  };
-  
-  // Handle session type selection
-  const handleSessionTypeChange = (sessionTypeId: number) => {
-    setSelectedSessionType(sessionTypeId);
-    setFormData(prev => ({ ...prev, sessionTypeId }));
-    fetchAvailableSlots(sessionTypeId);
-  };
-  
-  // Handle date selection
-  const handleDateSelection = (date: string) => {
-    setSelectedDate(date);
-    setSelectedSlot(null);
-    setFormData(prev => ({
-      ...prev,
-      preferredDate: date,
-      preferredTime: ''
-    }));
-  };
-  
-  // Handle slot selection
-  const handleSlotSelection = (slot: AvailableSlot) => {
-    setSelectedSlot(slot);
-    setFormData(prev => ({
-      ...prev,
-      preferredDate: slot.slot_date,
-      preferredTime: `${slot.start_time} - ${slot.end_time}`,
-      selectedSlotId: slot.id
-    }));
-  };
-  
-  // Format date for display
-  const formatDateForDisplay = (dateString: string) => {
-    const date = parseISO(dateString);
-    if (isToday(date)) {
-      return 'Today';
-    } else if (isTomorrow(date)) {
-      return 'Tomorrow';
-    } else {
-      return format(date, 'EEE, MMM d'); // e.g., "Mon, Jan 1"
-    }
-  };
-  
-  // Format time for display in 12-hour format
-  const formatTimeForDisplay = (timeString: string) => {
-    // First remove seconds if present
-    const timeWithoutSeconds = timeString.replace(/:00$/, '');
-    
-    // Convert to 12-hour format
-    const [hours, minutes] = timeWithoutSeconds.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-    
-    return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
-  };
-  
-  // Get unique dates from available slots
-  const getUniqueDates = () => {
-    const uniqueDates = [...new Set(availableSlots.map(slot => slot.slot_date))];
-    return uniqueDates.sort();
-  };
-  
-  // Get slots for a specific date
-  const getSlotsByDate = (date: string) => {
-    return availableSlots.filter(slot => slot.slot_date === date);
-  };
-  
-  // Fetch session types on component mount
-  useEffect(() => {
-    fetchSessionTypes();
-  }, []);
-  
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -380,129 +191,35 @@ const StudentBookingForm = () => {
   // Submit form after successful payment
   const submitFormAfterPayment = async () => {
     try {
-      setIsLoading(true);
-      
-      // Prepare data for database insertion
-      const bookingData = {
-        // Personal Information
-        name: formData.name,
-        gender: formData.gender,
-        email: formData.email,
-        phone: `+91${formData.phone}`, // Add +91 prefix to phone number
-        
-        // Student Information
-        college: formData.college,
-        course_and_year: formData.courseAndYear,
-        location: formData.location,
-        id_card_filename: formData.idCard?.name || null,
-        
-        // Session Details
-        session_type: 'Student Session',
-        preferred_date: formData.preferredDate,
-        // Handle time values with proper validation and formatting
-        start_time: (() => {
-          // Extract start time or use default
-          const timeStr = formData.preferredTime || '';
-          const startTime = timeStr.split(' - ')[0] || '';
-          // Validate time format (HH:MM:SS or HH:MM)
-          if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(startTime)) {
-            return startTime.includes(':') ? startTime : `${startTime}:00`;
+      const submissionData = new FormData();
+      Object.keys(formData).forEach(key => {
+        const value = formData[key as keyof FormData];
+        if (value !== null && value !== undefined) {
+          if (value instanceof File) {
+            submissionData.append(key, value, value.name);
+          } else {
+            submissionData.append(key, String(value));
           }
-          return '00:00:00';
-        })(),
-        end_time: (() => {
-          // Extract end time or use start time as fallback
-          const timeStr = formData.preferredTime || '';
-          const timeParts = timeStr.split(' - ');
-          const endTime = timeParts[1] || timeParts[0] || '';
-          // Validate time format (HH:MM:SS or HH:MM)
-          if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(endTime)) {
-            return endTime.includes(':') ? endTime : `${endTime}:00`;
-          }
-          return '00:00:00';
-        })(),
-        slot_id: formData.selectedSlotId,
-        
-        // Session Questions
-        brings_to_session: formData.bringsToSession,
-        hopes_to_gain: formData.hopesToGain,
-        specific_topics: formData.specificTopics,
-        spoken_to_someone: formData.spokenToSomeone,
-        looking_for: formData.lookingFor,
-        anything_else: formData.anythingElse || '',
-        join_whatsapp_channel: formData.joinWhatsappChannel,
-        
-        // Payment Information
-        price: 299.00,
-        payment_status: 'PAID',
-        cf_order_id: storedCfOrderId,
-        cf_payment_id: paymentOutcome?.cf_payment_id || null,
-        payment_timestamp: new Date().toISOString(),
-        
-        // System Fields
-        status: 'BOOKED'
-      };
-      
-      // Insert booking data into the student_bookings table
-      const { data, error } = await supabase
-        .from('student_bookings')
-        .insert([bookingData])
-        .select();
-      
-      if (error) {
-        console.error('Error inserting booking:', error);
-        throw new Error(`Database error: ${error.message}`);
-      }
-      
-      // Set booking details for confirmation page
-      setBookingDetails(data?.[0] || bookingData);
-      setShowConfirmation(true);
-      
-      // Track successful booking with Facebook Pixel
-      if (window.fbq) {
-        window.fbq('track', 'CompleteRegistration', {
-          content_name: 'Student Session Booking',
-          content_category: 'Student',
-          value: 299.00,
-          currency: 'INR'
-        });
-      }
-      
-      // Show success toast
-      toast({
-        title: "Booking confirmed successfully!",
-        description: "Payment received. We'll contact you soon to confirm your session.",
+        }
       });
-      
-      // Also send data to webhook for backward compatibility
-      try {
-        const submissionData = new FormData();
-        Object.keys(formData).forEach(key => {
-          const value = formData[key as keyof FormData];
-          if (value !== null && value !== undefined) {
-            if (value instanceof File) {
-              submissionData.append(key, value, value.name);
-            } else {
-              submissionData.append(key, String(value));
-            }
-          }
-        });
-        submissionData.append('sessionType', 'Student Session');
-        submissionData.append('price', '₹299');
-        submissionData.append('paymentStatus', 'PAID');
-        submissionData.append('cfOrderId', storedCfOrderId);
-        
-        // Send to webhook in background (don't await)
-        fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
-          method: 'POST',
-          body: submissionData,
-        });
-      } catch (webhookError) {
-        // Just log webhook errors, don't fail the booking process
-        console.error('Webhook submission error:', webhookError);
+      submissionData.append('sessionType', 'Student Special');
+      submissionData.append('price', '₹299');
+      submissionData.append('paymentStatus', 'PAID');
+      submissionData.append('cfOrderId', storedCfOrderId);
+
+      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
+        method: 'POST',
+        body: submissionData,
+      });
+
+      if (response.ok) {
+        const bookingData = await response.json();
+        setBookingDetails(bookingData);
+        setShowConfirmation(true);
+      } else {
+        throw new Error('Failed to submit form after payment');
       }
     } catch (error) {
-      console.error('Booking error:', error);
       toast({
         title: "Error submitting booking",
         description: "Payment was successful but booking submission failed. Please contact us.",
@@ -576,21 +293,14 @@ const StudentBookingForm = () => {
   };
 
   const validateStep3 = () => {
-    if (!formData.bringsToSession || !formData.hopesToGain || !formData.specificTopics || !formData.spokenToSomeone || !formData.lookingFor || !formData.joinWhatsappChannel) {
-      toast({ title: "Missing information", description: "Please fill in all required fields.", variant: "destructive" });
+    if (!formData.preferredDate || !formData.preferredTime || !formData.bringsToSession || !formData.hopesToGain || !formData.specificTopics || !formData.spokenToSomeone || !formData.lookingFor || !formData.joinWhatsappChannel) {
+      toast({
+        title: "Required fields missing",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
       return false;
     }
-    
-    if (!selectedSessionType) {
-      toast({ title: "Session type required", description: "Please select a session type.", variant: "destructive" });
-      return false;
-    }
-    
-    if (!formData.preferredDate || !formData.preferredTime) {
-      toast({ title: "Date and time required", description: "Please select an available date and time slot.", variant: "destructive" });
-      return false;
-    }
-    
     return true;
   };
 
@@ -679,7 +389,7 @@ const StudentBookingForm = () => {
           try {
             await loadCashfreeSDK();
             if (window.Cashfree) {
-              const cashfree = window.Cashfree({ mode: "production" });
+              const cashfree = window.Cashfree({ mode: "sandbox" });
               const checkoutOptions = {
                 paymentSessionId: paymentSessionId,
                 redirectTarget: "_modal",
@@ -750,197 +460,26 @@ const StudentBookingForm = () => {
   }
 
   const today = new Date();
+  const formattedToday = today.toISOString().split('T')[0];
+
   const maxDate = new Date();
-  maxDate.setMonth(maxDate.getMonth() + 3);
+  maxDate.setDate(today.getDate() + 30);
+  const formattedMaxDate = maxDate.toISOString().split('T')[0];
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-md">
       {showConfirmation ? (
-        <div className="max-w-3xl mx-auto">
-          {/* Success Header with Animation */}
-          <div className="text-center mb-10">
-            <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-r from-green-400 to-green-600 mb-6 shadow-lg animate-pulse">
-              <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Booking Confirmed!</h2>
-            <p className="text-xl text-gray-600">Thank you for booking your student session with us.</p>
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Session booked for {formData.preferredDate} at {formData.preferredTime && formData.preferredTime.split(' - ').map(formatTimeForDisplay).join(' - ')}
-            </div>
-          </div>
-
-          {/* Main Content Cards */}
-          <div className="space-y-8">
-            {/* Payment Card */}
-            <div className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="bg-green-100 p-3 rounded-full mr-4">
-                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">Payment Successful</h3>
-                <div className="ml-auto bg-green-50 px-3 py-1 rounded-full">
-                  <span className="text-green-700 font-medium text-sm">₹299 PAID</span>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500 mb-1">Order ID</p>
-                    <p className="font-medium">{paymentOutcome?.order_id || bookingDetails?.order_id}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Payment ID</p>
-                    <p className="font-medium">{paymentOutcome?.cf_payment_id || bookingDetails?.cf_payment_id}</p>
-                  </div>
-                </div>
-                <div>
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500 mb-1">Session Type</p>
-                    <p className="font-medium">Student Session</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Payment Time</p>
-                    <p className="font-medium">{paymentOutcome?.payment_time || bookingDetails?.payment_time ? new Date(paymentOutcome?.payment_time || bookingDetails?.payment_time).toLocaleString() : 'Just now'}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Booking Details Card */}
-            <div className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="bg-blue-100 p-3 rounded-full mr-4">
-                  <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">Your Information</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Full Name</p>
-                    <p className="font-medium">{formData.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Email Address</p>
-                    <p className="font-medium">{formData.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Phone Number</p>
-                    <p className="font-medium">{formData.phone}</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">College</p>
-                    <p className="font-medium">{formData.college}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Course & Year</p>
-                    <p className="font-medium">{formData.courseAndYear}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Location</p>
-                    <p className="font-medium">{formData.location}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* What's Next Card */}
-            <div className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="bg-purple-100 p-3 rounded-full mr-4">
-                  <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">What's Next?</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">1</span>
-                  </div>
-                  <p>We'll contact you within 24 hours to confirm your session details</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">2</span>
-                  </div>
-                  <p>You'll receive a confirmation email with session link and guidelines</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">3</span>
-                  </div>
-                  <p>Please keep your college ID ready for verification during the session</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                    <span className="text-purple-600 text-sm font-bold">4</span>
-                  </div>
-                  <p>If you need to reschedule, contact us at least 24 hours in advance</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Button */}
-          <div className="mt-10 text-center">
-            <button
-              onClick={() => {
-                // Reset all states to allow booking another session
-                setShowConfirmation(false);
-                setBookingDetails(null);
-                setPaymentOutcome(null);
-                setStoredCfOrderId('');
-                setPaymentError(null);
-                setFormStep(1);
-                setFormData({
-                  name: '',
-                  gender: '',
-                  email: '',
-                  phone: '',
-                  college: '',
-                  courseAndYear: '',
-                  location: '',
-                  idCard: null,
-                  preferredDate: '',
-                  preferredTime: '',
-                  sessionTypeId: null,
-                  selectedSlotId: null,
-                  bringsToSession: '',
-                  hopesToGain: '',
-                  specificTopics: '',
-                  spokenToSomeone: '',
-                  lookingFor: '',
-                  anythingElse: '',
-                  joinWhatsappChannel: '',
-                });
-                const fileInput = document.getElementById('idCard') as HTMLInputElement;
-                if (fileInput) {
-                  fileInput.value = '';
-                }
-              }}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
-            >
-              <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
-              Book Another Session
-            </button>
+        <div className="space-y-4">
+          <h3 className="text-xl font-serif font-medium text-gray-800 mb-4">Booking Confirmation</h3>
+          <p className="text-lg font-medium text-gray-700 mb-2">Thank you for booking your session!</p>
+          <p className="text-sm text-gray-600 mb-4">Below are the details of your booking:</p>
+          <div className="bg-gray-50 p-4 border border-gray-200 rounded-md">
+            <p className="text-sm text-gray-600 mb-2"><strong>Session Type:</strong> Student Special</p>
+            <p className="text-sm text-gray-600 mb-2"><strong>Price:</strong> ₹299</p>
+            <p className="text-sm text-gray-600 mb-2"><strong>Payment Status:</strong> PAID</p>
+            <p className="text-sm text-gray-600 mb-2"><strong>Order ID:</strong> {bookingDetails.order_id}</p>
+            <p className="text-sm text-gray-600 mb-2"><strong>Cashfree Payment ID:</strong> {bookingDetails.cf_payment_id}</p>
+            <p className="text-sm text-gray-600 mb-2"><strong>Payment Time:</strong> {bookingDetails.payment_time}</p>
           </div>
         </div>
       ) : (
@@ -1208,87 +747,42 @@ const StudentBookingForm = () => {
                   />
                 </div>
 
-                <div className="space-y-6">
-                  {/* Session Type Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Session Type <span className="text-red-500">*</span>
+                    <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-1">
+                      Preferred Date <span className="text-red-500">*</span>
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {sessionTypes.map((type) => (
-                        <div 
-                          key={type.id}
-                          onClick={() => handleSessionTypeChange(type.id)}
-                          className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSessionType === type.id ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-300 hover:border-blue-300'}`}
-                        >
-                          <h4 className="font-medium text-gray-900">{type.name}</h4>
-                          {type.description && (
-                            <p className="text-sm text-gray-600 mt-1">{type.description}</p>
-                          )}
-                          <div className="mt-2 flex justify-between items-center">
-                            <span className="text-sm text-gray-500">{type.duration} mins</span>
-                            <span className="font-medium text-blue-600">₹{type.price}</span>
-                          </div>
-                        </div>
+                    <input
+                      type="date"
+                      id="preferredDate"
+                      name="preferredDate"
+                      value={formData.preferredDate}
+                      onChange={handleChange}
+                      min={formattedToday}
+                      max={formattedMaxDate}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-1">
+                      Preferred Time <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      id="preferredTime"
+                      name="preferredTime"
+                      value={formData.preferredTime}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                      required
+                    >
+                      <option value="">Select a time</option>
+                      {timeSlots.map(slot => (
+                        <option key={slot} value={slot}>{slot}</option>
                       ))}
-                    </div>
+                    </select>
                   </div>
-                  
-                  {/* Date Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Select Date <span className="text-red-500">*</span>
-                    </label>
-                    {isLoadingSlots ? (
-                      <div className="flex justify-center items-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                      </div>
-                    ) : availableSlots.length > 0 ? (
-                      <div className="flex overflow-x-auto pb-2 space-x-2">
-                        {getUniqueDates().map((date) => (
-                          <div 
-                            key={date}
-                            onClick={() => handleDateSelection(date)}
-                            className={`flex-shrink-0 p-3 border rounded-lg cursor-pointer transition-all ${selectedDate === date ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-200'}`}
-                          >
-                            <p className="text-sm font-medium">{formatDateForDisplay(date)}</p>
-                            <p className="text-xs text-gray-500 mt-1">{format(parseISO(date), 'MMMM d, yyyy')}</p>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 text-center">
-                        <p className="text-gray-500">No available slots for this session type</p>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Time Slot Selection */}
-                  {selectedDate && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Select Time <span className="text-red-500">*</span>
-                      </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                        {getSlotsByDate(selectedDate).map((slot) => (
-                          <div
-                            key={slot.id}
-                            onClick={() => handleSlotSelection(slot)}
-                            className={`p-3 border rounded-lg text-center cursor-pointer transition-all ${selectedSlot?.id === slot.id ? 'border-blue-500 bg-blue-50 shadow-sm' : 'border-gray-300 hover:border-blue-200'}`}
-                          >
-                            <p className="text-sm font-medium">
-                              {formatTimeForDisplay(slot.start_time)} - {formatTimeForDisplay(slot.end_time)}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Hidden inputs to store the values */}
-                  <input type="hidden" name="preferredDate" value={formData.preferredDate} />
-                  <input type="hidden" name="preferredTime" value={formData.preferredTime} />
-                  <input type="hidden" name="selectedSlotId" value={formData.selectedSlotId} />
                 </div>
 
                 <div>
@@ -1348,7 +842,7 @@ const StudentBookingForm = () => {
                     <p className="text-sm"><strong>Cashfree Payment ID:</strong> {paymentOutcome.cf_payment_id}</p>
                     <p className="text-sm"><strong>Message:</strong> {paymentOutcome.payment_message || 'No specific message.'}</p>
                     <p className="text-sm"><strong>Amount:</strong> {paymentOutcome.order_amount} {paymentOutcome.order_currency}</p>
-                    <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'Just now'}</p>
+                    <p className="text-sm"><strong>Payment Time:</strong> {paymentOutcome.payment_time ? new Date(paymentOutcome.payment_time).toLocaleString() : 'N/A'}</p>
                     {isPollingStatus && (
                       <p className="mt-4 text-sm text-blue-600 animate-pulse">Verifying payment status, please wait...</p>
                     )}

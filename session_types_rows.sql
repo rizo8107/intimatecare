@@ -1,0 +1,1 @@
+INSERT INTO "public"."session_types" ("id", "name", "description", "duration_minutes", "price", "created_at") VALUES ('2', 'Student Session', '', '60', '299.00', '2025-06-20 01:26:36.715843+00');
