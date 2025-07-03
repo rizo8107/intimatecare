@@ -12,7 +12,7 @@ const ThirtyDayChallenge = () => {
   // Simple state for UI
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handle buy now button click - redirect to payment page
+  // Handle buy now button click - redirect to coming soon page
   const handleBuyNow = () => {
     setIsLoading(true);
     
@@ -26,11 +26,8 @@ const ThirtyDayChallenge = () => {
       });
     }
     
-    // Get payment URL from environment variable or use default
-    const paymentPageUrl = import.meta.env.VITE_PAYMENT_PAGE_URL || 'https://lovable.in/payment/30-day-challenge';
-    
-    // Redirect to payment page
-    window.location.href = paymentPageUrl;
+    // Redirect to coming soon page
+    window.location.href = '/coming-soon';
   };
 
   return (
@@ -81,7 +78,7 @@ const ThirtyDayChallenge = () => {
                       disabled={isLoading}
                       className="mt-2 bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-2 px-6 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                      {isLoading ? 'Processing...' : 'Get It Now - ₹899'}
+                      {isLoading ? 'Processing...' : 'Join Waiting List'}
                     </button>
                   </div>
                   
@@ -127,7 +124,7 @@ const ThirtyDayChallenge = () => {
                       disabled={isLoading}
                       className="w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                      {isLoading ? 'Processing...' : 'Get It Now - ₹899'}
+                      {isLoading ? 'Processing...' : 'Join Waiting List'}
                     </button>
                   </div>
                 </div>
@@ -209,21 +206,19 @@ const ThirtyDayChallenge = () => {
           </div>
           
           {/* CTA Section */}
-          <div className="bg-gradient-to-r from-[#FF7A9A] to-[#FF5A84] rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 text-white text-center">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-              Ready to Transform Your Intimate Life?
-            </h2>
-            <p className="text-white/90 max-w-2xl mx-auto mb-8">
-              Get your 30+ Day Challenge now and start your journey to a more passionate, connected relationship. Instant digital delivery.
+          <div className="bg-[#FFE5EC] p-8 rounded-xl text-center">
+            <h2 className="text-2xl font-serif font-bold mb-4">Ready to Transform Your Intimate Life?</h2>
+            <p className="text-gray-700 mb-6">
+              The 30+ Day Challenge is coming soon! Join our waiting list to be the first to know when it launches.
             </p>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-              <div className="text-2xl md:text-3xl font-serif font-bold">₹899</div>
+            <div className="flex flex-col items-center justify-center gap-4">
+              <div className="text-xl font-medium text-[#FF5A84]">Coming Soon</div>
               <button 
                 onClick={handleBuyNow}
                 disabled={isLoading}
-                className="bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-3 px-8 rounded-full font-bold text-lg transition-all transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-8 rounded-full font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Processing...' : 'Get Your Copy Now'}
+                {isLoading ? 'Processing...' : 'Join Waiting List'}
               </button>
             </div>
           </div>
