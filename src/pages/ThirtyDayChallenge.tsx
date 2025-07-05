@@ -12,7 +12,7 @@ const ThirtyDayChallenge = () => {
   // Simple state for UI
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handle buy now button click - redirect to coming soon page
+  // Handle buy now button click - redirect to payment page
   const handleBuyNow = () => {
     setIsLoading(true);
     
@@ -21,13 +21,13 @@ const ThirtyDayChallenge = () => {
       window.fbq('track', 'InitiateCheckout', {
         content_name: '30+ Day Challenge',
         content_category: 'E-Book',
-        value: 899.00,
+        value: 499.00,
         currency: 'INR'
       });
     }
     
-    // Redirect to coming soon page
-    window.location.href = '/coming-soon';
+    // Redirect to payment page
+    window.location.href = 'https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine';
   };
 
   return (
@@ -36,11 +36,16 @@ const ThirtyDayChallenge = () => {
         <div className="container-custom max-w-6xl">
           {/* Hero Section */}
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-12">
-            <div className="p-8 md:p-12">
-              <div className="text-[#FF7A9A] text-sm font-bold uppercase tracking-wider mb-2 text-center">EXCLUSIVE DIGITAL PRODUCT</div>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
-                Transform Your Intimate Life in 30 Days
-              </h2>
+            <div className="relative">
+              <div className="bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 py-1.5 px-4 text-center animate-pulse">
+                <p className="text-sm font-bold text-yellow-900">⏰ LIMITED TIME OFFER - 62% OFF! ⏰</p>
+              </div>
+              <div className="p-8 md:p-12">
+                <div className="text-[#FF7A9A] text-sm font-bold uppercase tracking-wider mb-2 text-center">EXCLUSIVE DIGITAL PRODUCT</div>
+                <h2 className="font-serif text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
+                  Transform Your Intimate Life in 30 Days
+                </h2>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-8 pb-12">
@@ -65,7 +70,10 @@ const ThirtyDayChallenge = () => {
                     Are you tired of the same predictable patterns in your intimate life? This 30+ Day Challenge is designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
                   </p>
                   
-                  <div className="bg-[#FF7A9A] rounded-xl p-6 mb-6 text-white">
+                  <div className="bg-[#FF7A9A] rounded-xl p-6 mb-6 text-white relative overflow-hidden">
+                    <div className="absolute top-14 -right-14 transform rotate-45 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 py-1.5 px-16 text-sm font-bold text-yellow-900 shadow-lg animate-pulse">
+                      LIMITED TIME OFFER
+                    </div>
                     <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3 drop-shadow-sm">
                       Break The<br />Same-Sex Routine
                     </h1>
@@ -73,12 +81,18 @@ const ThirtyDayChallenge = () => {
                       A <span className="font-bold text-[#FFD1DC]">30+ Day Challenge</span> to<br />
                       Crave, Connect & Come Again
                     </div>
+                    <div className="mb-4">
+                      <div className="flex items-center gap-4 justify-start">
+                        <span className="text-white text-xl font-bold line-through opacity-60">₹1299</span>
+                        <span className="text-white text-3xl font-bold">₹499</span>
+                      </div>
+                    </div>
                     <button 
                       onClick={handleBuyNow}
                       disabled={isLoading}
                       className="mt-2 bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-2 px-6 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                      {isLoading ? 'Processing...' : 'Join Waiting List'}
+                      {isLoading ? 'Processing...' : 'Buy Now'}
                     </button>
                   </div>
                   
@@ -119,12 +133,16 @@ const ThirtyDayChallenge = () => {
                   </div>
                   
                   <div className="md:hidden">
+                    <div className="flex items-center gap-1 mb-4 justify-start">
+                      <span className="text-xl font-bold text-gray-500 line-through opacity-60">₹1299</span>
+                      <span className="text-2xl font-bold text-[#FF5A84]">₹499</span>
+                    </div>
                     <button 
                       onClick={handleBuyNow}
                       disabled={isLoading}
                       className="w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                      {isLoading ? 'Processing...' : 'Join Waiting List'}
+                      {isLoading ? 'Processing...' : 'Buy Now'}
                     </button>
                   </div>
                 </div>
@@ -205,20 +223,24 @@ const ThirtyDayChallenge = () => {
             </div>
           </div>
           
+
           {/* CTA Section */}
           <div className="bg-[#FFE5EC] p-8 rounded-xl text-center">
             <h2 className="text-2xl font-serif font-bold mb-4">Ready to Transform Your Intimate Life?</h2>
-            <p className="text-gray-700 mb-6">
-              The 30+ Day Challenge is coming soon! Join our waiting list to be the first to know when it launches.
+            <p className="text-gray-700 mb-6">  
+              The 30+ Day Challenge is available now at a special discount price!
             </p>
             <div className="flex flex-col items-center justify-center gap-4">
-              <div className="text-xl font-medium text-[#FF5A84]">Coming Soon</div>
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-2xl font-bold text-gray-500 line-through opacity-60">₹1299</span>
+                <span className="text-3xl font-bold text-[#FF5A84]">₹499</span>
+              </div>
               <button 
                 onClick={handleBuyNow}
                 disabled={isLoading}
                 className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-8 rounded-full font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Processing...' : 'Join Waiting List'}
+                {isLoading ? 'Processing...' : 'Buy Now'}
               </button>
             </div>
           </div>
