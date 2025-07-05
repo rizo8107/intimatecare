@@ -9,6 +9,7 @@ import GuidePreview from "@/components/GuidePreview";
 import FreebieSection from "@/components/FreebieSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import YouTubeSection from "@/components/YouTubeSection";
+import ThirtyDayChallengePreview from "@/components/ThirtyDayChallengePreview";
 
 const Index = () => {
   return (
@@ -16,12 +17,13 @@ const Index = () => {
       <Hero />
       <AnnouncementBar 
         message="🔥 Limited Spots! 30+ Day Challenge to Ignite Your Passion" 
-        linkText="Secure Your Spot Now" 
-        linkUrl="/coming-soon" 
+        linkText="Get It Now" 
+        linkUrl="/thirty-day-challenge" 
         bgColor="#FF5A84" 
         textColor="#FFFFFF" 
       />
       <FeatureSection />
+      <ThirtyDayChallengePreview />
       <AboutPreview />
       <SessionsPreview />
       <YouTubeSection />
