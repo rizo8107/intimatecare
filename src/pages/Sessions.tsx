@@ -49,7 +49,7 @@ const Sessions = () => {
                     </a>
                     
                     <Link 
-                      to="/instructor-booking"
+                      to="/instructor/Mansi"
                       className="block w-full bg-[#853f92] hover:bg-[#6e3378] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
                     >
                       Book with Mansi

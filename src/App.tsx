@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Sessions from "./pages/Sessions";
 import StudentBooking from "./pages/StudentBooking";
 import InstructorBooking from "./pages/InstructorBooking";
+import DynamicInstructorBooking from "./pages/DynamicInstructorBooking";
 import IntimateTalks from "./pages/IntimateTalks";
 import Guide from "./pages/Guide";
 import Freebie from "./pages/Freebie";
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="/issues" element={<Issues />} />
               <Route path="/student-booking" element={<StudentBooking />} />
               <Route path="/instructor-booking" element={<InstructorBooking />} />
+              <Route path="/instructor/:instructorName" element={<DynamicInstructorBooking />} />
               <Route path="/join-group" element={<JoinGroup />} />
               <Route path="/telegram-test" element={<TelegramTest />} />
               <Route path="/guide" element={<Guide />} />
