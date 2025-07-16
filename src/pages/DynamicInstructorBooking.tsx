@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import BookingModal from '@/components/BookingModal';
 import { createClient } from '@supabase/supabase-js';
 import * as LucideIcons from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
@@ -400,7 +401,28 @@ const DynamicInstructorBooking = () => {
     setIsLoadingPayment(false);
   };
 
-  const openBookingModal = (slot: AvailableSlot) => {
+  const openBookingModal = (slot?: AvailableSlot) => {
+    // If no specific slot is provided, just open the modal with default values
+    if (!slot) {
+      // If we have available slots, use the first one
+      if (availableSlots.length > 0) {
+        const firstSlot = availableSlots[0];
+        const firstSessionType = sessionTypes.find(st => st.id === firstSlot.session_type_id);
+        if (firstSessionType) {
+          setSelectedSlot(firstSlot);
+          setSelectedSessionType(firstSessionType);
+          setPaymentOutcome(null);
+          setPaymentError(null);
+          setIsModalOpen(true);
+          return;
+        }
+      }
+      // If no slots available or no matching session type, just open modal with empty values
+      setIsModalOpen(true);
+      return;
+    }
+    
+    // Original behavior for when a specific slot is provided
     const sessionType = sessionTypes.find(st => st.id === slot.session_type_id);
     if (sessionType) {
       setSelectedSlot(slot);
@@ -476,13 +498,10 @@ const DynamicInstructorBooking = () => {
                   ))}
                 </div>
                 
-                <button
-                  onClick={openBookingModal}
-                  className="bg-[#FF5A84] hover:bg-[#FF7A9A] text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center"
-                >
+                <Button className="w-full mt-4" style={{ backgroundColor: instructor.highlight_color }} onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}>
                   <BookOpen size={18} className="mr-2" />
                   Book Now
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -515,7 +534,7 @@ const DynamicInstructorBooking = () => {
                       <div className="text-2xl font-serif font-bold text-[#FF5A84] mt-1">₹{firstSession.price}</div>
                     </div>
                     <button
-                      onClick={openBookingModal}
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}
                       className="bg-[#853f92] hover:bg-[#9A4DAB] text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-md"
                     >
                       <Calendar size={18} className="mr-2" />
@@ -669,7 +688,7 @@ const DynamicInstructorBooking = () => {
                   {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructorName} and experience a safe space where you can explore, express, and embrace your authentic self.`}
                 </p>
                 <button
-                  onClick={openBookingModal}
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}
                   className="bg-[#853f92] hover:bg-[#9A4DAB] text-white py-3 px-8 rounded-full font-medium transition-colors inline-flex items-center text-lg mx-auto shadow-lg"
                 >
                   <Calendar size={20} className="mr-2" />
