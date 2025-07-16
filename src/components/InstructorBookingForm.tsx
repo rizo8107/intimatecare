@@ -123,7 +123,6 @@ const StudentBookingForm = () => {
       const { data, error } = await supabase
         .from('session_types')
         .select('*')
-        .eq('id', 2) // Only show Student Session (ID 2)
         .order('id');
       
       if (error) {
@@ -132,8 +131,8 @@ const StudentBookingForm = () => {
       
       if (data) {
         setSessionTypes(data);
-        // Since we're only fetching one session type, select it by default
-        if (data.length > 0) {
+        // Select the first session type by default if available
+        if (data.length > 0 && !selectedSessionType) {
           setSelectedSessionType(data[0].id);
           // Fetch available slots for the selected session type
           fetchAvailableSlots(data[0].id);

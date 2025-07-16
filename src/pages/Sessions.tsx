@@ -45,8 +45,15 @@ const Sessions = () => {
                       rel="noopener noreferrer"
                       className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
                     >
-                      Book Now
+                      Book Now (Topmate)
                     </a>
+                    
+                    <Link 
+                      to="/instructor-booking"
+                      className="block w-full bg-[#853f92] hover:bg-[#6e3378] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                    >
+                      Book with Mansi
+                    </Link>
                     
                     <p className="text-xs text-center text-gray-600">
                       After booking, you'll receive a confirmation email with details to join the call.
