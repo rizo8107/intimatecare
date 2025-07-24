@@ -27,6 +27,7 @@ import PaymentTestPage from './pages/PaymentTestPage';
 import ThirtyDayChallenge from './pages/ThirtyDayChallenge';
 import ComingSoon from './pages/ComingSoon';
 import WaitingListAdmin from './pages/WaitingListAdmin';
+import Webinars from './pages/Webinars';
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import { initClarity } from "./utils/clarity";
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="/cancellation-refund" element={<CancellationRefund />} />
               <Route path="/payment-test" element={<PaymentTestPage />} />
               <Route path="/30-day-challenge" element={<ThirtyDayChallenge />} />
+              <Route path="/webinars" element={<Webinars />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/admin/waiting-list" element={<WaitingListAdmin />} />
               <Route path="*" element={<NotFound />} />
