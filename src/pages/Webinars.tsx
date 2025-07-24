@@ -148,9 +148,9 @@ const Webinars = () => {
   }
 
   return (
-    <div className="pt-28 pb-16">
+    <div className="pt-0 pb-0">
       {featuredWebinar && (
-        <section className="bg-gradient-to-b from-[#FFEBF0] to-white py-16 px-4">
+        <section className="bg-gradient-to-b from-[#FFEBF0] to-white py-12 px-4">
           <div className="container-custom">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
@@ -208,7 +208,7 @@ const Webinars = () => {
               </div>
               
               {/* Two-column layout for desktop */}
-              <div className="md:flex md:gap-10 md:mt-16">
+              <div className="md:flex md:gap-10 md:mt-8">
                 {/* Hook Questions */}
                 <div className="mb-12 md:mb-0 md:w-1/2">
                   <h2 className="text-xl md:text-2xl font-semibold mb-4 font-serif">
@@ -247,7 +247,7 @@ const Webinars = () => {
               </div>
               
               {/* Call to action */}
-              <div className="mt-12 text-center">
+              <div className="mt-8 text-center">
                 <p className="text-gray-600 italic mb-6 max-w-2xl mx-auto">
                   This is a safe space to learn and ask questions without judgment.
                 </p>
@@ -266,7 +266,7 @@ const Webinars = () => {
       
       {/* List of upcoming webinars (if there are more than one) */}
       {webinars.length > 1 && (
-        <section className="container-custom py-16">
+        <section className="container-custom py-10">
           <h2 className="text-2xl md:text-3xl font-serif font-semibold text-center mb-10">
             More Upcoming Webinars
           </h2>
