@@ -1,9 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { 
+  CalendarIcon, 
+  Users, 
+  CheckCircle2, 
+  Clock, 
+  Bell, 
+  AlertCircle,
+  Star, 
+  Award, 
+  TrendingUp, 
+  Share2, 
+  X 
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
 import { toast } from 'react-hot-toast';
-import { CalendarIcon, Clock, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 // Directly create Supabase client here to avoid module resolution issues
@@ -20,18 +40,88 @@ interface Webinar {
   time: string;
   duration: string;
   presenter: string;
+  presenter_description?: string;
+  presenter_image_url?: string;
   image_url?: string;
   benefits: string[];
   hook_questions: string[];
   registration_url?: string;
   is_featured: boolean;
+  price?: number;
 }
 
 const Webinars = () => {
   const [webinars, setWebinars] = useState<Webinar[]>([]);
   const [featuredWebinar, setFeaturedWebinar] = useState<Webinar | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number}>({days: 0, hours: 0, minutes: 0, seconds: 0});
+  const [spotsLeft, setSpotsLeft] = useState<number>(25);
+  const [showUrgencyPopup, setShowUrgencyPopup] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
+
+  // Calculate time remaining until webinar date
+  const calculateTimeRemaining = (webinarDate: string, webinarTime: string) => {
+    // Parse webinar date and time
+    const [year, month, day] = webinarDate.split('-').map(Number);
+    const [webinarHours, webinarMinutes] = webinarTime.split(':').map(Number);
+    
+    // Create webinar datetime object
+    const webinarDateTime = new Date(year, month - 1, day, webinarHours, webinarMinutes);
+    const now = new Date();
+    
+    // Calculate time difference in milliseconds
+    const diff = webinarDateTime.getTime() - now.getTime();
+    
+    // If webinar is in the past, return zeros
+    if (diff <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+    
+    // Calculate days, hours, minutes, seconds
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const remainingHours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const remainingMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    return { days, hours: remainingHours, minutes: remainingMinutes, seconds };
+  };
+  
+  // Countdown timer for webinar
+  useEffect(() => {
+    if (featuredWebinar) {
+      // Initial calculation
+      setTimeLeft(calculateTimeRemaining(featuredWebinar.date, featuredWebinar.time));
+      
+      // Update every second
+      timerRef.current = setInterval(() => {
+        setTimeLeft(calculateTimeRemaining(featuredWebinar.date, featuredWebinar.time));
+      }, 1000);
+    }
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+    };
+  }, [featuredWebinar]);
+  
+  // Simulate spots decreasing occasionally
+  useEffect(() => {
+    const decreaseSpots = () => {
+      if (Math.random() > 0.7 && spotsLeft > 5) {
+        setSpotsLeft(prev => prev - 1);
+      }
+    };
+    
+    const spotInterval = setInterval(decreaseSpots, 45000); // Every 45 seconds
+    
+    return () => clearInterval(spotInterval);
+  }, [spotsLeft]);
 
   // Fetch webinar data
   useEffect(() => {
@@ -50,27 +140,30 @@ const Webinars = () => {
           // If there's an error (table might not exist yet), use hardcoded data
           const hardcodedWebinar: Webinar = {
             id: 1,
-            title: 'The Pleasure Paradox: Why Masturbation Might Be Hurting Your Sex Life (And How to Fix It)',
-            description: 'Join certified intimacy coach Khushboo Bist for a free, confidential, and shame-free webinar where we\'ll have an honest conversation about masturbation.',
-            date: '2025-08-15',
-            time: '19:00',
-            duration: '90 minutes',
-            presenter: 'Khushboo Bist',
-            image_url: '/images/webinar-masturbation.jpg',
+            title: 'Understanding Porn Addiction',
+            description: 'Struggling to stop watching but don\'t know why? Join me for a raw, judgment-free session on the emotional and psychological side of porn addiction.',
+            date: '2025-08-01',
+            time: '18:00',
+            duration: '60 minutes',
+            presenter: 'Dr. Maya Sharma',
+            presenter_description: 'Certified Sex Therapist & Addiction Specialist with over 10 years of experience helping individuals overcome compulsive behaviors. Dr. Sharma takes a compassionate, shame-free approach to addressing the emotional roots of addiction.',
+            presenter_image_url: '/images/dr-maya-sharma.jpg',
+            image_url: '/images/webinar-porn-addiction.jpg',
             benefits: [
-              'Why so many of us carry deep-seated guilt around self-pleasure (and how to release it).',
-              'The #1 reason masturbation can interfere with partnered orgasms and what to do about it.',
-              'How to turn your solo practice into a tool that enhances your sex life, instead of competing with it.',
-              'A simple technique called "Mindful Masturbation" to rediscover sensation and pleasure.'
+              'What is Porn Addiction? Understanding the science behind compulsive behaviors',
+              'Myths and Realities: Separating fact from fiction about porn addiction',
+              'Root Causes & Emotional Patterns: Identifying your personal triggers',
+              'How to Break the Loop: Practical strategies for regaining control'
             ],
             hook_questions: [
-              'Do you ever feel a sense of guilt or shame after masturbating?',
-              'Is your solo pleasure routine starting to feel more exciting than sex with your partner?',
-              'Are you struggling to reach orgasm with your partner, even though it\'s easy when you\'re alone?',
-              'Does the topic of masturbation feel like a secret you have to keep in your relationship?'
+              'Do you find yourself watching porn even when you promised yourself you wouldn\'t?',
+              'Has porn viewing started to interfere with your relationships or daily life?',
+              'Do you feel shame or guilt after watching, yet return to it again and again?',
+              'Have you tried to stop but found yourself unable to break the pattern?'
             ],
-            registration_url: 'https://forms.gle/yourFormLink',
-            is_featured: true
+            registration_url: 'https://forms.gle/pornAddictionWebinar',
+            is_featured: true,
+            price: 1499
           };
           
           setWebinars([hardcodedWebinar]);
@@ -136,6 +229,19 @@ const Webinars = () => {
     return `${hour12}:${minutes.toString().padStart(2, '0')} ${period}`;
   };
 
+  // Show urgency popup after 10 seconds
+  useEffect(() => {
+    popupTimerRef.current = setTimeout(() => {
+      setShowUrgencyPopup(true);
+    }, 10000); // 10 seconds
+    
+    return () => {
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+    };
+  }, []);
+
   if (loading) {
     return (
       <div className="container-custom py-28 flex justify-center items-center min-h-[60vh]">
@@ -149,132 +255,466 @@ const Webinars = () => {
 
   return (
     <div className="pt-0 pb-0">
-      {featuredWebinar && (
-        <section className="bg-gradient-to-b from-[#FFEBF0] to-white py-12 px-4">
-          <div className="container-custom">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
-                <h1 className="text-3xl md:text-4xl font-serif font-semibold text-gray-800 mb-3">
-                  {featuredWebinar.title}
-                </h1>
-                <p className="text-lg text-gray-600">
-                  with <span className="font-medium text-[#FF7A9A]">{featuredWebinar.presenter}</span>
+      {/* Urgency Popup */}
+      <Dialog open={showUrgencyPopup} onOpenChange={setShowUrgencyPopup}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-rose-600">
+              <AlertCircle size={20} />
+              <span>Limited Time Offer!</span>
+            </DialogTitle>
+            <DialogDescription>
+              <div className="py-4">
+                <p className="text-lg font-medium mb-3">Only {spotsLeft} spots remaining for this exclusive webinar!</p>
+                <p className="mb-4">Secure your spot now before all seats are filled. This is a rare opportunity to learn directly from {featuredWebinar?.presenter}.</p>
+                
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                  <p className="text-amber-700 font-medium flex items-center gap-2">
+                    <Clock size={18} />
+                    <span>Time is running out! Only {timeLeft.days} days, {timeLeft.hours}h {timeLeft.minutes}m left</span>
+                  </p>
+                </div>
+                
+                <div className="flex justify-center">
+                  <Button 
+                    className="bg-rose-500 hover:bg-rose-600 text-white py-6 px-8 rounded-full text-lg shadow-md animate-pulse"
+                    onClick={() => {
+                      handleRegister(featuredWebinar?.registration_url || '');
+                      setShowUrgencyPopup(false);
+                    }}
+                  >
+                    Yes! Reserve My Spot for ₹{featuredWebinar?.price || 1499}
+                  </Button>
+                </div>
+                
+                <p className="text-center text-gray-500 text-sm mt-4">
+                  <span className="font-medium">100% Satisfaction Guarantee</span> • Secure payment
                 </p>
               </div>
-              
-              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start mb-12">
-                {/* Featured Image */}
-                <div className="w-full md:w-1/2">
-                  <div className="rounded-xl overflow-hidden shadow-lg">
-                    <img 
-                      src={featuredWebinar.image_url || "/images/webinar-placeholder.jpg"} 
-                      alt={featuredWebinar.title} 
-                      className="w-full h-auto object-cover aspect-video"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/images/webinar-placeholder.jpg";
-                      }}
-                    />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+      
+      {featuredWebinar && (
+        <>
+          {/* Featured Webinar Image Banner */}
+          <section className="bg-white">
+            <div className="container-custom max-w-full mx-auto px-0">
+              <div className="overflow-hidden shadow-md">
+                <img 
+                  src={featuredWebinar.image_url || "/images/webinar-placeholder.jpg"} 
+                  alt={featuredWebinar.title} 
+                  className="w-full h-auto object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/images/webinar-placeholder.jpg";
+                  }}
+                />
+              </div>
+            </div>
+          </section>
+          
+          {/* Hero Section with Title and Date */}
+          <section className="bg-slate-50 py-16 px-4">
+            <div className="container-custom max-w-5xl mx-auto">
+              <div className="text-center">
+                <Badge className="bg-rose-500 text-white px-4 py-2 text-sm font-medium mb-4">LIVE WEBINAR</Badge>
+                
+                <div className="flex flex-wrap justify-center gap-3 mb-6">
+                  <div className="inline-block bg-rose-50 text-rose-500 px-4 py-2 rounded-full font-medium">
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon size={18} />
+                      <span>{formatDate(featuredWebinar.date)} · {formatTime(featuredWebinar.time)} · {featuredWebinar.duration}</span>
+                    </div>
+                  </div>
+                  
+                  {featuredWebinar.price && (
+                    <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-2 rounded-full font-medium">
+                      <div className="flex items-center gap-2">
+                        <span>₹{featuredWebinar.price}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <h1 className="text-3xl md:text-5xl font-serif font-semibold text-gray-800 mb-6 max-w-3xl mx-auto leading-tight">
+                  {featuredWebinar.title}
+                </h1>
+                
+                <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-4">
+                  {featuredWebinar.description}
+                </p>
+                
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 max-w-xl mx-auto">
+                  <p className="text-amber-700 font-medium flex items-center justify-center gap-2">
+                    <Bell size={18} />
+                    <span>Important: No recordings will be provided. Live attendance required.</span>
+                  </p>
+                </div>
+                
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+                  <div className="flex items-center gap-2 text-emerald-600 font-medium">
+                    <Users size={20} />
+                    <span>Only {spotsLeft} spots remaining!</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-amber-600 font-medium">
+                    <Star size={20} />
+                    <span>4.9/5 rating from past attendees</span>
                   </div>
                 </div>
                 
-                {/* Webinar Details */}
-                <div className="w-full md:w-1/2 flex flex-col">
-                  {/* Date and Time */}
-                  <div className="inline-block bg-[#FFE5EC] rounded-lg px-4 py-2 mb-6">
-                    <div className="flex items-center gap-2 text-[#FF5A84] font-medium">
-                      <CalendarIcon size={18} />
-                      <span className="text-lg">{formatDate(featuredWebinar.date)}</span>
+                {/* Countdown Timer */}
+                <div className="bg-white rounded-xl shadow-md p-6 mb-8 max-w-md mx-auto">
+                  <p className="text-gray-600 mb-3 flex items-center justify-center gap-2">
+                    <Bell className="text-rose-500" />
+                    <span>Registration closes in:</span>
+                  </p>
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <div className="text-2xl font-bold text-gray-800">{timeLeft.days}</div>
+                      <div className="text-xs text-gray-500">Days</div>
                     </div>
-                    <div className="flex items-center gap-2 text-[#FF5A84] mt-2 font-medium">
-                      <Clock size={18} />
-                      <span className="text-lg">{formatTime(featuredWebinar.time)} · {featuredWebinar.duration}</span>
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <div className="text-2xl font-bold text-gray-800">{timeLeft.hours}</div>
+                      <div className="text-xs text-gray-500">Hours</div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <div className="text-2xl font-bold text-gray-800">{timeLeft.minutes}</div>
+                      <div className="text-xs text-gray-500">Minutes</div>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <div className="text-2xl font-bold text-gray-800">{timeLeft.seconds}</div>
+                      <div className="text-xs text-gray-500">Seconds</div>
                     </div>
                   </div>
-                  
-                  {/* Description */}
-                  <p className="text-lg text-gray-700 mb-8">
-                    {featuredWebinar.description}
-                  </p>
-                  
-                  {/* CTA Button */}
-                  <Button
-                    className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-6 rounded-full text-lg"
-                    onClick={() => handleRegister(featuredWebinar.registration_url)}
-                  >
-                    Reserve Your Free Spot Now
-                  </Button>
                 </div>
+                
+                <Button 
+                  className="bg-rose-500 hover:bg-rose-600 text-white py-6 px-10 rounded-full text-lg shadow-md animate-pulse"
+                  onClick={() => handleRegister(featuredWebinar.registration_url)}
+                >
+                  Reserve Your Spot for ₹{featuredWebinar.price || 1499}
+                </Button>
+                
+                <p className="text-gray-500 text-sm mt-3">Secure payment • Instant confirmation</p>
               </div>
-              
-              {/* Two-column layout for desktop */}
-              <div className="md:flex md:gap-10 md:mt-8">
-                {/* Hook Questions */}
-                <div className="mb-12 md:mb-0 md:w-1/2">
-                  <h2 className="text-xl md:text-2xl font-semibold mb-4 font-serif">
-                    Is this webinar for you?
-                  </h2>
+            </div>
+          </section>
+          
+          {/* Presenter Profile Section */}
+          <section className="py-16 px-4 bg-white">
+            <div className="container-custom max-w-5xl mx-auto">
+              {featuredWebinar.presenter && (
+                <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                  {/* Presenter Image */}
+                  <div className="w-full md:w-2/5 flex justify-center">
+                    {featuredWebinar.presenter_image_url ? (
+                      <div className="relative">
+                        <div className="w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden border-4 border-rose-100 shadow-lg">
+                          <img 
+                            src={featuredWebinar.presenter_image_url} 
+                            alt={featuredWebinar.presenter} 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(featuredWebinar.presenter)}&background=FF7A9A&color=fff&size=256`;
+                            }}
+                          />
+                        </div>
+                        <div className="absolute -bottom-4 -right-4 bg-rose-50 border border-rose-100 rounded-full py-2 px-5 shadow-md">
+                          <span className="text-rose-500 font-medium">Your Host</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-64 h-64 md:w-80 md:h-80 rounded-2xl bg-rose-100 flex items-center justify-center text-white text-6xl font-medium shadow-lg">
+                        {featuredWebinar.presenter.charAt(0)}
+                      </div>
+                    )}
+                  </div>
                   
-                  <div className="bg-white rounded-xl shadow-sm p-6 border border-[#FFE5EC] h-full">
-                    <ul className="space-y-4">
+                  {/* Presenter Details */}
+                  <div className="w-full md:w-3/5 text-center md:text-left mt-8 md:mt-0">
+                    <h2 className="text-3xl md:text-4xl font-serif font-semibold text-gray-800 mb-4">
+                      {featuredWebinar.presenter}
+                    </h2>
+                    
+                    {featuredWebinar.presenter_description && (
+                      <p className="text-lg text-gray-600 leading-relaxed">
+                        {featuredWebinar.presenter_description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+          
+          {/* Webinar Content Section */}
+          <section className="py-16 px-4 bg-gray-50">
+            <div className="container-custom max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* What You'll Learn */}
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-rose-100 p-3 rounded-full">
+                      <CheckCircle2 className="text-rose-500" size={24} />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-serif font-semibold text-gray-800">
+                      What You'll Learn
+                    </h2>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {featuredWebinar.benefits.map((benefit, index) => (
+                      <div key={index} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-start gap-4">
+                        <div className="bg-rose-50 text-rose-500 font-semibold rounded-full w-8 h-8 flex items-center justify-center shrink-0">
+                          {index + 1}
+                        </div>
+                        <p className="text-gray-700">{benefit}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Is This For You */}
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-purple-100 p-3 rounded-full">
+                      <div className="text-purple-500 font-bold">?</div>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-serif font-semibold text-gray-800">
+                      Is This For You?
+                    </h2>
+                  </div>
+                  
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <ul className="space-y-5">
                       {featuredWebinar.hook_questions.map((question, index) => (
                         <li key={index} className="flex items-start gap-3">
-                          <div className="text-[#FF7A9A] mt-1 flex-shrink-0">❓</div>
-                          <p className="text-gray-800">{question}</p>
+                          <div className="bg-purple-50 text-purple-500 p-2 rounded-full shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                            </svg>
+                          </div>
+                          <p className="text-gray-700">{question}</p>
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-                
-                {/* Benefits */}
-                <div className="md:w-1/2">
-                  <h2 className="text-xl md:text-2xl font-semibold mb-4 font-serif">
-                    What you'll discover in this session:
-                  </h2>
-                  
-                  <div className="grid md:grid-cols-1 lg:grid-cols-1 gap-4">
-                    {featuredWebinar.benefits.map((benefit, index) => (
-                      <Card key={index} className="border-[#FFE5EC]">
-                        <CardContent className="p-5 flex items-start gap-3">
-                          <CheckCircle2 className="text-[#FF7A9A] shrink-0 mt-1" size={22} />
-                          <p>{benefit}</p>
-                        </CardContent>
-                      </Card>
+              </div>
+            </div>
+          </section>
+          
+          {/* Social Proof Section */}
+          <section className="py-16 px-4 bg-white">
+            <div className="container-custom max-w-5xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-serif font-semibold text-center mb-10">
+                What Past Attendees Are Saying
+              </h2>
+              
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Testimonial 1 */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="flex items-center mb-4 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} fill="currentColor" />
                     ))}
+                  </div>
+                  <p className="text-gray-700 mb-4 italic">
+                    "This webinar completely changed my perspective. The insights were practical and I've already started implementing the strategies in my daily life."
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-medium">
+                      S
+                    </div>
+                    <div>
+                      <p className="font-medium">Sarath K.</p>
+                      <p className="text-sm text-gray-500">Attended last month</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Testimonial 2 */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="flex items-center mb-4 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} fill="currentColor" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-4 italic">
+                    "The presenter was incredibly knowledgeable and created such a safe space for discussion. I finally feel understood and have a clear path forward."
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-medium">
+                      M
+                    </div>
+                    <div>
+                      <p className="font-medium">Michael T.</p>
+                      <p className="text-sm text-gray-500">Attended 2 weeks ago</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Testimonial 3 */}
+                <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="flex items-center mb-4 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} fill="currentColor" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-4 italic">
+                    "I was hesitant to join at first, but I'm so glad I did. The information was presented in a judgment-free way that made me feel comfortable asking questions."
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-medium">
+                      
+                    </div>
+                    <div>
+                      <p className="font-medium">Neha.M</p>
+                      <p className="text-sm text-gray-500">Attended last week</p>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+          
+          {/* Why Attend Section */}
+          <section className="py-16 px-4 bg-slate-50">
+            <div className="container-custom max-w-5xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-serif font-semibold text-center mb-4">
+                Why You Can't Miss This Webinar
+              </h2>
               
-              {/* Call to action */}
-              <div className="mt-8 text-center">
-                <p className="text-gray-600 italic mb-6 max-w-2xl mx-auto">
-                  This is a safe space to learn and ask questions without judgment.
-                </p>
+              <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+                Join hundreds of others who have already benefited from our expert-led sessions
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="bg-white rounded-xl p-6 shadow-md text-center">
+                  <div className="bg-rose-50 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Award className="text-rose-500" size={24} />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Expert-Led Session</h3>
+                  <p className="text-gray-600">Learn from a certified specialist with years of experience in the field</p>
+                </div>
                 
-                <Button 
-                  className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-6 px-12 rounded-full text-lg shadow-md"
-                  onClick={() => handleRegister(featuredWebinar.registration_url)}
-                >
-                  Reserve Your Free Spot Now
-                </Button>
+                <div className="bg-white rounded-xl p-6 shadow-md text-center">
+                  <div className="bg-rose-50 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="text-rose-500" size={24} />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Practical Strategies</h3>
+                  <p className="text-gray-600">Walk away with actionable techniques you can implement immediately</p>
+                </div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-md text-center">
+                  <div className="bg-rose-50 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Share2 className="text-rose-500" size={24} />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Supportive Community</h3>
+                  <p className="text-gray-600">Connect with others facing similar challenges in a judgment-free environment</p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+          
+          {/* Call to Action */}
+          <section className="py-16 px-4 bg-rose-50">
+            <div className="container-custom max-w-3xl mx-auto text-center">
+              <div className="bg-white rounded-xl p-8 shadow-lg border border-rose-100">
+                <Badge className="bg-rose-500 text-white px-4 py-1 mb-6">LIMITED SEATS AVAILABLE</Badge>
+                
+                <h2 className="text-2xl md:text-3xl font-serif font-semibold text-gray-800 mb-6">
+                  Ready to transform your understanding and take control?
+                </h2>
+                
+                <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+                  Join {spotsLeft} others who have already reserved their spot for this life-changing session.
+                </p>
+                
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <CheckCircle2 className="text-emerald-500" size={20} />
+                    <span>Live Q&A included</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <CheckCircle2 className="text-emerald-500" size={20} />
+                    <span>Live interactive Q&A session</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <CheckCircle2 className="text-emerald-500" size={20} />
+                    <span>Free resource guide</span>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="bg-rose-500 hover:bg-rose-600 text-white py-6 px-12 rounded-full text-lg shadow-md animate-pulse"
+                  onClick={() => handleRegister(featuredWebinar.registration_url)}
+                >
+                  Reserve Your Spot for ₹{featuredWebinar.price || 1499}
+                </Button>
+                
+                <p className="text-gray-500 text-sm mt-4">
+                  <span className="font-medium">Hurry!</span> {timeLeft.days > 0 ? `${timeLeft.days} days, ` : ''}{timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s until webinar starts
+                </p>
+              </div>
+            </div>
+          </section>
+        </>
       )}
       
+      {/* FAQ Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container-custom max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-serif font-semibold text-center mb-10">
+            Frequently Asked Questions
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-lg mb-2">How long is the webinar?</h3>
+              <p className="text-gray-600">The webinar lasts for {featuredWebinar?.duration || '60 minutes'}, including time for Q&A at the end.</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-lg mb-2">Will I receive a recording?</h3>
+              <p className="text-gray-600">No. This webinar is live-only and no recordings will be provided. Please ensure you can attend the scheduled session.</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-lg mb-2">What's included in the registration fee?</h3>
+              <p className="text-gray-600">Your registration includes access to the live session, Q&A participation, and a downloadable resource guide. No recordings will be provided.</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-lg mb-2">What if I can't attend live?</h3>
+              <p className="text-gray-600">Unfortunately, no recordings will be available. We recommend only registering if you can attend the live session.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* List of upcoming webinars (if there are more than one) */}
       {webinars.length > 1 && (
-        <section className="container-custom py-10">
-          <h2 className="text-2xl md:text-3xl font-serif font-semibold text-center mb-10">
+        <section className="container-custom py-16 bg-slate-50">
+          <h2 className="text-2xl md:text-3xl font-serif font-semibold text-center mb-4">
             More Upcoming Webinars
           </h2>
           
+          <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+            Continue your journey with these additional educational sessions
+          </p>
+          
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {webinars.filter(w => w.id !== featuredWebinar?.id).map(webinar => (
-              <Card key={webinar.id} className="overflow-hidden border-[#FFE5EC]">
-                <div className="aspect-video overflow-hidden">
+              <Card key={webinar.id} className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="aspect-video overflow-hidden relative">
+                  <Badge className="absolute top-3 right-3 bg-rose-500 text-white">UPCOMING</Badge>
                   <img 
                     src={webinar.image_url || "/images/webinar-placeholder.jpg"} 
                     alt={webinar.title} 
@@ -286,12 +726,12 @@ const Webinars = () => {
                   />
                 </div>
                 <CardContent className="p-5">
-                  <div className="bg-[#FFE5EC] inline-block rounded-md px-3 py-1 mb-3">
-                    <div className="flex items-center gap-1 text-[#FF5A84] font-medium">
+                  <div className="bg-rose-50 inline-block rounded-md px-3 py-1 mb-3">
+                    <div className="flex items-center gap-1 text-rose-500 font-medium">
                       <CalendarIcon size={14} />
                       <span>{formatDate(webinar.date)}</span>
                     </div>
-                    <div className="flex items-center gap-1 text-[#FF5A84] mt-1">
+                    <div className="flex items-center gap-1 text-rose-500 mt-1">
                       <Clock size={14} />
                       <span>{formatTime(webinar.time)}</span>
                     </div>
@@ -303,10 +743,10 @@ const Webinars = () => {
                     {webinar.description}
                   </p>
                   <Button 
-                    className="bg-[#FFE5EC] hover:bg-[#FFD5E0] text-[#FF5A84] w-full"
+                    className="bg-rose-50 hover:bg-rose-100 text-rose-500 w-full font-medium"
                     onClick={() => handleRegister(webinar.registration_url)}
                   >
-                    Learn More
+                    Register for ₹{webinar.price || 1499}
                   </Button>
                 </CardContent>
               </Card>
