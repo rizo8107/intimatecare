@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, Suspense, lazy, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, Star, Heart, MessageCircle, Award, CheckCircle, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,11 +6,24 @@ import BookingModal from '@/components/BookingModal';
 import { createClient } from '@supabase/supabase-js';
 import * as LucideIcons from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useQuery, useQueries, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Initialize React Query client with caching configuration
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 // Type definitions for our data
 interface Instructor {
@@ -118,140 +131,195 @@ const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | null,
   }
 };
 
-const DynamicInstructorBooking = () => {
-  const { instructorName = "Mansi" } = useParams<{ instructorName: string }>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [instructor, setInstructor] = useState<Instructor | null>(null);
-  const [sessionTypes, setSessionTypes] = useState<SessionType[]>([]);
-  const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
-  const [highlights, setHighlights] = useState<InstructorHighlight[]>([]);
-  const [supportAreas, setSupportAreas] = useState<InstructorSupportArea[]>([]);
-  const [offerings, setOfferings] = useState<InstructorOffering[]>([]);
-  const [pageSections, setPageSections] = useState<InstructorPageSection[]>([]);
-  const [testimonials, setTestimonials] = useState<InstructorTestimonial[]>([]);
-  const [loading, setLoading] = useState(true);
+// Main component wrapped with QueryClientProvider
+const DynamicInstructorBookingWrapper = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <DynamicInstructorBookingContent />
+    </QueryClientProvider>
+  );
+};
 
-  // Booking Modal and Payment State
+// The actual content component
+const DynamicInstructorBookingContent = () => {
+  const { instructorName = "Mansi" } = useParams<{ instructorName: string }>();
+  
+  // Modal and payment state
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
   const [selectedSessionType, setSelectedSessionType] = useState<SessionType | null>(null);
-  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
-  const [storedCfOrderId, setStoredCfOrderId] = useState<string | null>(null);
-  const [paymentOutcome, setPaymentOutcome] = useState<string | null>(null); // e.g., 'SUCCESS', 'FAILED'
+  const [paymentOutcome, setPaymentOutcome] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const [isPollingStatus, setIsPollingStatus] = useState(false);
+  const [isPollingStatus, setIsPollingStatus] = useState<boolean>(false);
+  
+  // Refs for polling control
+  const pollingActiveRef = useRef<boolean>(false);
+  const pollingTimeoutIdRef = useRef<number | null>(null);
+  const pollingAttemptsRef = useRef<number>(0);
 
-  const pollingActiveRef = useRef(false);
-  const pollingTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
-
+  // Payment constants
   const FINAL_PAYMENT_STATUSES = ['SUCCESS', 'FAILED', 'CANCELLED', 'PAID'];
   const MAX_POLLING_ATTEMPTS = 20;
   const POLLING_INTERVAL = 5000;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Fetch instructor details
-        const { data: instructorData, error: instructorError } = await supabase
-          .from('instructors')
-          .select('*')
-          .eq('name', instructorName)
-          .single();
-          
-        if (instructorError) throw instructorError;
-        setInstructor(instructorData);
-        
-        if (instructorData?.id) {
-          const instructorId = instructorData.id;
-          
-          // Fetch session types
-          const { data: sessionData, error: sessionError } = await supabase
+  // Query for instructor details with prefetching
+  const { data: instructor, isLoading: isLoadingInstructor } = useQuery({
+    queryKey: ['instructor', instructorName],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('instructors')
+        .select('*')
+        .eq('name', instructorName)
+        .single();
+      
+      if (error) throw error;
+      return data as Instructor;
+    },
+  });
+
+  // Only fetch related data when instructor data is available
+  const instructorId = instructor?.id;
+  
+  // Parallel data fetching for all related data
+  const queries = useQueries({
+    queries: [
+      // Session Types
+      {
+        queryKey: ['sessionTypes', instructorId],
+        queryFn: async () => {
+          if (!instructorId) return [];
+          const { data, error } = await supabase
             .from('session_types')
             .select('*')
             .eq('instructor_id', instructorId)
             .order('is_first_session', { ascending: false });
-            
-          if (sessionError) throw sessionError;
-          setSessionTypes(sessionData || []);
           
-          // Fetch available slots
-          const { data: slotsData, error: slotsError } = await supabase
-            .from('available_slots')
-            .select('*')
-            .in('session_type_id', sessionData.map(st => st.id))
-            .eq('booking_status', false)
-            .gte('slot_date', new Date().toISOString().split('T')[0]) // Fetch from today onwards
-            .order('slot_date').order('start_time');
-            
-          if (slotsError) throw slotsError;
-          setAvailableSlots(slotsData || []);
-          
-          // Fetch highlights
-          const { data: highlightsData, error: highlightsError } = await supabase
+          if (error) throw error;
+          return data as SessionType[];
+        },
+        enabled: !!instructorId,
+      },
+      // Highlights
+      {
+        queryKey: ['highlights', instructorId],
+        queryFn: async () => {
+          if (!instructorId) return [];
+          const { data, error } = await supabase
             .from('instructor_highlights')
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-            
-          if (highlightsError) throw highlightsError;
-          setHighlights(highlightsData || []);
           
-          // Fetch support areas
-          const { data: supportAreasData, error: supportAreasError } = await supabase
+          if (error) throw error;
+          return data as InstructorHighlight[];
+        },
+        enabled: !!instructorId,
+      },
+      // Support Areas
+      {
+        queryKey: ['supportAreas', instructorId],
+        queryFn: async () => {
+          if (!instructorId) return [];
+          const { data, error } = await supabase
             .from('instructor_support_areas')
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-            
-          if (supportAreasError) throw supportAreasError;
-          setSupportAreas(supportAreasData || []);
           
-          // Fetch offerings
-          const { data: offeringsData, error: offeringsError } = await supabase
+          if (error) throw error;
+          return data as InstructorSupportArea[];
+        },
+        enabled: !!instructorId,
+      },
+      // Offerings
+      {
+        queryKey: ['offerings', instructorId],
+        queryFn: async () => {
+          if (!instructorId) return [];
+          const { data, error } = await supabase
             .from('instructor_offerings')
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-            
-          if (offeringsError) throw offeringsError;
-          setOfferings(offeringsData || []);
           
-          // Fetch page sections
-          const { data: pageSectionsData, error: pageSectionsError } = await supabase
+          if (error) throw error;
+          return data as InstructorOffering[];
+        },
+        enabled: !!instructorId,
+      },
+      // Page Sections
+      {
+        queryKey: ['pageSections', instructorId],
+        queryFn: async () => {
+          if (!instructorId) return [];
+          const { data, error } = await supabase
             .from('instructor_page_sections')
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-            
-          if (pageSectionsError) throw pageSectionsError;
-          setPageSections(pageSectionsData || []);
           
-          // Fetch testimonials
-          const { data: testimonialsData, error: testimonialsError } = await supabase
+          if (error) throw error;
+          return data as InstructorPageSection[];
+        },
+        enabled: !!instructorId,
+      },
+      // Testimonials
+      {
+        queryKey: ['testimonials', instructorId],
+        queryFn: async () => {
+          if (!instructorId) return [];
+          const { data, error } = await supabase
             .from('instructor_testimonials')
             .select('*')
             .eq('instructor_id', instructorId);
-            
-          if (testimonialsError) throw testimonialsError;
-          setTestimonials(testimonialsData || []);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+          
+          if (error) throw error;
+          return data as InstructorTestimonial[];
+        },
+        enabled: !!instructorId,
+      },
+    ],
+  });
+  
+  // Extract data from queries
+  const sessionTypes = queries[0].data as SessionType[] || [];
+  const highlights = queries[1].data as InstructorHighlight[] || [];
+  const supportAreas = queries[2].data as InstructorSupportArea[] || [];
+  const offerings = queries[3].data as InstructorOffering[] || [];
+  const pageSections = queries[4].data as InstructorPageSection[] || [];
+  const testimonials = queries[5].data as InstructorTestimonial[] || [];
+  
+  // Fetch available slots only after session types are loaded
+  const { data: availableSlots = [], isLoading: isLoadingSlots } = useQuery({
+    queryKey: ['availableSlots', sessionTypes.map(st => st.id)],
+    queryFn: async () => {
+      if (!sessionTypes.length) return [];
+      
+      const { data, error } = await supabase
+        .from('available_slots')
+        .select('*')
+        .in('session_type_id', sessionTypes.map(st => st.id))
+        .eq('booking_status', false)
+        .gte('slot_date', new Date().toISOString().split('T')[0])
+        .order('slot_date').order('start_time');
+      
+      if (error) throw error;
+      return data as AvailableSlot[];
+    },
+    enabled: sessionTypes.length > 0,
+    staleTime: 60 * 1000, // Cache for 1 minute (shorter time as availability changes frequently)
+  });
+  
+  // Determine loading state
+  const isLoading = isLoadingInstructor || queries.some(query => query.isLoading) || isLoadingSlots;
 
-    fetchData();
-  }, [instructorName]);
-
-  // Helper function to get a specific section by type
-  const getSection = (sectionType: string) => {
+  // Helper function to get a specific section by type - memoized
+  const getSection = useCallback((sectionType: string) => {
     return pageSections.find(section => section.section_type === sectionType);
-  };
+  }, [pageSections]);
 
-  // Helper function to filter support areas by category
-  const getSupportAreasByCategory = () => {
+  // Helper function to filter support areas by category - memoized for performance
+  const supportAreasByCategory = useMemo(() => {
     const categories: Record<string, InstructorSupportArea[]> = {};
     
     supportAreas.forEach(area => {
@@ -263,21 +331,43 @@ const DynamicInstructorBooking = () => {
     });
     
     return categories;
-  };
+  }, [supportAreas]);
   
-  // Get support areas by category
-  const supportAreasByCategory = getSupportAreasByCategory();
+  // Get first session and follow-up session - memoized
+  const firstSession = useMemo(() => 
+    sessionTypes.find(session => session.is_first_session),
+  [sessionTypes]);
   
-  // Get first session and follow-up session
-  const firstSession = sessionTypes.find(session => session.is_first_session);
-  const followUpSession = sessionTypes.find(session => !session.is_first_session);
+  const followUpSession = useMemo(() => 
+    sessionTypes.find(session => !session.is_first_session),
+  [sessionTypes]);
+  
+  // Theme colors - memoized
+  const highlightColor = useMemo(() => 
+    instructor?.highlight_color || '#FF5A84',
+  [instructor]);
+  
+  const secondaryColor = useMemo(() => 
+    instructor?.secondary_color || '#853f92',
+  [instructor]);
 
-  // Get colors from instructor data or use defaults
-  const highlightColor = instructor?.highlight_color || '#FF5A84';
-  const secondaryColor = instructor?.secondary_color || '#853f92';
+  // Function to format date - memoized for better performance
+  const formatDate = useCallback((dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }, []);
+
+  // Function to format time - memoized for better performance
+  const formatTime = useCallback((timeStr: string) => {
+    const [hours, minutes] = timeStr.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  }, []);
 
   // --- PAYMENT LOGIC ---
-  const loadCashfreeSDK = () => {
+  const loadCashfreeSDK = async () => {
     return new Promise((resolve) => {
       if (window.Cashfree) {
         resolve(true);
@@ -334,8 +424,6 @@ const DynamicInstructorBooking = () => {
         if (data.payment_status === 'SUCCESS') {
           // 1. Update UI by removing the booked slot
           const newSlots = availableSlots.filter(s => s.id !== selectedSlot?.id);
-          setAvailableSlots(newSlots);
-          
           // 2. IMPORTANT: The actual database update happens on the backend!
           // The backend webhook should execute this SQL when it verifies the payment:
           // UPDATE available_slots SET booking_status = TRUE WHERE id = [the_booked_slot_id];
@@ -362,24 +450,20 @@ const DynamicInstructorBooking = () => {
   const handleBookNow = async () => {
     if (!selectedSlot || !selectedSessionType) return;
 
-    setIsLoadingPayment(true);
     setPaymentError(null);
     setPaymentOutcome(null);
 
     const sdkLoaded = await loadCashfreeSDK();
     if (!sdkLoaded) {
       setPaymentError('Failed to load payment SDK. Please check your connection.');
-      setIsLoadingPayment(false);
       return;
     }
 
     const paymentSessionId = await generateOrderId(selectedSlot.id, selectedSessionType.price);
     if (!paymentSessionId) {
-      setIsLoadingPayment(false);
       return;
     }
 
-    setStoredCfOrderId(paymentSessionId);
     const cashfree = new window.Cashfree(paymentSessionId);
 
     cashfree.checkout({
@@ -398,13 +482,11 @@ const DynamicInstructorBooking = () => {
         setPaymentError(error.message || 'An unknown payment error occurred.');
       },
     });
-    setIsLoadingPayment(false);
   };
 
-  const openBookingModal = (slot?: AvailableSlot) => {
-    // If no specific slot is provided, just open the modal with default values
+  // Function to open booking modal with improved performance
+  const openBookingModal = useCallback((slot?: AvailableSlot) => {
     if (!slot) {
-      // If we have available slots, use the first one
       if (availableSlots.length > 0) {
         const firstSlot = availableSlots[0];
         const firstSessionType = sessionTypes.find(st => st.id === firstSlot.session_type_id);
@@ -417,12 +499,9 @@ const DynamicInstructorBooking = () => {
           return;
         }
       }
-      // If no slots available or no matching session type, just open modal with empty values
       setIsModalOpen(true);
       return;
     }
-    
-    // Original behavior for when a specific slot is provided
     const sessionType = sessionTypes.find(st => st.id === slot.session_type_id);
     if (sessionType) {
       setSelectedSlot(slot);
@@ -431,7 +510,7 @@ const DynamicInstructorBooking = () => {
       setPaymentError(null);
       setIsModalOpen(true);
     }
-  };
+  }, [availableSlots, sessionTypes]);
 
   const closeBookingModal = () => {
     setIsModalOpen(false);
@@ -441,25 +520,51 @@ const DynamicInstructorBooking = () => {
     }
   }
 
-  if (loading) {
+  // Show skeleton loading state
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF5A84]"></div>
+      <div className="min-h-screen p-6">
+        {/* Header skeleton */}
+        <div className="max-w-6xl mx-auto">
+          <div className="w-24 h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+          <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-md p-6 mb-8">
+            <div className="md:w-1/3 flex justify-center mb-6 md:mb-0">
+              <div className="w-48 h-48 rounded-full bg-gray-200 animate-pulse"></div>
+            </div>
+            <div className="md:w-2/3 md:pl-8">
+              <div className="w-32 h-6 bg-gray-200 rounded animate-pulse mb-3"></div>
+              <div className="w-3/4 h-8 bg-gray-200 rounded animate-pulse mb-3"></div>
+              <div className="w-full h-20 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="w-40 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+          
+          {/* Content skeleton */}
+          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div className="w-48 h-8 bg-gray-200 rounded animate-pulse mb-4"></div>
+            <div className="w-full h-32 bg-gray-200 rounded animate-pulse mb-6"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="h-24 bg-gray-200 rounded animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-b from-[#FF9EB5] to-white min-h-screen py-12">
+    <div className="bg-gray-50 min-h-screen py-12">
       <div className="container-custom max-w-4xl">
         <Link to="/sessions" className="inline-flex items-center text-[#FF5A84] hover:text-[#FF7A9A] mb-6 transition-colors">
           <ArrowLeft size={16} className="mr-2" />
           Back to Sessions
         </Link>
         
-        <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-8 border border-[#FFE5EC]">
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-8 border border-gray-200">
           {/* Hero Banner with Author Image */}
-          <div className="relative bg-gradient-to-r from-[#FFE5EC] to-[#FFF5F8] py-12 px-6 md:px-10">
+          <div className="relative bg-slate-50 py-12 px-6 md:px-10">
             <div className="absolute top-0 right-0 w-full h-full opacity-10 bg-[url('/images/pattern-dots.png')] bg-repeat"></div>
             <div className="flex flex-col md:flex-row items-center relative z-10">
               {/* Author Image */}
@@ -481,8 +586,8 @@ const DynamicInstructorBooking = () => {
               </div>
               
               {/* Intro Text */}
-              <div className="md:w-2/3 text-center md:text-left md:pl-8">
-                <div className="inline-block bg-[#FF5A84] text-white text-xs font-bold px-3 py-1 rounded-full mb-3">HOLISTIC LISTENER</div>
+              <div className="md:w-2/3 text-center md:text-left">
+                <div className="inline-block bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">HOLISTIC LISTENER</div>
                 <h1 className="text-3xl md:text-4xl font-serif font-medium text-gray-800 mb-3">
                   Book a Session with {instructorName}
                 </h1>
@@ -498,7 +603,7 @@ const DynamicInstructorBooking = () => {
                   ))}
                 </div>
                 
-                <Button className="w-full mt-4" style={{ backgroundColor: instructor.highlight_color }} onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}>
+                <Button className="w-full mt-4 bg-rose-500 hover:bg-rose-600" onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}>
                   <BookOpen size={18} className="mr-2" />
                   Book Now
                 </Button>
@@ -526,16 +631,16 @@ const DynamicInstructorBooking = () => {
               </div>
               
               {firstSession && (
-                <div className="mt-6 bg-gradient-to-r from-[#FFD0E0] to-[#FFF5F8] p-5 rounded-lg border-l-4 border-[#853f92] shadow-md">
+                <div className="mt-6 bg-purple-50 p-5 rounded-lg border-l-4 border-purple-700 shadow-sm">
                   <div className="flex flex-col md:flex-row items-center justify-between">
                     <div className="mb-3 md:mb-0">
                       <h3 className="font-medium text-gray-800 mb-1">{firstSession.name}</h3>
                       <p className="text-gray-600 text-sm">{firstSession.description || `${firstSession.duration_minutes} minutes of dedicated space`}</p>
-                      <div className="text-2xl font-serif font-bold text-[#FF5A84] mt-1">₹{firstSession.price}</div>
+                      <div className="text-2xl font-serif font-bold text-rose-500 mt-1">₹{firstSession.price}</div>
                     </div>
                     <button
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}
-                      className="bg-[#853f92] hover:bg-[#9A4DAB] text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-md"
+                      className="bg-purple-700 hover:bg-purple-800 text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-sm"
                     >
                       <Calendar size={18} className="mr-2" />
                       Book First Session
@@ -546,12 +651,12 @@ const DynamicInstructorBooking = () => {
               
               {followUpSession && (
                 <>
-                  <div className="my-4 border-t border-[#FFD5E2]"></div>
+                  <div className="my-4 border-t border-gray-200"></div>
                   <div className="flex flex-col md:flex-row items-center justify-between">
                     <div className="mb-3 md:mb-0">
                       <h3 className="font-medium text-gray-800 mb-1">{followUpSession.name}</h3>
                       <p className="text-gray-600 text-sm">{followUpSession.description || `${followUpSession.duration_minutes} minutes of continued support`}</p>
-                      <div className="text-2xl font-serif font-bold text-[#FF5A84] mt-1">₹{followUpSession.price}</div>
+                      <div className="text-2xl font-serif font-bold text-rose-500 mt-1">₹{followUpSession.price}</div>
                     </div>
                     <div className="flex flex-col items-center">
                       <button
@@ -580,7 +685,7 @@ const DynamicInstructorBooking = () => {
                   </h2>
                 </div>
                 
-                <div className="bg-white p-5 rounded-lg mb-6 border border-[#FFE5EC] shadow-sm">
+                <div className="bg-gray-50 p-5 rounded-lg mb-6 border border-gray-200">
                   <p className="text-gray-700 leading-relaxed">
                     {getSection('sexual_wellness')?.content || 'As a trained sexual wellness coach, I provide a safe space to explore challenges around intimacy, desire, and pleasure.'}
                   </p>
@@ -588,9 +693,9 @@ const DynamicInstructorBooking = () => {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {supportAreasByCategory['Sexual Wellness'].map(area => (
-                    <div key={area.id} className="bg-gradient-to-br from-[#FFF5F8] to-white p-4 rounded-lg border border-[#FFE5EC] shadow-sm hover:shadow-md transition-shadow">
+                    <div key={area.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                       <div className="flex items-center mb-2">
-                        <DynamicIcon name={area.icon_name} className="text-[#FF5A84] mr-2" size={16} />
+                        <DynamicIcon name={area.icon_name} className="text-rose-500 mr-2" size={16} />
                         <h3 className="font-medium text-gray-800">{area.title}</h3>
                       </div>
                       <p className="text-gray-700 text-sm">{area.description}</p>
@@ -604,7 +709,7 @@ const DynamicInstructorBooking = () => {
             {supportAreasByCategory['Holistic Support'] && (
               <div className="bg-white p-6 rounded-xl mb-8 shadow-sm border border-[#FFE5EC]">
                 <div className="flex items-center mb-5">
-                  <div className="bg-[#853f92] p-2 rounded-lg mr-3">
+                  <div className="bg-purple-700 p-2 rounded-lg mr-3">
                     <MessageCircle size={20} className="text-white" />
                   </div>
                   <h2 className="text-2xl font-serif font-medium text-[#853f92]">
@@ -613,7 +718,7 @@ const DynamicInstructorBooking = () => {
                 </div>
                 
                 <div className="relative mb-6">
-                  <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#853f92] to-[#FF5A84]"></div>
+                  <div className="absolute left-0 top-0 h-full w-1 bg-purple-700"></div>
                   <p className="pl-6 text-gray-700 italic">
                     {getSection('holistic_support')?.content || 'Other areas where I can hold space for your journey:'}
                   </p>
@@ -621,8 +726,8 @@ const DynamicInstructorBooking = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {supportAreasByCategory['Holistic Support']?.map(area => (
-                    <div key={area.id} className="flex bg-gradient-to-br from-[#853f9210] to-white p-4 rounded-lg border border-[#853f9230] shadow-sm">
-                      <div className="bg-[#853f92] p-2 rounded-full h-min mr-3">
+                    <div key={area.id} className="flex bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                      <div className="bg-purple-700 p-2 rounded-full h-min mr-3">
                         <DynamicIcon name={area.icon_name} className="text-white" size={16} />
                       </div>
                       <div>
@@ -649,16 +754,16 @@ const DynamicInstructorBooking = () => {
                   </h2>
                 </div>
                 
-                <div className="bg-gradient-to-br from-[#FFD0E0] to-white p-5 rounded-lg mb-6 border-l-4 border-[#FF5A84] shadow-md">
+                <div className="bg-rose-50 p-5 rounded-lg mb-6 border-l-4 border-rose-500 shadow-sm">
                   <p className="text-gray-700 text-lg mb-4 leading-relaxed">
                     {getSection('post_session')?.content || 'Each session is more than a conversation—it\'s an energetic exchange. Based on our time together, you may receive:'}
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {offerings.map(offering => (
-                      <div key={offering.id} className="bg-white p-4 rounded-lg border border-[#FFE5EC] shadow-sm hover:shadow-md transition-shadow text-center">
-                        <div className="bg-[#FF5A8410] rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                          <DynamicIcon name={offering.icon_name} className="text-[#FF5A84]" size={20} />
+                      <div key={offering.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-center">
+                        <div className="bg-rose-50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                          <DynamicIcon name={offering.icon_name} className="text-rose-500" size={20} />
                         </div>
                         <h3 className="font-medium text-gray-800 mb-2">{offering.title}</h3>
                         <p className="text-gray-600 text-sm">{offering.description}</p>
@@ -675,12 +780,12 @@ const DynamicInstructorBooking = () => {
             
             {/* CTA Section */}
             <div className="border-t border-gray-200 pt-8">
-              <div className="bg-gradient-to-r from-[#FFD0E0] to-white p-6 rounded-xl mb-8 text-center border-2 border-[#853f92] shadow-lg">
+              <div className="bg-purple-50 p-6 rounded-xl mb-8 text-center border-2 border-purple-700 shadow-lg">
                 <div className="flex items-center justify-center mb-6">
-                  <div className="bg-[#FF5A84] p-3 rounded-full">
+                  <div className="bg-rose-500 p-3 rounded-full">
                     <Calendar size={24} className="text-white" />
                   </div>
-                  <h2 className="text-2xl font-serif font-medium text-[#853f92] ml-3">
+                  <h2 className="text-2xl font-serif font-medium text-purple-800 ml-3">
                     {getSection('closing')?.title || 'Ready to Begin Your Journey?'}
                   </h2>
                 </div>
@@ -689,7 +794,7 @@ const DynamicInstructorBooking = () => {
                 </p>
                 <button
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}
-                  className="bg-[#853f92] hover:bg-[#9A4DAB] text-white py-3 px-8 rounded-full font-medium transition-colors inline-flex items-center text-lg mx-auto shadow-lg"
+                  className="bg-purple-700 hover:bg-purple-800 text-white py-3 px-8 rounded-full font-medium transition-colors inline-flex items-center text-lg mx-auto shadow-md"
                 >
                   <Calendar size={20} className="mr-2" />
                   Book Your Session Now
@@ -699,34 +804,34 @@ const DynamicInstructorBooking = () => {
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-[#FFD0E0] to-white rounded-3xl shadow-lg p-8 text-center border-2 border-[#853f92] relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 bg-[#FFE5EC] rounded-full opacity-30"></div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 -mb-16 -ml-16 bg-[#FFE5EC] rounded-full opacity-30"></div>
+        <div className="bg-slate-50 rounded-2xl shadow-md p-8 text-center border border-gray-200 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 bg-rose-100 rounded-full opacity-30"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 -mb-16 -ml-16 bg-rose-100 rounded-full opacity-30"></div>
           
           <div className="relative z-10 space-y-5 max-w-2xl mx-auto">
             <div className="inline-block bg-white px-6 py-2 rounded-full shadow-sm mb-2">
-              <p className="text-[#FF5A84] font-serif text-xl font-medium">"Come as you are—there is no fixing, only feeling."</p>
+              <p className="text-rose-500 font-serif text-xl font-medium">"Come as you are—there is no fixing, only feeling."</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-[#FFE5EC]">
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                 <div className="flex items-center mb-2">
-                  <Heart size={18} className="text-[#FF5A84] mr-2" />
+                  <Heart size={18} className="text-rose-500 mr-2" />
                   <h3 className="font-medium text-gray-800">Inclusive Space</h3>
                 </div>
                 <p className="text-gray-700 text-sm">A safe space for women, men, LGBTQIA+, and anyone navigating emotional or sexual healing.</p>
               </div>
               
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-[#FFE5EC]">
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                 <div className="flex items-center mb-2">
-                  <Star size={18} className="text-[#FF5A84] mr-2" />
+                  <Star size={18} className="text-rose-500 mr-2" />
                   <h3 className="font-medium text-gray-800">Wisdom-Based</h3>
                 </div>
                 <p className="text-gray-700 text-sm">Rooted in feminine wisdom, energetic sensitivity & real-world compassion.</p>
               </div>
             </div>
             
-            <div className="bg-white p-5 rounded-xl shadow-sm border border-[#FFE5EC]">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
               <p className="text-gray-700 text-lg mb-3 font-medium relative z-10">
                 {getSection('footer')?.title || "Come as you are—there is no fixing, only feeling."}
               </p>
@@ -749,4 +854,4 @@ const DynamicInstructorBooking = () => {
   );
 };
 
-export default DynamicInstructorBooking;
+export default DynamicInstructorBookingWrapper;
