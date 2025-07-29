@@ -77,7 +77,7 @@ const Navbar = () => {
                 <Link to="/sessions" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/sessions') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
-                      <div className="font-medium text-gray-800">Sessions</div>
+                      <div className="font-medium text-gray-800">Sessions With Khushboo</div>
                       <div className="text-xs text-gray-500">One-on-one coaching sessions</div>
                     </div>
                   </div>
@@ -85,16 +85,8 @@ const Navbar = () => {
                 <Link to="/student-booking" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/student-booking') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
-                      <div className="font-medium text-gray-800">Student Session</div>
+                      <div className="font-medium text-gray-800">Student Session With Khushboo</div>
                       <div className="text-xs text-gray-500">Book a student coaching session</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="/instructor-booking" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/instructor-booking') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Book with Mansi</div>
-                      <div className="text-xs text-gray-500">Specialized sessions with Mansi</div>
                     </div>
                   </div>
                 </Link>
@@ -128,7 +120,7 @@ const Navbar = () => {
                   <div className={`flex items-start px-4 py-3 ${isActive('/webinars') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
                       <div className="font-medium text-gray-800">Webinars</div>
-                      <div className="text-xs text-gray-500">Free online sessions</div>
+                      <div className="text-xs text-gray-500">Online sessions</div>
                     </div>
                   </div>
                 </Link>
@@ -141,6 +133,18 @@ const Navbar = () => {
                         <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">HOT</span>
                       </div>
                       <div className="text-xs text-gray-500">Daily intimacy exercises</div>
+                    </div>
+                  </div>
+                </Link>
+                <Link to="/combo-offer" className="block hover:bg-[#FFE5EC] transition-colors">
+                  <div className={`flex items-start px-4 py-3 ${isActive('/combo-offer') ? 'bg-[#FFE5EC]' : ''}`}>
+                    <div>
+                      <div className="flex items-center font-medium text-gray-800">
+                        <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">🔥</span>
+                        Combo Offer
+                        <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">SAVE ₹300</span>
+                      </div>
+                      <div className="text-xs text-gray-500">Bundle deal on both guides</div>
                     </div>
                   </div>
                 </Link>
@@ -200,12 +204,7 @@ const Navbar = () => {
               </div>
             </MobileNavLink>
             
-            <MobileNavLink to="/instructor-booking" active={isActive('/instructor-booking')} onClick={closeMenu}>
-              <div>
-                <div className="font-medium">Book with Mansi</div>
-                <div className="text-xs text-gray-500">Specialized sessions with Mansi</div>
-              </div>
-            </MobileNavLink>
+            {/* Mansi booking option removed from mobile menu */}
             
             {/* Resources Category */}
             <div className="px-4 pt-3 pb-1">
@@ -229,7 +228,7 @@ const Navbar = () => {
             <MobileNavLink to="/webinars" active={isActive('/webinars')} onClick={closeMenu}>
               <div>
                 <div className="font-medium">Webinars</div>
-                <div className="text-xs text-gray-500">Free online sessions</div>
+                <div className="text-xs text-gray-500">Online sessions</div>
               </div>
             </MobileNavLink>
             
@@ -238,6 +237,14 @@ const Navbar = () => {
                 <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">✨</span>
                 <span>30+ Day Challenge</span>
                 <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">HOT</span>
+              </span>
+            </MobileNavLink>
+            
+            <MobileNavLink to="/combo-offer" active={isActive('/combo-offer')} onClick={closeMenu}>
+              <span className="flex items-center">
+                <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">🔥</span>
+                <span>Combo Offer</span>
+                <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">SAVE ₹300</span>
               </span>
             </MobileNavLink>
             

@@ -25,6 +25,7 @@ import TermsConditions from "./pages/TermsConditions";
 import CancellationRefund from "./pages/CancellationRefund";
 import PaymentTestPage from './pages/PaymentTestPage';
 import ThirtyDayChallenge from './pages/ThirtyDayChallenge';
+import ComboOffer from './pages/ComboOffer';
 import ComingSoon from './pages/ComingSoon';
 import WaitingListAdmin from './pages/WaitingListAdmin';
 import Webinars from './pages/Webinars';
@@ -79,6 +80,7 @@ const App = () => (
               <Route path="/cancellation-refund" element={<CancellationRefund />} />
               <Route path="/payment-test" element={<PaymentTestPage />} />
               <Route path="/30-day-challenge" element={<ThirtyDayChallenge />} />
+              <Route path="/combo-offer" element={<ComboOffer />} />
               <Route path="/webinars" element={<Webinars />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/admin/waiting-list" element={<WaitingListAdmin />} />

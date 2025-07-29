@@ -45,7 +45,7 @@ const Sessions = () => {
                       rel="noopener noreferrer"
                       className="block w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
                     >
-                      Book Now (Topmate)
+                      Book Session with Khushboo
                     </a>
                     
                     {/* Mansi booking button hidden as requested */}
