@@ -144,7 +144,7 @@ const Navbar = () => {
                         Combo Offer
                         <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">SAVE ₹300</span>
                       </div>
-                      <div className="text-xs text-gray-500">Bundle deal on both guides</div>
+                      <div className="text-xs text-gray-500">Bundle deal on both Ebook</div>
                     </div>
                   </div>
                 </Link>
