@@ -597,7 +597,7 @@ const DynamicInstructorBookingContent = () => {
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm mb-4">
                   {highlights.map(highlight => (
                     <div key={highlight.id} className="flex items-center">
-                      <DynamicIcon name={highlight.icon_name} className={`text-[${highlight.icon_color}] mr-1`} size={16} />
+                      <Heart size={16} className="text-rose-500 mr-2" fill="currentColor" />
                       <span>{highlight.title}</span>
                     </div>
                   ))}
