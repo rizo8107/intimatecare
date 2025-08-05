@@ -1,4 +1,4 @@
-import React, { useState, useRef, Suspense, lazy, useCallback, useMemo } from 'react';
+import React, { useState, useRef, Suspense, lazy, useCallback, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, Star, Heart, MessageCircle, Award, CheckCircle, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -45,6 +45,9 @@ interface SessionType {
   price: number | null;
   duration_minutes: number;
   is_first_session: boolean;
+  is_external: boolean;
+  external_url: string | null;
+  button_lock: boolean;
 }
 
 interface InstructorHighlight {
@@ -281,13 +284,13 @@ const DynamicInstructorBookingContent = () => {
     ],
   });
   
-  // Extract data from queries
-  const sessionTypes = queries[0].data as SessionType[] || [];
-  const highlights = queries[1].data as InstructorHighlight[] || [];
-  const supportAreas = queries[2].data as InstructorSupportArea[] || [];
-  const offerings = queries[3].data as InstructorOffering[] || [];
-  const pageSections = queries[4].data as InstructorPageSection[] || [];
-  const testimonials = queries[5].data as InstructorTestimonial[] || [];
+  // Extract data from queries using useMemo to prevent dependency issues
+  const sessionTypes = useMemo(() => queries[0].data as SessionType[] || [], [queries[0].data]);
+  const highlights = useMemo(() => queries[1].data as InstructorHighlight[] || [], [queries[1].data]);
+  const supportAreas = useMemo(() => queries[2].data as InstructorSupportArea[] || [], [queries[2].data]);
+  const offerings = useMemo(() => queries[3].data as InstructorOffering[] || [], [queries[3].data]);
+  const pageSections = useMemo(() => queries[4].data as InstructorPageSection[] || [], [queries[4].data]);
+  const testimonials = useMemo(() => queries[5].data as InstructorTestimonial[] || [], [queries[5].data]);
   
   // Fetch available slots only after session types are loaded
   const { data: availableSlots = [], isLoading: isLoadingSlots } = useQuery({
@@ -341,6 +344,30 @@ const DynamicInstructorBookingContent = () => {
   const followUpSession = useMemo(() => 
     sessionTypes.find(session => !session.is_first_session),
   [sessionTypes]);
+  
+  // Set the default selected session type to firstSession when it loads
+  useEffect(() => {
+    if (firstSession) {
+      setSelectedSessionType(firstSession);
+    }
+  }, [firstSession]);
+  
+  // Function to handle booking button clicks
+  const handleBookNowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // Always use the first session for the main buttons
+    if (firstSession && !firstSession.button_lock) {
+      setSelectedSessionType(firstSession);
+      
+      // If it's external, open the URL in a new tab
+      if (firstSession.is_external && firstSession.external_url) {
+        window.open(firstSession.external_url, '_blank');
+      } else {
+        // Otherwise open the booking modal
+        openBookingModal();
+      }
+    }
+  };
   
   // Theme colors - memoized
   const highlightColor = useMemo(() => 
@@ -449,6 +476,14 @@ const DynamicInstructorBookingContent = () => {
 
   const handleBookNow = async () => {
     if (!selectedSlot || !selectedSessionType) return;
+    
+    // Check if this is an external session type
+    if (selectedSessionType.is_external && selectedSessionType.external_url) {
+      // Redirect to external URL
+      window.open(selectedSessionType.external_url, '_blank');
+      closeBookingModal();
+      return;
+    }
 
     setPaymentError(null);
     setPaymentOutcome(null);
@@ -518,7 +553,10 @@ const DynamicInstructorBookingContent = () => {
     if (pollingTimeoutIdRef.current) {
       clearTimeout(pollingTimeoutIdRef.current);
     }
-  }
+  };
+  
+  // Lock state is now controlled directly from the database via the button_lock column
+
 
   // Show skeleton loading state
   if (isLoading) {
@@ -603,9 +641,21 @@ const DynamicInstructorBookingContent = () => {
                   ))}
                 </div>
                 
-                <Button className="w-full mt-4 bg-rose-500 hover:bg-rose-600" onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}>
-                  <BookOpen size={18} className="mr-2" />
-                  Book Now
+                <Button 
+                  className="w-full mt-4 bg-rose-500 hover:bg-rose-600" 
+                  onClick={handleBookNowClick}
+                >
+                  {firstSession?.is_external ? (
+                    <>
+                      <ArrowLeft size={18} className="mr-2" />
+                      Book Now
+                    </>
+                  ) : (
+                    <>
+                      <BookOpen size={18} className="mr-2" />
+                      Book Now
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -632,18 +682,33 @@ const DynamicInstructorBookingContent = () => {
               
               {firstSession && (
                 <div className="mt-6 bg-purple-50 p-5 rounded-lg border-l-4 border-purple-700 shadow-sm">
-                  <div className="flex flex-col md:flex-row items-center justify-between">
+                  <div className="flex flex-col md:flex-row items-center md:items-start justify-between">
                     <div className="mb-3 md:mb-0">
                       <h3 className="font-medium text-gray-800 mb-1">{firstSession.name}</h3>
                       <p className="text-gray-600 text-sm">{firstSession.description || `${firstSession.duration_minutes} minutes of dedicated space`}</p>
                       <div className="text-2xl font-serif font-bold text-rose-500 mt-1">₹{firstSession.price}</div>
+                      {firstSession.is_external && (
+                        <div className="mt-1 inline-flex items-center text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          <span className="mr-1">•</span> External Session
+                        </div>
+                      )}
                     </div>
                     <button
-                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}
-                      className="bg-purple-700 hover:bg-purple-800 text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-sm"
+                      disabled={firstSession?.button_lock}
+                      onClick={handleBookNowClick}
+                      className={`${firstSession?.button_lock ? 'bg-gray-500 cursor-not-allowed opacity-70' : 'bg-purple-700 hover:bg-purple-800'} text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-sm w-full md:w-auto justify-center md:justify-start`}
                     >
-                      <Calendar size={18} className="mr-2" />
-                      Book First Session
+                      {firstSession.is_external ? (
+                        <>
+                          <ArrowLeft size={18} className="mr-2" />
+                          Book Now
+                        </>
+                      ) : (
+                        <>
+                          <Calendar size={18} className="mr-2" />
+                          Book First Session
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -652,21 +717,58 @@ const DynamicInstructorBookingContent = () => {
               {followUpSession && (
                 <>
                   <div className="my-4 border-t border-gray-200"></div>
-                  <div className="flex flex-col md:flex-row items-center justify-between">
+                  <div className="flex flex-col md:flex-row items-center md:items-start justify-between">
                     <div className="mb-3 md:mb-0">
                       <h3 className="font-medium text-gray-800 mb-1">{followUpSession.name}</h3>
                       <p className="text-gray-600 text-sm">{followUpSession.description || `${followUpSession.duration_minutes} minutes of continued support`}</p>
                       <div className="text-2xl font-serif font-bold text-rose-500 mt-1">₹{followUpSession.price}</div>
+                      {followUpSession.is_external && (
+                        <div className="mt-1 inline-flex items-center text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          <span className="mr-1">•</span> External Session
+                        </div>
+                      )}
                     </div>
-                    <div className="flex flex-col items-center">
-                      <button
-                        disabled
-                        className="bg-gray-500 text-white py-2 px-6 rounded-full font-medium inline-flex items-center cursor-not-allowed opacity-70"
-                      >
-                        <Calendar size={18} className="mr-2" />
-                        Book Follow-Up
-                      </button>
-                      <span className="text-xs text-gray-700 mt-2 italic font-medium">Enabled after first session</span>
+                    <div className="flex flex-col items-center w-full md:w-auto">
+                      {followUpSession.is_external ? (
+                        <button
+                          disabled={followUpSession?.button_lock}
+                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => { 
+                            e.preventDefault(); 
+                            if (!followUpSession?.button_lock && followUpSession.is_external && followUpSession.external_url) {
+                              window.open(followUpSession.external_url, '_blank');
+                            } else if (!followUpSession?.button_lock) {
+                              // Set the selected session type to follow-up session before opening modal
+                              setSelectedSessionType(followUpSession);
+                              openBookingModal();
+                            }
+                          }}
+                          className={`${followUpSession?.button_lock ? 'bg-gray-500 cursor-not-allowed opacity-70' : 'bg-purple-700 hover:bg-purple-800'} text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-sm w-full md:w-auto justify-center`}
+                        >
+                          <ArrowLeft size={18} className="mr-2" />
+                          Book Now
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            disabled={followUpSession?.button_lock}
+                            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                              e.preventDefault();
+                              if (!followUpSession?.button_lock) {
+                                // Set the selected session type to follow-up session before opening modal
+                                setSelectedSessionType(followUpSession);
+                                openBookingModal();
+                              }
+                            }}
+                            className={`${followUpSession?.button_lock ? 'bg-gray-500 cursor-not-allowed opacity-70' : 'bg-purple-700 hover:bg-purple-800'} text-white py-2 px-6 rounded-full font-medium inline-flex items-center transition-colors shadow-sm w-full md:w-auto justify-center`}
+                          >
+                            <Calendar size={18} className="mr-2" />
+                            Book Follow-Up
+                          </button>
+                          {followUpSession?.button_lock && (
+                            <span className="text-xs text-gray-700 mt-2 italic font-medium">Enabled after first session</span>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 </>
@@ -793,11 +895,20 @@ const DynamicInstructorBookingContent = () => {
                   {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructorName} and experience a safe space where you can explore, express, and embrace your authentic self.`}
                 </p>
                 <button
-                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.preventDefault(); openBookingModal(); }}
+                  onClick={handleBookNowClick}
                   className="bg-purple-700 hover:bg-purple-800 text-white py-3 px-8 rounded-full font-medium transition-colors inline-flex items-center text-lg mx-auto shadow-md"
                 >
-                  <Calendar size={20} className="mr-2" />
-                  Book Your Session Now
+                  {firstSession?.is_external ? (
+                    <>
+                      <ArrowLeft size={20} className="mr-2" />
+                      Book Now
+                    </>
+                  ) : (
+                    <>
+                      <Calendar size={20} className="mr-2" />
+                      Book Your Session Now
+                    </>
+                  )}
                 </button>
               </div>
             </div>

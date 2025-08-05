@@ -34,6 +34,8 @@ CREATE TABLE session_types (
   price NUMERIC,
   duration_minutes INTEGER,
   is_first_session BOOLEAN DEFAULT FALSE,
+  is_external BOOLEAN DEFAULT FALSE,
+  external_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -109,10 +111,11 @@ VALUES (
 );
 
 -- Insert session types
-INSERT INTO session_types (instructor_id, name, description, price, duration_minutes, is_first_session)
+INSERT INTO session_types (instructor_id, name, description, price, duration_minutes, is_first_session, is_external, external_url)
 VALUES 
-('decdcdba-55d0-4891-b94e-e2a0dc1f7e24', 'First Session', '1.5 hours of dedicated space', 1111, 90, true),
-('decdcdba-55d0-4891-b94e-e2a0dc1f7e24', 'Follow-Up Sessions', '1 hour of continued support', 555, 60, false);
+('decdcdba-55d0-4891-b94e-e2a0dc1f7e24', 'First Session', '1.5 hours of dedicated space', 1111, 90, true, false, null),
+('decdcdba-55d0-4891-b94e-e2a0dc1f7e24', 'Follow-Up Sessions', '1 hour of continued support', 555, 60, false, false, null),
+('decdcdba-55d0-4891-b94e-e2a0dc1f7e24', 'Group Workshop', 'Join our monthly group healing circle', 999, 120, false, true, 'https://intimatecare.com/workshops/healing-circle');
 
 -- Insert highlights
 INSERT INTO instructor_highlights (instructor_id, title, icon_name, icon_color, display_order)
