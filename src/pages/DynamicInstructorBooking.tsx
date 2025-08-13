@@ -215,7 +215,7 @@ const DynamicInstructorBookingContent = () => {
         const startStr = fmt(today);
         const endStr = fmt(end);
 
-        const url = `https://api.dayschedule.com/v2/public/availability/${instructor.event_id}?start=${startStr}&end=${endStr}`;
+        const url = `https://api.dayschedule.com/v2/public/availability/${instructor.event_id}?start=${startStr}&end=${endStr}&time_zone=Asia%2FCalcutta`;
         console.debug('[Availability] Fetch:', url);
         const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to load availability');
@@ -228,8 +228,10 @@ const DynamicInstructorBookingContent = () => {
         times.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
         const firstThree = times.slice(0, 3);
 
-        const formatter = new Intl.DateTimeFormat(undefined, {
+        // Use explicit Indian time zone (Asia/Kolkata) for consistent display
+        const formatter = new Intl.DateTimeFormat('en-IN', {
           month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
+          timeZone: 'Asia/Kolkata'
         });
         const labels = firstThree.map(t => formatter.format(new Date(t)));
         setExtSlotLabels(labels);
