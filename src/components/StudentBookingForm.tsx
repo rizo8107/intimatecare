@@ -5,7 +5,7 @@ import { format, parseISO, isToday, isTomorrow, addDays } from 'date-fns';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Add error checking for required Supabase configuration
 if (!supabaseKey) {
@@ -453,6 +453,24 @@ const StudentBookingForm = () => {
       if (error) {
         console.error('Error inserting booking:', error);
         throw new Error(`Database error: ${error.message}`);
+      }
+      
+      // Update the selected slot's booking_status to true
+      if (formData.selectedSlotId) {
+        const { error: slotUpdateError } = await supabase
+          .from('available_slots')
+          .update({ booking_status: true })
+          .eq('id', formData.selectedSlotId);
+          
+        if (slotUpdateError) {
+          console.error('Error updating slot booking status:', slotUpdateError);
+          // Don't throw error here, as the booking is already created
+          toast({
+            title: "Warning",
+            description: "Booking created but slot status update failed. Please contact support.",
+            variant: "default"
+          });
+        }
       }
       
       // Set booking details for confirmation page
