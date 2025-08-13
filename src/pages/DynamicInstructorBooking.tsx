@@ -35,6 +35,7 @@ interface Instructor {
   profile_image_url: string;
   highlight_color: string;
   secondary_color: string;
+  event_id?: string | null;
 }
 
 interface SessionType {
@@ -106,6 +107,11 @@ interface AvailableSlot {
   booking_status: boolean;
 }
 
+// External availability (DaySchedule) types
+interface DayScheduleHour { time: string; available: number; users: number[] }
+interface DayScheduleSlot { date: string; capacity: number; hours: DayScheduleHour[] }
+interface DayScheduleAvailability { slots: DayScheduleSlot[]; time_zone?: string; duration?: number }
+
 // Dynamic Icon component
 const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | null, size?: number, className?: string }) => {
   if (!name) return <LucideIcons.HelpCircle size={size} className={className} />;
@@ -165,6 +171,11 @@ const DynamicInstructorBookingContent = () => {
   const MAX_POLLING_ATTEMPTS = 20;
   const POLLING_INTERVAL = 5000;
 
+  // --- External availability preview (DaySchedule) ---
+  const [loadingExtSlots, setLoadingExtSlots] = useState<boolean>(false);
+  const [extSlotLabels, setExtSlotLabels] = useState<string[]>([]);
+  const [extSlotError, setExtSlotError] = useState<string | null>(null);
+
   // Query for instructor details with prefetching
   const { data: instructor, isLoading: isLoadingInstructor, error: errorInstructor } = useQuery<Instructor | null>({
     queryKey: ['instructor', instructorNameFromUrl],
@@ -185,6 +196,54 @@ const DynamicInstructorBookingContent = () => {
 
   // Only fetch related data when instructor data is available
   const instructorId = instructor?.id;
+
+  // Fetch public availability from DaySchedule using instructor.event_id (if present)
+  useEffect(() => {
+    const fetchExtAvailability = async () => {
+      if (!instructor?.event_id) {
+        // No external event configured
+        return;
+      }
+      try {
+        setLoadingExtSlots(true);
+        setExtSlotError(null);
+
+        const today = new Date();
+        const end = new Date();
+        end.setDate(today.getDate() + 14);
+        const fmt = (d: Date) => d.toISOString().split('T')[0];
+        const startStr = fmt(today);
+        const endStr = fmt(end);
+
+        const url = `https://api.dayschedule.com/v2/public/availability/${instructor.event_id}?start=${startStr}&end=${endStr}`;
+        console.debug('[Availability] Fetch:', url);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load availability');
+        const json: DayScheduleAvailability = await res.json();
+        console.debug('[Availability] Slots payload size:', json?.slots?.length ?? 0);
+
+        const times: string[] = (json?.slots || [])
+          .flatMap((s: DayScheduleSlot) => (s.hours || []).map((h: DayScheduleHour) => h.time))
+          .filter((t: string) => typeof t === 'string');
+        times.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+        const firstThree = times.slice(0, 3);
+
+        const formatter = new Intl.DateTimeFormat(undefined, {
+          month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
+        });
+        const labels = firstThree.map(t => formatter.format(new Date(t)));
+        setExtSlotLabels(labels);
+        console.debug('[Availability] Labels:', labels);
+      } catch (e) {
+        console.error('[Availability] Error:', e);
+        setExtSlotError('Unable to fetch availability');
+      } finally {
+        setLoadingExtSlots(false);
+      }
+    };
+
+    fetchExtAvailability();
+  }, [instructor?.event_id]);
   
   // Parallel data fetching for all related data
   const queries = useQueries({
@@ -642,6 +701,46 @@ const DynamicInstructorBookingContent = () => {
                       <span>{highlight.title}</span>
                     </div>
                   ))}
+                </div>
+                {/* Next slots (external availability) */}
+                <div className="mb-2">
+                  {!instructor?.event_id && (
+                    <p className="text-xs text-gray-500">Live availability will appear here once configured.</p>
+                  )}
+                  {instructor?.event_id && (
+                    <div className="rounded-lg border border-rose-100 bg-rose-50/40 p-3">
+                    {loadingExtSlots && (
+                      <div className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse"></span>
+                        <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:150ms]"></span>
+                        <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:300ms]"></span>
+                      </div>
+                    )}
+                    {!loadingExtSlots && extSlotError && (
+                      <p className="text-xs text-red-500">{extSlotError}</p>
+                    )}
+                    {!loadingExtSlots && !extSlotError && extSlotLabels.length > 0 && (
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-rose-500 mb-1">Next slots</p>
+                        <div className="flex flex-wrap gap-2">
+                          {extSlotLabels.map((label, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={handleBookNowClick}
+                              className="px-3 py-1 rounded-full border border-rose-300 text-rose-700 bg-white hover:bg-rose-50 text-xs shadow-sm transition-colors"
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {!loadingExtSlots && !extSlotError && extSlotLabels.length === 0 && (
+                      <p className="text-xs text-gray-500">No upcoming slots in 2 weeks</p>
+                    )}
+                    </div>
+                  )}
                 </div>
                 
                 <Button 
