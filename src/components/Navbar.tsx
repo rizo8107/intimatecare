@@ -66,18 +66,21 @@ const Navbar = () => {
             <NavLink to="/" active={isActive('/')}>
               Home
             </NavLink>
+            <NavLink to="/instructors" active={isActive('/instructors')}>
+              Instructors
+            </NavLink>
             
             {/* Services Dropdown */}
             <div className="relative group">
               <button className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] text-gray-700 hover:text-[#FF7A9A]">
-                Services
+                Sessions With Khushboo
                 <ChevronDown size={16} className="ml-1 group-hover:rotate-180 transition-transform duration-200" />
               </button>
               <div className="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[#F0F0F5] overflow-hidden">
                 <Link to="/sessions" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/sessions') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
-                      <div className="font-medium text-gray-800">Sessions With Khushboo</div>
+                      <div className="font-medium text-gray-800">Individual Sessions</div>
                       <div className="text-xs text-gray-500">One-on-one coaching sessions</div>
                     </div>
                   </div>
@@ -85,7 +88,7 @@ const Navbar = () => {
                 <Link to="/student-booking" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/student-booking') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
-                      <div className="font-medium text-gray-800">Student Session With Khushboo</div>
+                      <div className="font-medium text-gray-800">Student Sessions</div>
                       <div className="text-xs text-gray-500">Book a student coaching session</div>
                     </div>
                   </div>
@@ -186,6 +189,9 @@ const Navbar = () => {
           <div className="bg-white rounded-xl shadow-sm p-4 space-y-2 border border-[#F0F0F5]">
             <MobileNavLink to="/" active={isActive('/')} onClick={closeMenu}>
               Home
+            </MobileNavLink>
+            <MobileNavLink to="/instructors" active={isActive('/instructors')} onClick={closeMenu}>
+              Instructors
             </MobileNavLink>
             
             {/* Services Category */}

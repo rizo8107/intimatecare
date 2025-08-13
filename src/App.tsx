@@ -27,6 +27,7 @@ import PaymentTestPage from './pages/PaymentTestPage';
 import ThirtyDayChallenge from './pages/ThirtyDayChallenge';
 import ComboOffer from './pages/ComboOffer';
 import ComingSoon from './pages/ComingSoon';
+import InstructorsPage from './pages/Instructors';
 import WaitingListAdmin from './pages/WaitingListAdmin';
 import Webinars from './pages/Webinars';
 import GoogleAnalytics from "./components/GoogleAnalytics";
@@ -62,6 +63,7 @@ const App = () => (
           <main className="flex-grow pt-16 md:pt-20">
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/instructors" element={<InstructorsPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/issues" element={<Issues />} />
               <Route path="/student-booking" element={<StudentBooking />} />

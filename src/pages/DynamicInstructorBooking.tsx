@@ -145,7 +145,7 @@ const DynamicInstructorBookingWrapper = () => {
 
 // The actual content component
 const DynamicInstructorBookingContent = () => {
-  const { instructorName = "Mansi" } = useParams<{ instructorName: string }>();
+  const { instructorName: instructorNameFromUrl } = useParams<{ instructorName: string }>();
   
   // Modal and payment state
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -166,18 +166,21 @@ const DynamicInstructorBookingContent = () => {
   const POLLING_INTERVAL = 5000;
 
   // Query for instructor details with prefetching
-  const { data: instructor, isLoading: isLoadingInstructor } = useQuery({
-    queryKey: ['instructor', instructorName],
+  const { data: instructor, isLoading: isLoadingInstructor, error: errorInstructor } = useQuery<Instructor | null>({
+    queryKey: ['instructor', instructorNameFromUrl],
     queryFn: async () => {
+      if (!instructorNameFromUrl) return null;
+      // Decode the URL parameter in case it contains encoded characters like %20 for spaces
+      const decodedInstructorName = decodeURIComponent(instructorNameFromUrl || '');
       const { data, error } = await supabase
         .from('instructors')
         .select('*')
-        .eq('name', instructorName)
+        .eq('name', decodedInstructorName)
         .single();
-      
-      if (error) throw error;
-      return data as Instructor;
+      if (error) throw new Error(error.message);
+      return data;
     },
+    enabled: !!instructorNameFromUrl,
   });
 
   // Only fetch related data when instructor data is available
@@ -609,12 +612,12 @@ const DynamicInstructorBookingContent = () => {
               <div className="md:w-1/3 mb-6 md:mb-0 flex justify-center">
                 <div className="relative">
                   <img 
-                    src={instructor?.profile_image_url || `/images/${instructorName.toLowerCase()}-profile.jpg`} 
-                    alt={`${instructorName} - Holistic Listener`} 
+                    src={instructor?.profile_image_url || `/images/${instructor?.name?.toLowerCase()}-profile.jpg`} 
+                    alt={`${instructor?.name} - Holistic Listener`} 
                     className="w-48 h-48 object-cover rounded-full border-4 border-white shadow-md" 
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = `https://placehold.co/200x200/FFE5EC/FF5A84?text=${instructorName.charAt(0)}&font=playfair`;
+                      target.src = `https://placehold.co/200x200/FFE5EC/FF5A84?text=${instructor?.name?.charAt(0)}&font=playfair`;
                     }}
                   />
                   <div className="absolute -bottom-2 -right-2 bg-[#FF5A84] text-white rounded-full p-2">
@@ -627,7 +630,7 @@ const DynamicInstructorBookingContent = () => {
               <div className="md:w-2/3 text-center md:text-left">
                 <div className="inline-block bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">HOLISTIC LISTENER</div>
                 <h1 className="text-3xl md:text-4xl font-serif font-medium text-gray-800 mb-3">
-                  Book a Session with {instructorName}
+                  Book a Session with {instructor?.name}
                 </h1>
                 <p className="text-gray-700 text-lg mb-4">
                   {getSection('intro')?.content || instructor?.bio || 'A safe, non-judgmental space where you can feel heard, witnessed, and truly understood.'}
@@ -892,7 +895,7 @@ const DynamicInstructorBookingContent = () => {
                   </h2>
                 </div>
                 <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-                  {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructorName} and experience a safe space where you can explore, express, and embrace your authentic self.`}
+                  {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructor?.name} and experience a safe space where you can explore, express, and embrace your authentic self.`}
                 </p>
                 <button
                   onClick={handleBookNowClick}
@@ -959,7 +962,7 @@ const DynamicInstructorBookingContent = () => {
         isOpen={isModalOpen} 
         onClose={closeBookingModal} 
         instructorId={1} 
-        instructorName={instructorName} 
+        instructorName={instructor?.name} 
       />
     </div>
   );
