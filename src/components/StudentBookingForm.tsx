@@ -44,6 +44,7 @@ declare global {
 interface FormData {
   name: string;
   gender: string;
+  date_of_birth: string;
   email: string;
   phone: string;
   college: string;
@@ -67,6 +68,7 @@ const StudentBookingForm = () => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     gender: '',
+    date_of_birth: '',
     email: '',
     phone: '',
     college: '',
@@ -388,6 +390,7 @@ const StudentBookingForm = () => {
         // Personal Information
         name: formData.name,
         gender: formData.gender,
+        dob: formData.date_of_birth,
         email: formData.email,
         phone: `+91${formData.phone}`, // Add +91 prefix to phone number
         
@@ -543,7 +546,7 @@ const StudentBookingForm = () => {
   };
 
   const validateStep1 = () => {
-    if (!formData.name || !formData.email || !formData.phone || !formData.gender) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.gender || !formData.date_of_birth) {
       toast({
         title: "Required fields missing",
         description: "Please fill in all required fields.",
@@ -571,6 +574,36 @@ const StudentBookingForm = () => {
       });
       return false;
     }
+
+    // Age validation
+    const dob = new Date(formData.date_of_birth);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Compare date only, ignore time
+
+    if (dob > today) {
+      toast({
+        title: "Invalid Date of Birth",
+        description: "Your date of birth cannot be in the future.",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    if (age >= 25) {
+        toast({
+            title: "Age Restriction",
+            description: "This booking is only available for users under 25 years old.",
+            variant: "destructive"
+        });
+        return false;
+    }
+
     return true;
   };
 
@@ -930,6 +963,7 @@ const StudentBookingForm = () => {
                 setFormData({
                   name: '',
                   gender: '',
+                  date_of_birth: '',
                   email: '',
                   phone: '',
                   college: '',
@@ -995,6 +1029,21 @@ const StudentBookingForm = () => {
                     id="gender"
                     name="gender"
                     value={formData.gender}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                    Date of Birth <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    value={formData.date_of_birth}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
                     required
