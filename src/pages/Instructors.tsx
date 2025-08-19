@@ -65,17 +65,17 @@ const XpertsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            Meet Our Xperts
+            Meet Our Coaches
           </h1>
           <p className="mt-4 text-xl text-gray-600">
-            Compassionate Xperts dedicated to your holistic well-being.
+            Compassionate coaches dedicated to your holistic well-being.
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Find Your Guide to Transformation</h2>
           <p className="text-gray-600 leading-relaxed">
-            Every Xpert brings a unique perspective and set of skills. We encourage you to read through their profiles, understand their approach, and choose the guide who resonates most with your personal journey. Your path to healing and self-discovery starts with the right connection.
+            Every coach brings a unique perspective and set of skills. We encourage you to read through their profiles, understand their approach, and choose the guide who resonates most with your personal journey. Your path to healing and self-discovery starts with the right connection.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ const XpertsPage: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-10">
-            <p className="text-gray-500">No Xperts found at the moment.</p>
+            <p className="text-gray-500">No coaches found at the moment.</p>
           </div>
         )}
       </div>

@@ -67,13 +67,13 @@ const Navbar = () => {
               Home
             </NavLink>
             <NavLink to="/instructors" active={isActive('/instructors')}>
-              Session with xperts
+              Session with coaches
             </NavLink>
             
             {/* Services Dropdown */}
             <div className="relative group">
               <button className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] text-gray-700 hover:text-[#FF7A9A]">
-                Sessions With Khushboo
+                Session with Khushboo
                 <ChevronDown size={16} className="ml-1 group-hover:rotate-180 transition-transform duration-200" />
               </button>
               <div className="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[#F0F0F5] overflow-hidden">
@@ -191,16 +191,16 @@ const Navbar = () => {
               Home
             </MobileNavLink>
             <MobileNavLink to="/instructors" active={isActive('/instructors')} onClick={closeMenu}>
-              Session with Xperts
+              Session with coaches
             </MobileNavLink>
             
-            {/* Services Category */}
+            {/* Session with Khushboo Category */}
             <div className="px-4 pt-3 pb-1">
-              <div className="text-xs uppercase tracking-wider text-gray-500 font-medium">Services</div>
+              <div className="text-xs uppercase tracking-wider text-gray-500 font-medium">Session with Khushboo</div>
             </div>
             
             <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>
-              Sessions
+              Individual Sessions
             </MobileNavLink>
             
             <MobileNavLink to="/student-booking" active={isActive('/student-booking')} onClick={closeMenu}>
