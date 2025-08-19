@@ -689,7 +689,6 @@ const DynamicInstructorBookingContent = () => {
               
               {/* Intro Text */}
               <div className="md:w-2/3 text-center md:text-left">
-                <div className="inline-block bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">HOLISTIC LISTENER</div>
                 <h1 className="text-3xl md:text-4xl font-serif font-medium text-gray-800 mb-3">
                   Book a Session with {instructor?.name}
                 </h1>
