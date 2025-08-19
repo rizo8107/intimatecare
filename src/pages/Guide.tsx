@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle, Download, BookOpen } from 'lucide-react';
+import AboutPreview from '../components/AboutPreview';
 
 const Guide = () => {
   return (
@@ -164,6 +165,25 @@ const Guide = () => {
             </div>
           </div>
           
+          {/* About then Featured */}
+          <AboutPreview />
+
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 mb-12">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Featured In</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
+              {['BBC.jpg','Deccan.jpg','Huf.jpg','INDIA (1).jpg','INDIA (2).jpg','INDIA (3).jpg','Indian ex.jpg','Mint.jpg','Vogue.jpg'].map(img => (
+                <div key={img} className="w-28 md:w-32 lg:w-36 opacity-80 hover:opacity-100 transition-opacity">
+                  <img
+                    src={`/Featured/${img}`}
+                    alt={img.replace(/\.[^/.]+$/, '')}
+                    className="w-full h-auto object-contain grayscale hover:grayscale-0 transition-all duration-200"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="bg-white rounded-3xl shadow-sm overflow-hidden p-6 md:p-8 text-center">
             <h2 className="font-serif text-xl md:text-2xl font-medium text-gray-800 mb-4">Ready to Enhance Your Intimate Life?</h2>
             <p className="text-gray-700 max-w-2xl mx-auto mb-6">

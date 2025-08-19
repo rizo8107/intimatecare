@@ -67,7 +67,7 @@ const Navbar = () => {
               Home
             </NavLink>
             <NavLink to="/instructors" active={isActive('/instructors')}>
-              Instructors
+              Session with xperts
             </NavLink>
             
             {/* Services Dropdown */}
