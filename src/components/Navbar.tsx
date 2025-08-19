@@ -191,7 +191,7 @@ const Navbar = () => {
               Home
             </MobileNavLink>
             <MobileNavLink to="/instructors" active={isActive('/instructors')} onClick={closeMenu}>
-              Instructors
+              Session with Xperts
             </MobileNavLink>
             
             {/* Services Category */}

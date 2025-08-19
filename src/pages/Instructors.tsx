@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabaseClient';
 import DynamicInstructorCard from '../components/DynamicInstructorCard';
 import { Loader2 } from 'lucide-react';
 
-interface Instructor {
+interface Xpert {
   id: string;
   name: string;
   specialization: string;
@@ -11,27 +11,29 @@ interface Instructor {
   profile_image_url: string;
   highlight_color: string;
   show_in_card: boolean;
+  display_order: number;
 }
 
-const InstructorsPage: React.FC = () => {
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
+const XpertsPage: React.FC = () => {
+  const [xperts, setXperts] = useState<Xpert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchInstructors = async () => {
+    const fetchXperts = async () => {
       try {
         setLoading(true);
         const { data, error } = await supabase
           .from('instructors')
           .select('*')
-          .eq('show_in_card', true);
+          .eq('show_in_card', true)
+          .order('display_order', { ascending: true });
 
         if (error) {
-          throw new Error('Failed to fetch instructors. Please try again later.');
+          throw new Error('Failed to fetch Xperts. Please try again later.');
         }
 
-        setInstructors(data || []);
+        setXperts(data || []);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -43,7 +45,7 @@ const InstructorsPage: React.FC = () => {
       }
     };
 
-    fetchInstructors();
+    fetchXperts();
   }, []);
 
   if (loading) {
@@ -63,29 +65,29 @@ const InstructorsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            Meet Our Instructors
+            Meet Our Xperts
           </h1>
           <p className="mt-4 text-xl text-gray-600">
-            Compassionate instructors dedicated to your holistic well-being.
+            Compassionate Xperts dedicated to your holistic well-being.
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Find Your Guide to Transformation</h2>
           <p className="text-gray-600 leading-relaxed">
-            Every instructor brings a unique perspective and set of skills. We encourage you to read through their profiles, understand their approach, and choose the guide who resonates most with your personal journey. Your path to healing and self-discovery starts with the right connection.
+            Every Xpert brings a unique perspective and set of skills. We encourage you to read through their profiles, understand their approach, and choose the guide who resonates most with your personal journey. Your path to healing and self-discovery starts with the right connection.
           </p>
         </div>
 
-        {instructors.length > 0 ? (
+        {xperts.length > 0 ? (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {instructors.map((instructor) => (
-              <DynamicInstructorCard key={instructor.id} instructor={instructor} />
+            {xperts.map((xpert) => (
+              <DynamicInstructorCard key={xpert.id} instructor={xpert} />
             ))}
           </div>
         ) : (
           <div className="text-center py-10">
-            <p className="text-gray-500">No instructors found at the moment.</p>
+            <p className="text-gray-500">No Xperts found at the moment.</p>
           </div>
         )}
       </div>
@@ -93,4 +95,4 @@ const InstructorsPage: React.FC = () => {
   );
 };
 
-export default InstructorsPage;
+export default XpertsPage;
