@@ -30,6 +30,7 @@ import ComingSoon from './pages/ComingSoon';
 import InstructorsPage from './pages/Instructors';
 import WaitingListAdmin from './pages/WaitingListAdmin';
 import Webinars from './pages/Webinars';
+import Programs from './pages/Programs';
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import { initClarity } from "./utils/clarity";
@@ -63,6 +64,7 @@ const App = () => (
           <main className="flex-grow pt-16 md:pt-20">
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/programs" element={<Programs />} />
               <Route path="/instructors" element={<InstructorsPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/issues" element={<Issues />} />
