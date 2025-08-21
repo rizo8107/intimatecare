@@ -112,6 +112,51 @@ interface DayScheduleHour { time: string; available: number; users: number[] }
 interface DayScheduleSlot { date: string; capacity: number; hours: DayScheduleHour[] }
 interface DayScheduleAvailability { slots: DayScheduleSlot[]; time_zone?: string; duration?: number }
 
+// ---- DaySchedule Popup Helpers ----
+type DayScheduleAPI = {
+  initPopupWidget: (opts: { url: string; color?: { primary?: string; secondary?: string } }) => void;
+  open?: () => void;
+};
+
+declare global {
+  interface Window {
+    daySchedule?: DayScheduleAPI;
+  }
+}
+
+const loadDayScheduleScript = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (window.daySchedule) {
+      resolve();
+      return;
+    }
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src^="https://cdn.jsdelivr.net/npm/dayschedule-widget@"]'
+    );
+    if (existing) {
+      existing.addEventListener('load', () => resolve());
+      existing.addEventListener('error', () => reject(new Error('Failed to load DaySchedule widget')));
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/dayschedule-widget@latest/dist/dayschedule-widget.min.js';
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load DaySchedule widget'));
+      document.head.appendChild(script);
+    }
+  });
+};
+
+const openDaySchedulePopup = async (url: string, color?: { primary?: string; secondary?: string }) => {
+  await loadDayScheduleScript();
+  const ds = window.daySchedule;
+  if (!ds) return;
+  ds.initPopupWidget({ url, color });
+  if (typeof ds.open === 'function') {
+    ds.open();
+  }
+};
+
 // Dynamic Icon component
 const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | null, size?: number, className?: string }) => {
   if (!name) return <LucideIcons.HelpCircle size={size} className={className} />;
@@ -417,7 +462,7 @@ const DynamicInstructorBookingContent = () => {
   }, [firstSession]);
   
   // Function to handle booking button clicks
-  const handleBookNowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBookNowClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     // Always use the first session for the main buttons
     if (firstSession && !firstSession.button_lock) {
@@ -425,7 +470,7 @@ const DynamicInstructorBookingContent = () => {
       
       // If it's external, open the URL in a new tab
       if (firstSession.is_external && firstSession.external_url) {
-        window.open(firstSession.external_url, '_blank');
+        await openDaySchedulePopup(firstSession.external_url, { primary: '#FF5A84', secondary: '#FFE5EC' });
       } else {
         // Otherwise open the booking modal
         openBookingModal();
@@ -543,8 +588,8 @@ const DynamicInstructorBookingContent = () => {
     
     // Check if this is an external session type
     if (selectedSessionType.is_external && selectedSessionType.external_url) {
-      // Redirect to external URL
-      window.open(selectedSessionType.external_url, '_blank');
+      // Open DaySchedule popup
+      await openDaySchedulePopup(selectedSessionType.external_url, { primary: '#FF5A84', secondary: '#FFE5EC' });
       closeBookingModal();
       return;
     }

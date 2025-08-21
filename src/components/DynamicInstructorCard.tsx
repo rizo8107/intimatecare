@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import DayScheduleButton from './DayScheduleButton';
 
 interface DayScheduleHour { time: string; available: number; users: number[] }
 interface DayScheduleSlot { date: string; capacity: number; hours: DayScheduleHour[] }
@@ -15,6 +16,7 @@ interface Instructor {
   highlight_color: string;
   show_in_card: boolean;
   event_id?: string | null;
+  dayschedule_url?: string | null; // Full booking URL for popup widget
 }
 
 const DynamicInstructorCard: React.FC<{ instructor: Instructor }> = ({ instructor }) => {
@@ -113,12 +115,24 @@ const DynamicInstructorCard: React.FC<{ instructor: Instructor }> = ({ instructo
           </div>
         )}
 
-        <Link 
-          to={`/instructor/${instructor.name}`}
-          className="mt-auto block w-full bg-[#FF5A84] text-white text-center py-3 rounded-lg font-semibold hover:bg-[#FF4A7A] transition-colors duration-300 shadow-md"
-        >
-          Book a Session
-        </Link>
+        {/* Booking actions */}
+        <div className="mt-auto grid grid-cols-1 gap-2">
+          {instructor.dayschedule_url ? (
+            <DayScheduleButton
+              url={instructor.dayschedule_url}
+              colors={{ primary: '#FF5A84', secondary: '#FFE5EC' }}
+              label="Book with Calendar"
+              className="w-full bg-[#FF5A84] text-white text-center py-3 rounded-lg font-semibold hover:bg-[#FF4A7A] transition-colors duration-300 shadow-md"
+            />
+          ) : null}
+
+          <Link 
+            to={`/instructor/${instructor.name}`}
+            className="block w-full border border-[#FF5A84] text-[#FF5A84] text-center py-3 rounded-lg font-semibold hover:bg-rose-50 transition-colors duration-300"
+          >
+            View Profile
+          </Link>
+        </div>
       </div>
     </div>
   );
