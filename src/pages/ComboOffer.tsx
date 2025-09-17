@@ -39,7 +39,7 @@ const ComboOffer = () => {
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-12">
             <div className="relative">
               <div className="bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 py-1.5 px-4 text-center animate-pulse">
-                <p className="text-sm font-bold text-yellow-900">⭐ EXCLUSIVE BUNDLE OFFER - SAVE ₹300! ⭐</p>
+                <p className="text-sm font-bold text-yellow-900">⭐ EXCLUSIVE BUNDLE OFFER - SAVE ₹1000! ⭐</p>
               </div>
               <div className="p-8 md:p-12">
                 <div className="text-[#FF7A9A] text-sm font-bold uppercase tracking-wider mb-2 text-center">SPECIAL COMBO DEAL</div>
@@ -135,12 +135,12 @@ const ComboOffer = () => {
                       <h3 className="font-bold text-lg">Special Bundle Price</h3>
                     </div>
                     <div>
-                      <span className="text-lg line-through opacity-70">₹1299</span>
+                      <span className="text-lg line-through opacity-70">₹1999</span>
                       <span className="text-2xl font-bold ml-2">₹999</span>
                     </div>
                   </div>
                   <p className="mb-4">
-                    Save ₹300 when you purchase both guides together!
+                    Save ₹1000 when you purchase both guides together!
                   </p>
                   <button 
                     onClick={handleBuyNow}
@@ -330,7 +330,7 @@ const ComboOffer = () => {
             </p>
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex items-center justify-center gap-4">
-                <span className="text-2xl font-bold line-through opacity-70">₹1299</span>
+                <span className="text-2xl font-bold line-through opacity-70">₹1999</span>
                 <span className="text-4xl font-bold">₹999 Only!</span>
               </div>
               <button 

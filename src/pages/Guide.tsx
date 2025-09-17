@@ -46,7 +46,10 @@ const Guide = () => {
                           <BookOpen size={18} className="text-[#FF7A9A] mr-2" />
                           <span className="text-gray-700 font-medium">Digital E-Book</span>
                         </div>
-                        <div className="text-xl font-serif font-medium text-[#FF7A9A]">₹699</div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-500 line-through opacity-60 font-medium">₹999</span>
+                          <span className="text-xl font-serif font-medium text-[#FF7A9A]">₹699</span>
+                        </div>
                       </div>
                       
                       <div className="flex items-center text-sm text-gray-600 mb-6">

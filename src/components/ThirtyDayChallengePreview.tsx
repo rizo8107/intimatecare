@@ -49,8 +49,8 @@ const ThirtyDayChallengePreview = () => {
                   </div>
                   <div className="mb-4">
                     <div className="flex items-center gap-4 justify-start">
-                      <span className="text-white text-xl font-bold line-through opacity-60">₹1299</span>
-                      <span className="text-white text-3xl font-bold">₹499</span>
+                      <span className="text-white text-xl font-bold line-through opacity-60">₹999</span>
+                      <span className="text-white text-3xl font-bold">₹599</span>
                     </div>
                   </div>
                   <Link 

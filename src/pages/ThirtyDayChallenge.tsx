@@ -22,7 +22,7 @@ const ThirtyDayChallenge = () => {
       window.fbq('track', 'InitiateCheckout', {
         content_name: '30+ Day Challenge',
         content_category: 'E-Book',
-        value: 499.00,
+        value: 599.00,
         currency: 'INR'
       });
     }
@@ -84,8 +84,8 @@ const ThirtyDayChallenge = () => {
                     </div>
                     <div className="mb-4">
                       <div className="flex items-center gap-4 justify-start">
-                        <span className="text-white text-xl font-bold line-through opacity-60">₹1299</span>
-                        <span className="text-white text-3xl font-bold">₹499</span>
+                        <span className="text-white text-xl font-bold line-through opacity-60">₹999</span>
+                        <span className="text-white text-3xl font-bold">₹599</span>
                       </div>
                     </div>
                     <button 
@@ -135,8 +135,8 @@ const ThirtyDayChallenge = () => {
                   
                   <div className="md:hidden">
                     <div className="flex items-center gap-1 mb-4 justify-start">
-                      <span className="text-xl font-bold text-gray-500 line-through opacity-60">₹1299</span>
-                      <span className="text-2xl font-bold text-[#FF5A84]">₹499</span>
+                      <span className="text-xl font-bold text-gray-500 line-through opacity-60">₹999</span>
+                      <span className="text-2xl font-bold text-[#FF5A84]">₹599</span>
                     </div>
                     <button 
                       onClick={handleBuyNow}
@@ -252,8 +252,8 @@ const ThirtyDayChallenge = () => {
             </p>
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex items-center justify-center gap-4">
-                <span className="text-2xl font-bold text-gray-500 line-through opacity-60">₹1299</span>
-                <span className="text-3xl font-bold text-[#FF5A84]">₹499</span>
+                <span className="text-2xl font-bold text-gray-500 line-through opacity-60">₹999</span>
+                <span className="text-3xl font-bold text-[#FF5A84]">₹599</span>
               </div>
               <button 
                 onClick={handleBuyNow}
