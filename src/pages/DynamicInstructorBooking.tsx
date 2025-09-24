@@ -112,51 +112,6 @@ interface DayScheduleHour { time: string; available: number; users: number[] }
 interface DayScheduleSlot { date: string; capacity: number; hours: DayScheduleHour[] }
 interface DayScheduleAvailability { slots: DayScheduleSlot[]; time_zone?: string; duration?: number }
 
-// ---- DaySchedule Popup Helpers ----
-type DayScheduleAPI = {
-  initPopupWidget: (opts: { url: string; color?: { primary?: string; secondary?: string } }) => void;
-  open?: () => void;
-};
-
-declare global {
-  interface Window {
-    daySchedule?: DayScheduleAPI;
-  }
-}
-
-const loadDayScheduleScript = (): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if (window.daySchedule) {
-      resolve();
-      return;
-    }
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[src^="https://cdn.jsdelivr.net/npm/dayschedule-widget@"]'
-    );
-    if (existing) {
-      existing.addEventListener('load', () => resolve());
-      existing.addEventListener('error', () => reject(new Error('Failed to load DaySchedule widget')));
-    } else {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/dayschedule-widget@latest/dist/dayschedule-widget.min.js';
-      script.defer = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load DaySchedule widget'));
-      document.head.appendChild(script);
-    }
-  });
-};
-
-const openDaySchedulePopup = async (url: string, color?: { primary?: string; secondary?: string }) => {
-  await loadDayScheduleScript();
-  const ds = window.daySchedule;
-  if (!ds) return;
-  ds.initPopupWidget({ url, color });
-  if (typeof ds.open === 'function') {
-    ds.open();
-  }
-};
-
 // Dynamic Icon component
 const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | null, size?: number, className?: string }) => {
   if (!name) return <LucideIcons.HelpCircle size={size} className={className} />;
@@ -462,20 +417,18 @@ const DynamicInstructorBookingContent = () => {
   }, [firstSession]);
   
   // Function to handle booking button clicks
-  const handleBookNowClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBookNowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // Always use the first session for the main buttons
-    if (firstSession && !firstSession.button_lock) {
-      setSelectedSessionType(firstSession);
-      
-      // If it's external, open the URL in a new tab
-      if (firstSession.is_external && firstSession.external_url) {
-        await openDaySchedulePopup(firstSession.external_url, { primary: '#FF5A84', secondary: '#FFE5EC' });
-      } else {
-        // Otherwise open the booking modal
-        openBookingModal();
-      }
+    if (!firstSession || firstSession.button_lock) return;
+
+    setSelectedSessionType(firstSession);
+
+    if (firstSession.is_external && firstSession.external_url) {
+      window.open(firstSession.external_url, '_blank', 'noopener,noreferrer');
+      return;
     }
+
+    openBookingModal();
   };
   
   // Theme colors - memoized
@@ -588,8 +541,7 @@ const DynamicInstructorBookingContent = () => {
     
     // Check if this is an external session type
     if (selectedSessionType.is_external && selectedSessionType.external_url) {
-      // Open DaySchedule popup
-      await openDaySchedulePopup(selectedSessionType.external_url, { primary: '#FF5A84', secondary: '#FFE5EC' });
+      window.open(selectedSessionType.external_url, '_blank', 'noopener,noreferrer');
       closeBookingModal();
       return;
     }
@@ -755,36 +707,19 @@ const DynamicInstructorBookingContent = () => {
                   )}
                   {instructor?.event_id && (
                     <div className="rounded-lg border border-rose-100 bg-rose-50/40 p-3">
-                    {loadingExtSlots && (
-                      <div className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse"></span>
-                        <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:150ms]"></span>
-                        <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:300ms]"></span>
-                      </div>
-                    )}
-                    {!loadingExtSlots && extSlotError && (
-                      <p className="text-xs text-red-500">{extSlotError}</p>
-                    )}
-                    {!loadingExtSlots && !extSlotError && extSlotLabels.length > 0 && (
-                      <div>
-                        <p className="text-[10px] uppercase tracking-wide text-rose-500 mb-1">Next slots</p>
-                        <div className="flex flex-wrap gap-2">
-                          {extSlotLabels.map((label, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={handleBookNowClick}
-                              className="px-3 py-1 rounded-full border border-rose-300 text-rose-700 bg-white hover:bg-rose-50 text-xs shadow-sm transition-colors"
-                            >
-                              {label}
-                            </button>
-                          ))}
+                      {loadingExtSlots && (
+                        <div className="flex items-center gap-2">
+                          <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse"></span>
+                          <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:150ms]"></span>
+                          <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:300ms]"></span>
                         </div>
-                      </div>
-                    )}
-                    {!loadingExtSlots && !extSlotError && extSlotLabels.length === 0 && (
-                      <p className="text-xs text-gray-500">No upcoming slots in 2 weeks</p>
-                    )}
+                      )}
+                      {!loadingExtSlots && extSlotError && (
+                        <p className="text-xs text-red-500">{extSlotError}</p>
+                      )}
+                      {!loadingExtSlots && !extSlotError && extSlotLabels.length === 0 && (
+                        <p className="text-xs text-gray-500">No upcoming slots in 2 weeks</p>
+                      )}
                     </div>
                   )}
                 </div>
