@@ -107,11 +107,6 @@ interface AvailableSlot {
   booking_status: boolean;
 }
 
-// External availability (DaySchedule) types
-interface DayScheduleHour { time: string; available: number; users: number[] }
-interface DayScheduleSlot { date: string; capacity: number; hours: DayScheduleHour[] }
-interface DayScheduleAvailability { slots: DayScheduleSlot[]; time_zone?: string; duration?: number }
-
 // Dynamic Icon component
 const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | null, size?: number, className?: string }) => {
   if (!name) return <LucideIcons.HelpCircle size={size} className={className} />;
@@ -171,11 +166,6 @@ const DynamicInstructorBookingContent = () => {
   const MAX_POLLING_ATTEMPTS = 20;
   const POLLING_INTERVAL = 5000;
 
-  // --- External availability preview (DaySchedule) ---
-  const [loadingExtSlots, setLoadingExtSlots] = useState<boolean>(false);
-  const [extSlotLabels, setExtSlotLabels] = useState<string[]>([]);
-  const [extSlotError, setExtSlotError] = useState<string | null>(null);
-
   // Query for instructor details with prefetching
   const { data: instructor, isLoading: isLoadingInstructor, error: errorInstructor } = useQuery<Instructor | null>({
     queryKey: ['instructor', instructorNameFromUrl],
@@ -191,62 +181,11 @@ const DynamicInstructorBookingContent = () => {
       if (error) throw new Error(error.message);
       return data;
     },
-    enabled: !!instructorNameFromUrl,
   });
 
   // Only fetch related data when instructor data is available
   const instructorId = instructor?.id;
 
-  // Fetch public availability from DaySchedule using instructor.event_id (if present)
-  useEffect(() => {
-    const fetchExtAvailability = async () => {
-      if (!instructor?.event_id) {
-        // No external event configured
-        return;
-      }
-      try {
-        setLoadingExtSlots(true);
-        setExtSlotError(null);
-
-        const today = new Date();
-        const end = new Date();
-        end.setDate(today.getDate() + 14);
-        const fmt = (d: Date) => d.toISOString().split('T')[0];
-        const startStr = fmt(today);
-        const endStr = fmt(end);
-
-        const url = `https://api.dayschedule.com/v2/public/availability/${instructor.event_id}?start=${startStr}&end=${endStr}&time_zone=Asia%2FCalcutta`;
-        console.debug('[Availability] Fetch:', url);
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to load availability');
-        const json: DayScheduleAvailability = await res.json();
-        console.debug('[Availability] Slots payload size:', json?.slots?.length ?? 0);
-
-        const times: string[] = (json?.slots || [])
-          .flatMap((s: DayScheduleSlot) => (s.hours || []).map((h: DayScheduleHour) => h.time))
-          .filter((t: string) => typeof t === 'string');
-        times.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-        const firstThree = times.slice(0, 3);
-
-        // Use explicit Indian time zone (Asia/Kolkata) for consistent display
-        const formatter = new Intl.DateTimeFormat('en-IN', {
-          month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit',
-          timeZone: 'Asia/Kolkata'
-        });
-        const labels = firstThree.map(t => formatter.format(new Date(t)));
-        setExtSlotLabels(labels);
-        console.debug('[Availability] Labels:', labels);
-      } catch (e) {
-        console.error('[Availability] Error:', e);
-        setExtSlotError('Unable to fetch availability');
-      } finally {
-        setLoadingExtSlots(false);
-      }
-    };
-
-    fetchExtAvailability();
-  }, [instructor?.event_id]);
-  
   // Parallel data fetching for all related data
   const queries = useQueries({
     queries: [
