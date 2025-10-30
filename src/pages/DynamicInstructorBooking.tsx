@@ -639,29 +639,7 @@ const DynamicInstructorBookingContent = () => {
                     </div>
                   ))}
                 </div>
-                {/* Next slots (external availability) */}
-                <div className="mb-2">
-                  {!instructor?.event_id && (
-                    <p className="text-xs text-gray-500">Live availability will appear here once configured.</p>
-                  )}
-                  {instructor?.event_id && (
-                    <div className="rounded-lg border border-rose-100 bg-rose-50/40 p-3">
-                      {loadingExtSlots && (
-                        <div className="flex items-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse"></span>
-                          <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:150ms]"></span>
-                          <span className="h-2 w-2 rounded-full bg-rose-300 animate-pulse [animation-delay:300ms]"></span>
-                        </div>
-                      )}
-                      {!loadingExtSlots && extSlotError && (
-                        <p className="text-xs text-red-500">{extSlotError}</p>
-                      )}
-                      {!loadingExtSlots && !extSlotError && extSlotLabels.length === 0 && (
-                        <p className="text-xs text-gray-500">No upcoming slots in 2 weeks</p>
-                      )}
-                    </div>
-                  )}
-                </div>
+                {/* Next slots hidden */}
                 
                 <Button 
                   className="w-full mt-4 bg-rose-500 hover:bg-rose-600" 
