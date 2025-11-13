@@ -13,7 +13,7 @@ const Guide = () => {
               <div className="text-center mb-8">
                 <div className="text-[#FF7A9A] text-sm font-medium mb-1">MY EXCLUSIVE PRODUCT</div>
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium text-gray-800 mb-3">
-                  69 Position E-Guide
+                  69 Position Playbooks for couples
                 </h1>
                 <p className="text-gray-700 font-medium">
                   Spice up your bedroom game with my expert-crafted guide
@@ -30,7 +30,7 @@ const Guide = () => {
                       </div>
                       <img 
                         src="/69.jpg" 
-                        alt="69 Position E-Guide" 
+                        alt="69 Position Playbooks for couples" 
                         className="w-full h-auto"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -44,7 +44,7 @@ const Guide = () => {
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center">
                           <BookOpen size={18} className="text-[#FF7A9A] mr-2" />
-                          <span className="text-gray-700 font-medium">Digital E-Book</span>
+                          <span className="text-gray-700 font-medium">Digital Playbooks for couples</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="text-gray-500 line-through opacity-60 font-medium">₹999</span>
@@ -105,7 +105,7 @@ const Guide = () => {
                 {/* Content Column - Appears second on mobile */}
                 <div className="order-last md:order-first flex flex-col">
                   <div className="mb-6">
-                    <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">What is the 69 Position Guide?</h2>
+                    <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">What is the 69 Position Playbooks for couples?</h2>
                     <p className="text-gray-700 mb-4">
                       A comprehensive, illustrated guide featuring 69 exciting positions to enhance your intimate experiences. 
                       Each position comes with detailed instructions, tips, and variations to suit different body types and preferences.
@@ -191,7 +191,7 @@ const Guide = () => {
             <h2 className="font-serif text-xl md:text-2xl font-medium text-gray-800 mb-4">Ready to Enhance Your Intimate Life?</h2>
             <p className="text-gray-700 max-w-2xl mx-auto mb-6">
               Don't miss out on this opportunity to transform your intimate experiences. 
-              Get your copy of the 69 Position E-Guide today and start exploring new dimensions of pleasure with your partner.
+              Get your copy of the 69 Position Playbooks for couples today and start exploring new dimensions of pleasure with your partner.
             </p>
             <div className="flex justify-center">
               <a 

@@ -1349,7 +1349,7 @@ const IntimateSuccess = () => {
                   to="/guide" 
                   className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors"
                 >
-                  Explore 69 Positions Guide
+                  Explore 69 Positions Playbooks for couples
                 </Link>
               </div>
             </div>

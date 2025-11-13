@@ -16,7 +16,7 @@ const Index = () => {
     <div className="flex flex-col">
       <Hero />
       <AnnouncementBar 
-        message="🔥 Limited Spots! 30+ Day Challenge to Ignite Your Passion" 
+        message="🔥 Limited Spots! 30+ Ways to Explore Pleasure to Ignite Your Passion" 
         linkText="Get It Now" 
         linkUrl="/thirty-day-challenge" 
         bgColor="#FF5A84" 

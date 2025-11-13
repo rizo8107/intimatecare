@@ -20,8 +20,8 @@ const ComboOffer = () => {
     // Track click with Facebook Pixel if available
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: 'Combo Offer - 69 Positions + 30+ Day Challenge',
-        content_category: 'E-Book Bundle',
+        content_name: 'Combo Offer - 69 Positions + 30+ Ways to Explore Pleasure',
+        content_category: 'Playbooks for couples Bundle',
         value: 999.00,
         currency: 'INR'
       });
@@ -60,7 +60,7 @@ const ComboOffer = () => {
                     <div className="relative w-1/2">
                       <img 
                         src="/69.jpg" 
-                        alt="69 Position E-Guide" 
+                        alt="69 Position Playbooks for couples" 
                         className="w-full h-auto rounded-l-xl"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -75,7 +75,7 @@ const ComboOffer = () => {
                     <div className="relative w-1/2">
                       <img 
                         src="/images/32 days v2.jpg" 
-                        alt="30+ Day Challenge" 
+                        alt="30+ Ways to Explore Pleasure" 
                         className="w-full h-auto rounded-r-xl"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -105,13 +105,13 @@ const ComboOffer = () => {
                       <div className="bg-[#FFE5EC] text-[#FF7A9A] w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
                         <CheckCircle size={14} />
                       </div>
-                      <span><strong>Book 1:</strong> 69+ Saucy Positions E-Guide</span>
+                      <span><strong>Book 1:</strong> 69+ Saucy Positions Playbooks for couples</span>
                     </li>
                     <li className="flex items-start">
                       <div className="bg-[#FFE5EC] text-[#FF7A9A] w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
                         <CheckCircle size={14} />
                       </div>
-                      <span><strong>Book 2:</strong> Break the Same-Sex Routine 30+ Day Challenge</span>
+                      <span><strong>Book 2:</strong> Break the Same-Sex Routine 30+ Ways to Explore Pleasure</span>
                     </li>
                     <li className="flex items-start">
                       <div className="bg-[#FFE5EC] text-[#FF7A9A] w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
@@ -189,7 +189,7 @@ const ComboOffer = () => {
                     Book 2: Break the Same-Sex Routine
                   </h3>
                   <p className="text-gray-700 mb-4">
-                    Feeling stuck in the same old routine with your partner? This 30+ day challenge is made for same-sex couples who want to bring back the excitement. With playful prompts and sexy tasks, you'll laugh more, touch more, and turn up the heat — one day at a time.
+                    Feeling stuck in the same old routine with your partner? These 30+ ways to explore pleasure are made for same-sex couples who want to bring back the excitement. With playful prompts and sexy tasks, you'll laugh more, touch more, and turn up the heat — one day at a time.
                   </p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start">
@@ -216,7 +216,7 @@ const ComboOffer = () => {
                 <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                   <h3 className="font-medium text-lg text-gray-800 mb-3">Why Get Both?</h3>
                   <p className="text-gray-700 mb-4">
-                    Whether you're trying new things or bringing back the passion — these two guides are the perfect way to reconnect, explore, and enjoy each other more. The positions guide gives you immediate options to try, while the 30-day challenge creates a structured journey to rebuild intimacy over time.
+                    Whether you're trying new things or bringing back the passion — these two playbooks for couples are the perfect way to reconnect, explore, and enjoy each other more. The positions playbook gives you immediate options to try, while the pleasure exploration activities create a structured journey to rebuild intimacy over time.
                   </p>
                   <p className="text-[#FF7A9A] font-medium">
                     Don't wait. Your next adventure starts on the next page.
@@ -235,7 +235,7 @@ const ComboOffer = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
-                  "The 69 positions guide gave us so many new ideas! We thought we'd tried everything, but this opened up a whole new world of possibilities."
+                  "The 69 positions playbook for couples gave us so many new ideas! We thought we'd tried everything, but this opened up a whole new world of possibilities."
                 </p>
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-sm font-bold mr-3">R</div>
@@ -245,7 +245,7 @@ const ComboOffer = () => {
               
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
-                  "The 30-day challenge completely transformed our relationship. We're communicating better and the intimacy is on another level now."
+                  "The 30+ ways to explore pleasure completely transformed our relationship. We're communicating better and the intimacy is on another level now."
                 </p>
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-sm font-bold mr-3">K</div>

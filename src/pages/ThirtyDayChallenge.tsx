@@ -20,8 +20,8 @@ const ThirtyDayChallenge = () => {
     // Track click with Facebook Pixel if available
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: '30+ Day Challenge',
-        content_category: 'E-Book',
+        content_name: '30+ Ways to Explore Pleasure',
+        content_category: 'Playbooks for couples',
         value: 599.00,
         currency: 'INR'
       });
@@ -54,7 +54,7 @@ const ThirtyDayChallenge = () => {
               <div className="relative overflow-hidden rounded-xl shadow-lg">
                 <img 
                   src="/images/32 days v2.jpg" 
-                  alt="30+ Day Challenge" 
+                  alt="30+ Ways to Explore Pleasure" 
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -68,7 +68,7 @@ const ThirtyDayChallenge = () => {
               <div className="flex flex-col justify-between">
                 <div>
                   <p className="text-gray-700 mb-6">
-                    Are you tired of the same predictable patterns in your intimate life? This 30+ Day Challenge is designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
+                    Are you tired of the same predictable patterns in your intimate life? These 30+ Ways to Explore Pleasure are designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
                   </p>
                   
                   <div className="bg-[#FF7A9A] rounded-xl p-6 mb-6 text-white relative overflow-hidden">
@@ -79,7 +79,7 @@ const ThirtyDayChallenge = () => {
                       Break The<br />Same-Sex Routine
                     </h1>
                     <div className="text-lg md:text-xl font-light mb-4">
-                      A <span className="font-bold text-[#FFD1DC]">30+ Day Challenge</span> to<br />
+                      <span className="font-bold text-[#FFD1DC]">30+ Ways to Explore Pleasure</span><br />
                       Crave, Connect & Come Again
                     </div>
                     <div className="mb-4">
@@ -248,7 +248,7 @@ const ThirtyDayChallenge = () => {
           <div className="bg-[#FFE5EC] p-8 rounded-xl text-center">
             <h2 className="text-2xl font-serif font-bold mb-4">Ready to Transform Your Intimate Life?</h2>
             <p className="text-gray-700 mb-6">  
-              The 30+ Day Challenge is available now at a special discount price!
+              The 30+ Ways to Explore Pleasure playbook is available now at a special discount price!
             </p>
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex items-center justify-center gap-4">

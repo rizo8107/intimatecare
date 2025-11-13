@@ -108,7 +108,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/guide" className="text-white/80 hover:text-white transition-colors">
-                  69 Positions Guide
+                  69 Positions Playbooks for couples
                 </Link>
               </li>
               <li>

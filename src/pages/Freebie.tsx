@@ -370,7 +370,7 @@ const Freebie = () => {
               
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <a href="/guide" className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors">
-                  69 Position Guide
+                  69 Position Playbooks for couples
                 </a>
                 <a href="/sessions" className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors">
                   Book a Session

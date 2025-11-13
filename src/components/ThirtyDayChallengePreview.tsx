@@ -22,7 +22,7 @@ const ThirtyDayChallengePreview = () => {
             <div className="relative overflow-hidden rounded-xl shadow-lg">
               <img 
                 src="/images/32 days v2.jpg" 
-                alt="30+ Day Challenge" 
+                alt="30+ Ways to Explore Pleasure" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -36,7 +36,7 @@ const ThirtyDayChallengePreview = () => {
             <div className="flex flex-col justify-between">
               <div>
                 <p className="text-gray-700 mb-6">
-                  Are you tired of the same predictable patterns in your intimate life? This 30+ Day Challenge is designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
+                  Are you tired of the same predictable patterns in your intimate life? These 30+ Ways to Explore Pleasure are designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
                 </p>
                 
                 <div className="bg-[#FF7A9A] rounded-xl p-6 mb-6 text-white relative overflow-hidden">
@@ -44,7 +44,7 @@ const ThirtyDayChallengePreview = () => {
                     LIMITED TIME OFFER
                   </div>
                   <div className="text-lg md:text-xl font-light mb-4">
-                    A <span className="font-bold text-[#FFD1DC]">30+ Day Challenge</span> to<br />
+                    <span className="font-bold text-[#FFD1DC]">30+ Ways to Explore Pleasure</span><br />
                     Crave, Connect & Come Again
                   </div>
                   <div className="mb-4">

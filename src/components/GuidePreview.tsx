@@ -11,12 +11,12 @@ const GuidePreview = () => {
             <div className="p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
               {/* Title and Intro */}
               <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
-                <div className="text-[#FF8E7F] text-sm font-medium mb-1">Exclusive E-Guide</div>
+                <div className="text-[#FF8E7F] text-sm font-medium mb-1">Exclusive Playbooks for couples</div>
                 <h2 className="text-2xl md:text-3xl font-serif font-medium text-gray-800 mb-3">
-                  69 Position E-Guide
+                  69 Position Playbooks for couples
                 </h2>
                 <p className="text-gray-800 font-medium">
-                  Spice up your bedroom game with my expert-crafted 69 Position E-Guide
+                  Spice up your bedroom game with my expert-crafted 69 Position Playbooks for couples
                 </p>
               </div>
               
@@ -61,7 +61,7 @@ const GuidePreview = () => {
               <div className="w-full max-w-sm">
                 <img 
                   src="/69.jpg" 
-                  alt="69 Position E-Guide Cover" 
+                  alt="69 Position Playbooks for couples Cover" 
                   className="w-full h-auto rounded-2xl shadow-sm"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

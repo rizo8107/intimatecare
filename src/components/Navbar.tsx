@@ -114,8 +114,8 @@ const Navbar = () => {
                 <Link to="/guide" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/guide') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
-                      <div className="font-medium text-gray-800">69 Positions</div>
-                      <div className="text-xs text-gray-500">Intimate position guide</div>
+                      <div className="font-medium text-gray-800">69 Positions Playbooks for couples</div>
+                      <div className="text-xs text-gray-500">Spice up your bedroom game</div>
                     </div>
                   </div>
                 </Link>
@@ -132,7 +132,7 @@ const Navbar = () => {
                     <div>
                       <div className="flex items-center font-medium text-gray-800">
                         <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">✨</span>
-                        30+ Day Challenge
+                        30+ Ways to Explore Pleasure
                         <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">HOT</span>
                       </div>
                       <div className="text-xs text-gray-500">Daily intimacy exercises</div>
@@ -147,7 +147,7 @@ const Navbar = () => {
                         Combo Offer
                         <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">SAVE ₹300</span>
                       </div>
-                      <div className="text-xs text-gray-500">Bundle deal on both Ebook</div>
+                      <div className="text-xs text-gray-500">Bundle deal on both Playbooks for couples</div>
                     </div>
                   </div>
                 </Link>
@@ -226,8 +226,8 @@ const Navbar = () => {
             
             <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>
               <div>
-                <div className="font-medium">69 Positions</div>
-                <div className="text-xs text-gray-500">Intimate position guide</div>
+                <div className="font-medium">69 Positions Playbooks for couples</div>
+                <div className="text-xs text-gray-500">Spice up your bedroom game</div>
               </div>
             </MobileNavLink>
             
@@ -241,7 +241,7 @@ const Navbar = () => {
             <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>
               <span className="flex items-center">
                 <span className="inline-block animate-pulse mr-1 text-[#FF5A84]">✨</span>
-                <span>30+ Day Challenge</span>
+                <span>30+ Ways to Explore Pleasure</span>
                 <span className="ml-1 text-xs bg-[#FF5A84] text-white px-1.5 py-0.5 rounded-full font-bold">HOT</span>
               </span>
             </MobileNavLink>

@@ -123,7 +123,7 @@ const Contact = () => {
                         <option value="general">General Inquiry</option>
                         <option value="sessions">One-on-One Sessions</option>
                         <option value="intimatetalks">Intimate Talks</option>
-                        <option value="guide">69 Positions Guide</option>
+                        <option value="guide">69 Positions Playbooks for couples</option>
                         <option value="collaboration">Collaboration</option>
                         <option value="other">Other</option>
                       </select>
@@ -241,7 +241,7 @@ const Contact = () => {
                       <li>
                         <a href="/guide" className="flex items-center text-gray-700 hover:text-[#FF7A9A] transition-colors">
                           <span className="mr-2">→</span>
-                          <span>Get 69 Positions Guide</span>
+                          <span>Get 69 Positions Playbooks for couples</span>
                         </a>
                       </li>
                       <li>

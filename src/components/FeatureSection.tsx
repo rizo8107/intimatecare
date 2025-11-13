@@ -19,10 +19,10 @@ const FeatureSection = () => {
       btnColor: "bg-[#9ADCBF]" // Soft mint
     },
     {
-      title: "69 Positions Guide",
-      description: "Spice up your bedroom game with our expert-crafted guide to 69 exciting positions.",
+      title: "69 Positions Playbooks for couples",
+      description: "Spice up your bedroom game with our expert-crafted playbooks for couples to 69 exciting positions.",
       link: "/guide",
-      linkText: "Get Guide",
+      linkText: "Get Playbooks",
       bgColor: "bg-[#F9E5FF]", // Light lavender
       btnColor: "bg-[#D9A6FF]" // Soft lavender
     },
