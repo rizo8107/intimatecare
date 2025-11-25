@@ -156,7 +156,7 @@ const Sessions = () => {
                       <span className="text-gray-700">Duration: 45 minutes</span>
                     </div>
                     <div>
-                      <div className="text-2xl font-serif text-[#FF7A9A] font-medium">₹999</div>
+                      <div className="text-2xl font-serif text-[#FF7A9A] font-medium">₹1,499</div>
                     </div>
                   </div>
                   
@@ -245,12 +245,14 @@ const Sessions = () => {
                     </ul>
                   </div>
                   
-                  <Link 
-                    to="/student-booking"
+                  <a
+                    href="https://topmate.io/intimatecare/1823535"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="block w-full bg-[#3B82F6] hover:bg-[#2563EB] text-white py-3 px-4 rounded-full text-center font-medium transition-colors mt-auto"
                   >
                     Book Student Session
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>

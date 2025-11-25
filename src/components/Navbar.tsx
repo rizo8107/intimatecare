@@ -85,14 +85,19 @@ const Navbar = () => {
                     </div>
                   </div>
                 </Link>
-                <Link to="/student-booking" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/student-booking') ? 'bg-[#FFE5EC]' : ''}`}>
+                <a
+                  href="https://topmate.io/intimatecare/1823535"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block hover:bg-[#FFE5EC] transition-colors"
+                >
+                  <div className="flex items-start px-4 py-3">
                     <div>
                       <div className="font-medium text-gray-800">Student Sessions</div>
                       <div className="text-xs text-gray-500">Book a student coaching session</div>
                     </div>
                   </div>
-                </Link>
+                </a>
               </div>
             </div>
             
@@ -203,12 +208,18 @@ const Navbar = () => {
               Individual Sessions
             </MobileNavLink>
             
-            <MobileNavLink to="/student-booking" active={isActive('/student-booking')} onClick={closeMenu}>
+            <a
+              href="https://topmate.io/intimatecare/1823535"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-4 py-3 rounded-md transition-all text-gray-700 hover:bg-gray-50 hover:text-[#FF7A9A]"
+              onClick={closeMenu}
+            >
               <div>
                 <div className="font-medium">Student Session</div>
                 <div className="text-xs text-gray-500">Book a student coaching session</div>
               </div>
-            </MobileNavLink>
+            </a>
             
             {/* Mansi booking option removed from mobile menu */}
             
