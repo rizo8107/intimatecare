@@ -14,6 +14,10 @@ import InstructorBooking from "./pages/InstructorBooking";
 import DynamicInstructorBooking from "./pages/DynamicInstructorBooking";
 import IntimateTalks from "./pages/IntimateTalks";
 import Guide from "./pages/Guide";
+import SessionsModern from "./pages/SessionsModern";
+import IntimateTalksModern from "./pages/IntimateTalksModern";
+import InstructorsModern from "./pages/InstructorsModern";
+import ThirtyDayChallengeModern from "./pages/ThirtyDayChallengeModern";
 import Freebie from "./pages/Freebie";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -33,6 +37,7 @@ import Webinars from './pages/Webinars';
 import Programs from './pages/Programs';
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
+import StickyCtaBar from "./components/StickyCtaBar";
 import { initClarity } from "./utils/clarity";
 
 const queryClient = new QueryClient();
@@ -65,7 +70,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/programs" element={<Programs />} />
-              <Route path="/instructors" element={<InstructorsPage />} />
+              <Route path="/instructors" element={<InstructorsModern />} />
               <Route path="/about" element={<About />} />
               <Route path="/issues" element={<Issues />} />
               <Route path="/student-booking" element={<StudentBooking />} />
@@ -78,12 +83,12 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/intimate-success" element={<IntimateSuccess />} />
               <Route path="/issues" element={<Issues />} />
-              <Route path="/sessions" element={<Sessions />} />
-              <Route path="/intimatetalks" element={<IntimateTalks />} />
+              <Route path="/sessions" element={<SessionsModern />} />
+              <Route path="/intimatetalks" element={<IntimateTalksModern />} />
               <Route path="/terms-conditions" element={<TermsConditions />} />
               <Route path="/cancellation-refund" element={<CancellationRefund />} />
               <Route path="/payment-test" element={<PaymentTestPage />} />
-              <Route path="/30-day-challenge" element={<ThirtyDayChallenge />} />
+              <Route path="/30-day-challenge" element={<ThirtyDayChallengeModern />} />
               <Route path="/combo-offer" element={<ComboOffer />} />
               <Route path="/webinars" element={<Webinars />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
@@ -91,6 +96,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
+          <StickyCtaBar />
           <Footer />
         </div>
       </BrowserRouter>

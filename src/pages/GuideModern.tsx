@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Download, BookOpen, Star, Shield, Clock, Users, ArrowRight, Gift, Zap, Heart, ChevronDown } from 'lucide-react';
 
-const Guide = () => {
+const GuideModern = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const features = [
@@ -312,4 +312,4 @@ const Guide = () => {
   );
 };
 
-export default Guide;
+export default GuideModern;

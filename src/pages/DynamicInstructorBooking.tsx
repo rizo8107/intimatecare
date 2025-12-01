@@ -561,7 +561,7 @@ const DynamicInstructorBookingContent = () => {
   // Show skeleton loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen p-6">
+      <div className="min-h-screen p-6 bg-[#FFF7EC]">
         {/* Header skeleton */}
         <div className="max-w-6xl mx-auto">
           <div className="w-24 h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
@@ -593,366 +593,322 @@ const DynamicInstructorBookingContent = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
-      <div className="container-custom max-w-4xl">
-        <Link to="/sessions" className="inline-flex items-center text-[#FF5A84] hover:text-[#FF7A9A] mb-6 transition-colors">
-          <ArrowLeft size={16} className="mr-2" />
-          Back to Sessions
-        </Link>
-        
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-8 border border-gray-200">
-          {/* Hero Banner with Author Image */}
-          <div className="relative bg-slate-50 py-12 px-6 md:px-10">
-            <div className="absolute top-0 right-0 w-full h-full opacity-10 bg-[url('/images/pattern-dots.png')] bg-repeat"></div>
-            <div className="flex flex-col md:flex-row items-center relative z-10">
-              {/* Author Image */}
-              <div className="md:w-1/3 mb-6 md:mb-0 flex justify-center">
-                <div className="relative">
+    <div className="bg-[#FFF7EC] min-h-screen">
+      {/* Hero Section */}
+      <section className="py-12 md:py-16">
+        <div className="container-custom max-w-6xl">
+          <Link to="/instructors" className="inline-flex items-center text-[#e05286] hover:text-[#C61F60] mb-6 transition-colors font-medium">
+            <ArrowLeft size={18} className="mr-2" />
+            Back to All Coaches
+          </Link>
+
+          <div className="grid lg:grid-cols-5 gap-8 items-start">
+            {/* Left: Profile Card */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-[#FFE5EC] lg:sticky lg:top-24">
+                {/* Profile Image */}
+                <div className="relative overflow-hidden aspect-[3/4] max-h-[520px] mx-auto">
                   <img 
                     src={instructor?.profile_image_url || `/images/${instructor?.name?.toLowerCase()}-profile.jpg`} 
-                    alt={`${instructor?.name} - Holistic Listener`} 
-                    className="w-48 h-48 object-cover rounded-full border-4 border-white shadow-md" 
+                    alt={instructor?.name} 
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = `https://placehold.co/200x200/FFE5EC/FF5A84?text=${instructor?.name?.charAt(0)}&font=playfair`;
+                      target.src = `https://placehold.co/400x400/FFE5EC/FF5A84?text=${instructor?.name?.charAt(0)}&font=playfair`;
                     }}
                   />
-                  <div className="absolute -bottom-2 -right-2 bg-[#FF5A84] text-white rounded-full p-2">
-                    <Award size={20} />
+                  <div className="absolute inset-0 bg-black/30"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h1 className="text-2xl font-bold text-white drop-shadow-sm">{instructor?.name}</h1>
+                    <p className="text-white/90 text-sm">{instructor?.specialization}</p>
                   </div>
                 </div>
-              </div>
-              
-              {/* Intro Text */}
-              <div className="md:w-2/3 text-center md:text-left">
-                <h1 className="text-3xl md:text-4xl font-serif font-medium text-gray-800 mb-3">
-                  Book a Session with {instructor?.name}
-                </h1>
-                <p className="text-gray-700 text-lg mb-4">
-                  {getSection('intro')?.content || instructor?.bio || 'A safe, non-judgmental space where you can feel heard, witnessed, and truly understood.'}
-                </p>
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm mb-4">
-                  {highlights.map(highlight => (
-                    <div key={highlight.id} className="flex items-center">
-                      <Heart size={16} className="text-rose-500 mr-2" fill="currentColor" />
-                      <span>{highlight.title}</span>
+
+                {/* Quick Info */}
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
                     </div>
-                  ))}
-                </div>
-                {/* Next slots hidden */}
-                
-                <Button 
-                  className="w-full mt-4 bg-rose-500 hover:bg-rose-600" 
-                  onClick={handleBookNowClick}
-                >
-                  {firstSession?.is_external ? (
-                    <>
-                      <ArrowLeft size={18} className="mr-2" />
-                      Book Now
-                    </>
-                  ) : (
-                    <>
-                      <BookOpen size={18} className="mr-2" />
-                      Book Now
-                    </>
+                    <span className="text-sm text-gray-500">5.0 Rating</span>
+                  </div>
+
+                  {/* Trust Badges */}
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <CheckCircle className="w-5 h-5 text-[#e05286]" />
+                      <span>100% Confidential</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <Award className="w-5 h-5 text-[#e05286]" />
+                      <span>{instructor?.experience || 'Certified Professional'}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                      <Heart className="w-5 h-5 text-[#e05286]" />
+                      <span>Judgment-Free Space</span>
+                    </div>
+                  </div>
+
+                  {/* Primary CTA */}
+                  {firstSession && (
+                    <div className="space-y-3">
+                      <div className="text-center p-4 bg-[#FFE0EC] rounded-xl border border-[#e05286]/40">
+                        <p className="text-sm text-gray-600 mb-1">{firstSession.name}</p>
+                        <p className="text-3xl font-bold text-[#e05286]">₹{firstSession.price}</p>
+                        <p className="text-xs text-gray-500">{firstSession.duration_minutes} minutes</p>
+                      </div>
+                      <button
+                        disabled={firstSession?.button_lock}
+                        onClick={handleBookNowClick}
+                        className={`w-full py-4 px-6 rounded-full font-semibold text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 shadow-lg ${
+                          firstSession?.button_lock 
+                            ? 'bg-gray-400 cursor-not-allowed' 
+                            : 'bg-[#e05286] hover:bg-[#C61F60] hover:shadow-xl hover:-translate-y-0.5 text-white'
+                        }`}
+                      >
+                        <Calendar className="w-5 h-5" />
+                        Book Session Now
+                      </button>
+                    </div>
                   )}
-                </Button>
+                </div>
               </div>
             </div>
-          </div>
-          
-          {/* Main Content */}
-          <div className="p-6 md:p-8">
-            {/* Session Details */}
-            <div className="mb-12">
-              <div className="flex items-center mb-5">
-                <div className="bg-[#FF5A84] p-2 rounded-lg mr-3">
-                  <Clock size={20} className="text-white" />
-                </div>
-                <h2 className="text-2xl font-serif font-medium text-[#853f92]">
-                  {getSection('Session Details')?.title || 'Session Details'}
+
+            {/* Right: Content */}
+            <div className="lg:col-span-3 space-y-8">
+              {/* About Section */}
+              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
+                <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">
+                  About {instructor?.name}
                 </h2>
-              </div>
-              
-              <div className="bg-white p-5 rounded-lg mb-6 border border-[#FFE5EC] shadow-sm">
-                <p className="text-gray-700 leading-relaxed">
-                  {getSection('session_details')?.content || 'During our sessions, I create a container for you to explore your inner landscape with curiosity rather than judgment.'}
+                <p className="text-gray-600 leading-relaxed text-lg">
+                  {getSection('intro')?.content || instructor?.bio || 'A safe, non-judgmental space where you can feel heard, witnessed, and truly understood.'}
                 </p>
-              </div>
-              
-              {firstSession && (
-                <div className="mt-6 bg-purple-50 p-5 rounded-lg border-l-4 border-purple-700 shadow-sm">
-                  <div className="flex flex-col md:flex-row items-center md:items-start justify-between">
-                    <div className="mb-3 md:mb-0">
-                      <h3 className="font-medium text-gray-800 mb-1">{firstSession.name}</h3>
-                      <p className="text-gray-600 text-sm">{firstSession.description || `${firstSession.duration_minutes} minutes of dedicated space`}</p>
-                      <div className="text-2xl font-serif font-bold text-rose-500 mt-1">₹{firstSession.price}</div>
-                      {firstSession.is_external && (
-                        <div className="mt-1 inline-flex items-center text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                          <span className="mr-1">•</span> External Session
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      disabled={firstSession?.button_lock}
-                      onClick={handleBookNowClick}
-                      className={`${firstSession?.button_lock ? 'bg-gray-500 cursor-not-allowed opacity-70' : 'bg-purple-700 hover:bg-purple-800'} text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-sm w-full md:w-auto justify-center md:justify-start`}
-                    >
-                      {firstSession.is_external ? (
-                        <>
-                          <ArrowLeft size={18} className="mr-2" />
-                          Book Now
-                        </>
-                      ) : (
-                        <>
-                          <Calendar size={18} className="mr-2" />
-                          Book First Session
-                        </>
-                      )}
-                    </button>
+
+                {/* Highlights */}
+                {highlights.length > 0 && (
+                  <div className="flex flex-wrap gap-3 mt-6">
+                    {highlights.map(highlight => (
+                      <div key={highlight.id} className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium">
+                        <CheckCircle className="w-4 h-4" />
+                        {highlight.title}
+                      </div>
+                    ))}
                   </div>
-                </div>
-              )}
-              
-              {followUpSession && (
-                <>
-                  <div className="my-4 border-t border-gray-200"></div>
-                  <div className="flex flex-col md:flex-row items-center md:items-start justify-between">
-                    <div className="mb-3 md:mb-0">
-                      <h3 className="font-medium text-gray-800 mb-1">{followUpSession.name}</h3>
-                      <p className="text-gray-600 text-sm">{followUpSession.description || `${followUpSession.duration_minutes} minutes of continued support`}</p>
-                      <div className="text-2xl font-serif font-bold text-rose-500 mt-1">₹{followUpSession.price}</div>
-                      {followUpSession.is_external && (
-                        <div className="mt-1 inline-flex items-center text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                          <span className="mr-1">•</span> External Session
+                )}
+              </div>
+
+              {/* Session Types */}
+              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
+                <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
+                  Available Sessions
+                </h2>
+                
+                <div className="space-y-4">
+                  {firstSession && (
+                    <div className="p-5 rounded-xl bg-[#FFE0EC] border-2 border-[#e05286]/50">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                          <div className="inline-block bg-[#e05286] text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
+                            RECOMMENDED
+                          </div>
+                          <h3 className="font-bold text-gray-800 text-lg">{firstSession.name}</h3>
+                          <p className="text-gray-600 text-sm mt-1">{firstSession.description || `${firstSession.duration_minutes} minutes of dedicated space`}</p>
+                          <div className="flex items-center gap-4 mt-2">
+                            <span className="text-2xl font-bold text-[#e05286]">₹{firstSession.price}</span>
+                            <span className="text-sm text-gray-500 flex items-center gap-1">
+                              <Clock className="w-4 h-4" /> {firstSession.duration_minutes} min
+                            </span>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-center w-full md:w-auto">
-                      {followUpSession.is_external ? (
                         <button
-                          disabled={followUpSession?.button_lock}
-                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => { 
-                            e.preventDefault(); 
-                            if (!followUpSession?.button_lock && followUpSession.is_external && followUpSession.external_url) {
-                              window.open(followUpSession.external_url, '_blank');
-                            } else if (!followUpSession?.button_lock) {
-                              // Set the selected session type to follow-up session before opening modal
-                              setSelectedSessionType(followUpSession);
-                              openBookingModal();
-                            }
-                          }}
-                          className={`${followUpSession?.button_lock ? 'bg-gray-500 cursor-not-allowed opacity-70' : 'bg-purple-700 hover:bg-purple-800'} text-white py-2 px-6 rounded-full font-medium transition-colors inline-flex items-center shadow-sm w-full md:w-auto justify-center`}
+                          disabled={firstSession?.button_lock}
+                          onClick={handleBookNowClick}
+                          className={`px-6 py-3 rounded-full font-semibold transition-all inline-flex items-center gap-2 ${
+                            firstSession?.button_lock 
+                              ? 'bg-gray-400 cursor-not-allowed text-white' 
+                              : 'bg-[#e05286] hover:bg-[#C61F60] text-white shadow-md hover:shadow-lg'
+                          }`}
                         >
-                          <ArrowLeft size={18} className="mr-2" />
+                          <Calendar className="w-4 h-4" />
                           Book Now
                         </button>
-                      ) : (
-                        <>
+                      </div>
+                    </div>
+                  )}
+
+                  {followUpSession && (
+                    <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                          <h3 className="font-bold text-gray-800">{followUpSession.name}</h3>
+                          <p className="text-gray-600 text-sm mt-1">{followUpSession.description || `${followUpSession.duration_minutes} minutes of continued support`}</p>
+                          <div className="flex items-center gap-4 mt-2">
+                            <span className="text-xl font-bold text-gray-800">₹{followUpSession.price}</span>
+                            <span className="text-sm text-gray-500 flex items-center gap-1">
+                              <Clock className="w-4 h-4" /> {followUpSession.duration_minutes} min
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-center">
                           <button
                             disabled={followUpSession?.button_lock}
                             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                               e.preventDefault();
                               if (!followUpSession?.button_lock) {
-                                // Set the selected session type to follow-up session before opening modal
-                                setSelectedSessionType(followUpSession);
-                                openBookingModal();
+                                if (followUpSession.is_external && followUpSession.external_url) {
+                                  window.open(followUpSession.external_url, '_blank');
+                                } else {
+                                  setSelectedSessionType(followUpSession);
+                                  openBookingModal();
+                                }
                               }
                             }}
-                            className={`${followUpSession?.button_lock ? 'bg-gray-500 cursor-not-allowed opacity-70' : 'bg-purple-700 hover:bg-purple-800'} text-white py-2 px-6 rounded-full font-medium inline-flex items-center transition-colors shadow-sm w-full md:w-auto justify-center`}
+                            className={`px-6 py-3 rounded-full font-semibold transition-all inline-flex items-center gap-2 ${
+                              followUpSession?.button_lock 
+                                ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
+                                : 'bg-gray-800 hover:bg-gray-900 text-white'
+                            }`}
                           >
-                            <Calendar size={18} className="mr-2" />
+                            <Calendar className="w-4 h-4" />
                             Book Follow-Up
                           </button>
                           {followUpSession?.button_lock && (
-                            <span className="text-xs text-gray-700 mt-2 italic font-medium">Enabled after first session</span>
+                            <span className="text-xs text-gray-500 mt-2 italic">Available after first session</span>
                           )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-            
-            {/* Support Areas - Sexual Wellness */}
-            {supportAreasByCategory['Sexual Wellness'] && (
-              <div className="bg-white p-6 rounded-xl mb-8 shadow-sm border border-[#FFE5EC]">
-                <div className="flex items-center mb-5">
-                  <div className="bg-[#FF5A84] p-2 rounded-lg mr-3">
-                    <Heart size={20} className="text-white" />
-                  </div>
-                  <h2 className="text-2xl font-serif font-medium text-[#853f92]">
-                    {getSection('sexual_wellness')?.title || 'Sexual Wellness Support'}
-                  </h2>
-                </div>
-                
-                <div className="bg-gray-50 p-5 rounded-lg mb-6 border border-gray-200">
-                  <p className="text-gray-700 leading-relaxed">
-                    {getSection('sexual_wellness')?.content || 'As a trained sexual wellness coach, I provide a safe space to explore challenges around intimacy, desire, and pleasure.'}
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {supportAreasByCategory['Sexual Wellness'].map(area => (
-                    <div key={area.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex items-center mb-2">
-                        <DynamicIcon name={area.icon_name} className="text-rose-500 mr-2" size={16} />
-                        <h3 className="font-medium text-gray-800">{area.title}</h3>
-                      </div>
-                      <p className="text-gray-700 text-sm">{area.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Support Areas - Holistic Support */}
-            {supportAreasByCategory['Holistic Support'] && (
-              <div className="bg-white p-6 rounded-xl mb-8 shadow-sm border border-[#FFE5EC]">
-                <div className="flex items-center mb-5">
-                  <div className="bg-purple-700 p-2 rounded-lg mr-3">
-                    <MessageCircle size={20} className="text-white" />
-                  </div>
-                  <h2 className="text-2xl font-serif font-medium text-[#853f92]">
-                    {getSection('holistic_support')?.title || 'Non-Sexual Holistic Support'}
-                  </h2>
-                </div>
-                
-                <div className="relative mb-6">
-                  <div className="absolute left-0 top-0 h-full w-1 bg-purple-700"></div>
-                  <p className="pl-6 text-gray-700 italic">
-                    {getSection('holistic_support')?.content || 'Other areas where I can hold space for your journey:'}
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {supportAreasByCategory['Holistic Support']?.map(area => (
-                    <div key={area.id} className="flex bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                      <div className="bg-purple-700 p-2 rounded-full h-min mr-3">
-                        <DynamicIcon name={area.icon_name} className="text-white" size={16} />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-800 mb-1">{area.title}</h3>
-                        <p className="text-gray-700 text-sm">{area.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Post-Session Offerings */}
-            {offerings.length > 0 && (
-              <div className="bg-white p-6 rounded-xl mb-8 shadow-sm border border-[#FFE5EC]">
-                <div className="flex items-center mb-5">
-                  <div className="bg-[#FF5A84] p-2 rounded-lg mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-serif font-medium text-[#853f92]">
-                    {getSection('post_session')?.title || 'What You\'ll Receive Post-Session'}
-                  </h2>
-                </div>
-                
-                <div className="bg-rose-50 p-5 rounded-lg mb-6 border-l-4 border-rose-500 shadow-sm">
-                  <p className="text-gray-700 text-lg mb-4 leading-relaxed">
-                    {getSection('post_session')?.content || 'Each session is more than a conversation—it\'s an energetic exchange. Based on our time together, you may receive:'}
-                  </p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {offerings.map(offering => (
-                      <div key={offering.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-center">
-                        <div className="bg-rose-50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                          <DynamicIcon name={offering.icon_name} className="text-rose-500" size={20} />
                         </div>
-                        <h3 className="font-medium text-gray-800 mb-2">{offering.title}</h3>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Support Areas */}
+              {(supportAreasByCategory['Sexual Wellness'] || supportAreasByCategory['Holistic Support']) && (
+                <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
+                  <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
+                    How I Can Help You
+                  </h2>
+                  
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {supportAreasByCategory['Sexual Wellness']?.map(area => (
+                      <div key={area.id} className="flex items-start gap-3 p-4 rounded-xl bg-pink-50 border border-pink-100">
+                        <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center flex-shrink-0">
+                          <DynamicIcon name={area.icon_name} className="text-white" size={18} />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-800">{area.title}</h3>
+                          <p className="text-gray-600 text-sm mt-1">{area.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {supportAreasByCategory['Holistic Support']?.map(area => (
+                      <div key={area.id} className="flex items-start gap-3 p-4 rounded-xl bg-purple-50 border border-purple-100">
+                        <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0">
+                          <DynamicIcon name={area.icon_name} className="text-white" size={18} />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-800">{area.title}</h3>
+                          <p className="text-gray-600 text-sm mt-1">{area.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* What You'll Receive */}
+              {offerings.length > 0 && (
+                <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
+                  <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
+                    What You'll Receive
+                  </h2>
+                  
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    {offerings.map(offering => (
+                      <div key={offering.id} className="text-center p-5 rounded-xl bg-[#FFF7EC] border border-[#FFE5EC]">
+                        <div className="w-14 h-14 rounded-full bg-[#FFE0EC] flex items-center justify-center mx-auto mb-4">
+                          <DynamicIcon name={offering.icon_name} className="text-[#e05286]" size={24} />
+                        </div>
+                        <h3 className="font-semibold text-gray-800 mb-2">{offering.title}</h3>
                         <p className="text-gray-600 text-sm">{offering.description}</p>
                       </div>
                     ))}
                   </div>
                 </div>
-                
-                <div className="mt-6 text-center">
-                  <p className="text-gray-700 italic text-lg">"This is soul work, and no two sessions are the same."</p>
-                </div>
-              </div>
-            )}
-            
-            {/* CTA Section */}
-            <div className="border-t border-gray-200 pt-8">
-              <div className="bg-purple-50 p-6 rounded-xl mb-8 text-center border-2 border-purple-700 shadow-lg">
-                <div className="flex items-center justify-center mb-6">
-                  <div className="bg-rose-500 p-3 rounded-full">
-                    <Calendar size={24} className="text-white" />
-                  </div>
-                  <h2 className="text-2xl font-serif font-medium text-purple-800 ml-3">
-                    {getSection('closing')?.title || 'Ready to Begin Your Journey?'}
+              )}
+
+              {/* Testimonials */}
+              {testimonials.length > 0 && (
+                <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
+                  <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
+                    Client Stories
                   </h2>
+                  
+                  <div className="space-y-4">
+                    {testimonials.slice(0, 3).map(testimonial => (
+                      <div key={testimonial.id} className="p-5 rounded-xl bg-gray-50 border border-gray-100">
+                        <div className="flex gap-1 mb-3">
+                          {[...Array(testimonial.rating)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-gray-700 italic mb-4">"{testimonial.content}"</p>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold">
+                            {testimonial.client_name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-800">{testimonial.client_name}</p>
+                            <p className="text-sm text-gray-500">{testimonial.client_description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-                  {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructor?.name} and experience a safe space where you can explore, express, and embrace your authentic self.`}
-                </p>
-                <button
-                  onClick={handleBookNowClick}
-                  className="bg-purple-700 hover:bg-purple-800 text-white py-3 px-8 rounded-full font-medium transition-colors inline-flex items-center text-lg mx-auto shadow-md"
-                >
-                  {firstSession?.is_external ? (
-                    <>
-                      <ArrowLeft size={20} className="mr-2" />
-                      Book Now
-                    </>
-                  ) : (
-                    <>
-                      <Calendar size={20} className="mr-2" />
-                      Book Your Session Now
-                    </>
-                  )}
-                </button>
-              </div>
+              )}
             </div>
           </div>
         </div>
-        
-        <div className="bg-slate-50 rounded-2xl shadow-md p-8 text-center border border-gray-200 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 bg-rose-100 rounded-full opacity-30"></div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 -mb-16 -ml-16 bg-rose-100 rounded-full opacity-30"></div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="py-12 bg-[#FFE0EC] border-t border-[#e05286]/40">
+        <div className="container-custom max-w-4xl text-center">
+          <h2 className="text-3xl font-serif font-bold text-gray-800 mb-4">
+            Ready to Begin Your Journey?
+          </h2>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructor?.name} today.`}
+          </p>
+          <button
+            onClick={handleBookNowClick}
+            className="inline-flex items-center gap-2 bg-[#e05286] hover:bg-[#C61F60] text-white font-bold py-4 px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-lg"
+          >
+            <Calendar className="w-5 h-5" />
+            Book Your Session Now
+          </button>
           
-          <div className="relative z-10 space-y-5 max-w-2xl mx-auto">
-            <div className="inline-block bg-white px-6 py-2 rounded-full shadow-sm mb-2">
-              <p className="text-rose-500 font-serif text-xl font-medium">"Come as you are—there is no fixing, only feeling."</p>
+          <div className="flex flex-wrap justify-center gap-6 mt-8 text-gray-500 text-sm">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-[#e05286]" />
+              <span>100% Confidential</span>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                <div className="flex items-center mb-2">
-                  <Heart size={18} className="text-rose-500 mr-2" />
-                  <h3 className="font-medium text-gray-800">Inclusive Space</h3>
-                </div>
-                <p className="text-gray-700 text-sm">A safe space for women, men, LGBTQIA+, and anyone navigating emotional or sexual healing.</p>
-              </div>
-              
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                <div className="flex items-center mb-2">
-                  <Star size={18} className="text-rose-500 mr-2" />
-                  <h3 className="font-medium text-gray-800">Wisdom-Based</h3>
-                </div>
-                <p className="text-gray-700 text-sm">Rooted in feminine wisdom, energetic sensitivity & real-world compassion.</p>
-              </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-[#e05286]" />
+              <span>Secure Payment</span>
             </div>
-            
-            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-              <p className="text-gray-700 text-lg mb-3 font-medium relative z-10">
-                {getSection('footer')?.title || "Come as you are—there is no fixing, only feeling."}
-              </p>
-              <p className="text-gray-600 relative z-10">
-                {getSection('footer')?.content || "No diagnosis. No pressure. Just presence. A bridge between what you feel and what you haven't yet dared to speak—whether you're a man holding back tears, a woman silenced by shame, or anyone seeking wholeness."}
-              </p>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-[#e05286]" />
+              <span>Flexible Scheduling</span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
       
       {/* Modal for booking */}
       <BookingModal 

@@ -1,36 +1,50 @@
-
-import Hero from "@/components/Hero";
-import AnnouncementBar from "@/components/AnnouncementBar";
-import FeatureSection from "@/components/FeatureSection";
-import AboutPreview from "@/components/AboutPreview";
+import HeroModern from "@/components/HeroModern";
+import SocialProofBar from "@/components/SocialProofBar";
+import TrustBadges from "@/components/TrustBadges";
+import ServicesGrid from "@/components/ServicesGrid";
+import FeaturedIn from "@/components/FeaturedIn";
+import AboutPreviewModern from "@/components/AboutPreviewModern";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import SessionsPreview from "@/components/SessionsPreview";
-import TelegramPreview from "@/components/TelegramPreview";
-import GuidePreview from "@/components/GuidePreview";
-import FreebieSection from "@/components/FreebieSection";
-import NewsletterSection from "@/components/NewsletterSection";
-import YouTubeSection from "@/components/YouTubeSection";
-import ThirtyDayChallengePreview from "@/components/ThirtyDayChallengePreview";
+import FAQSection from "@/components/FAQSection";
+import CTASection from "@/components/CTASection";
+import NewsletterModern from "@/components/NewsletterModern";
 
 const Index = () => {
   return (
     <div className="flex flex-col">
-      <Hero />
-      <AnnouncementBar 
-        message="🔥 Limited Spots! 30+ Ways to Explore Pleasure to Ignite Your Passion" 
-        linkText="Get It Now" 
-        linkUrl="/thirty-day-challenge" 
-        bgColor="#FF5A84" 
-        textColor="#FFFFFF" 
-      />
-      <FeatureSection />
-      <ThirtyDayChallengePreview />
-      <AboutPreview />
+      {/* Live Social Proof Notification Bar */}
+      <SocialProofBar />
+      
+      {/* Modern Hero with Video CTA */}
+      <HeroModern />
+      
+      {/* Trust Badges Strip */}
+      <TrustBadges />
+      
+      {/* Featured In Logos */}
+      <FeaturedIn />
+      
+      {/* Services Grid - Main Offerings */}
+      <ServicesGrid />
+      
+      {/* About Section - Build Trust */}
+      <AboutPreviewModern />
+      
+      {/* Testimonials Carousel - Social Proof */}
+      <TestimonialsCarousel />
+      
+      {/* Meet the Team/Instructors */}
       <SessionsPreview />
-      <YouTubeSection />
-      <TelegramPreview />
-      <GuidePreview />
-      <FreebieSection />
-      <NewsletterSection />
+      
+      {/* FAQ Section - Overcome Objections */}
+      <FAQSection />
+      
+      {/* Strong CTA Section */}
+      <CTASection />
+      
+      {/* Newsletter with Lead Magnet */}
+      <NewsletterModern />
     </div>
   );
 };

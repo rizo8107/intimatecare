@@ -139,7 +139,7 @@ const Navbar = () => {
                 <ChevronDown size={16} className="ml-1 group-hover:rotate-180 transition-transform duration-200" />
               </button>
               <div className="absolute left-0 mt-1 w-80 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[#F0F0F5] overflow-hidden">
-                <Link to="/instructors" className="block hover:bg-[#FFE5EC] transition-colors">
+                <Link to="/instructor/Vishakha Parwani" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/instructors') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
                       <div className="font-medium text-gray-800">Psychology & Emotional Wellness</div>
@@ -147,7 +147,7 @@ const Navbar = () => {
                     </div>
                   </div>
                 </Link>
-                <Link to="/coming-soon" className="block hover:bg-[#FFE5EC] transition-colors">
+                <Link to="/instructor/Mansi" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/coming-soon') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
                       <div className="font-medium text-gray-800">Holistic Listening & Healing</div>
@@ -155,7 +155,7 @@ const Navbar = () => {
                     </div>
                   </div>
                 </Link>
-                <Link to="/coming-soon" className="block hover:bg-[#FFE5EC] transition-colors">
+                <Link to="/instructor/Charu" className="block hover:bg-[#FFE5EC] transition-colors">
                   <div className={`flex items-start px-4 py-3 ${isActive('/coming-soon') ? 'bg-[#FFE5EC]' : ''}`}>
                     <div>
                       <div className="font-medium text-gray-800">Ayurvedic Mind–Body Healing</div>
@@ -240,13 +240,13 @@ const Navbar = () => {
 
             <div className="space-y-2 rounded-2xl border border-[#D9F0E6] bg-[#F4FFFA] p-3">
               <div className="text-xs uppercase tracking-wider text-[#2C9D75] font-semibold">Expert Healing & Support (Team Khushboo)</div>
-              <MobileNavLink to="/instructors" active={isActive('/instructors')} onClick={closeMenu}>
+              <MobileNavLink to="/instructor/Vishakha Parwani" active={isActive('/instructor/Vishakha Parwani')} onClick={closeMenu}>
                 Psychology & Emotional Wellness
               </MobileNavLink>
-              <MobileNavLink to="/coming-soon" active={isActive('/coming-soon')} onClick={closeMenu}>
+              <MobileNavLink to="/instructor/Mansi" active={isActive('/instructor/Mansi')} onClick={closeMenu}>
                 Holistic Listening & Healing
               </MobileNavLink>
-              <MobileNavLink to="/coming-soon" active={isActive('/coming-soon')} onClick={closeMenu}>
+              <MobileNavLink to="/instructor/Charu" active={isActive('/instructor/Charu')} onClick={closeMenu}>
                 Ayurvedic Mind–Body Healing
               </MobileNavLink>
             </div>
