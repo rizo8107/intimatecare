@@ -209,21 +209,63 @@
   .stats-label {
     @apply text-sm text-gray-500;
   }
-  
+
   /* Topmate-inspired service card */
   .service-card {
     @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-[#F0F0F5] overflow-hidden;
   }
-  
+
   .service-card-header {
     @apply p-4 border-b border-[#F0F0F5];
   }
-  
+
   .service-card-body {
     @apply p-4;
   }
-  
+
   .service-card-footer {
     @apply p-4 flex justify-between items-center border-t border-[#F0F0F5];
   }
+}
+
+/* Inspecta CSS Changes - Auto Applied */
+body > #root > div.flex.flex-col.min-h-screen > div.fixed.bottom-0.left-0.right-0.z-40.animate-slide-up > div.shadow-2xl {
+  background-color: #cf3682;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > footer.text-white > div.karigai-container.py-8 {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow > div.min-h-screen > div > div.min-h-screen.bg-background > div > section.py-10 > div.konipai-container > div.grid.grid-cols-2 > a.group.bg-white.overflow-hidden.transition-all.duration-300.relative.flex.flex-col.shadow-sm > div.flex.flex-col.px-0.pb-0 > div.flex.flex-col.items-start.gap-1 > h3.font-bold.text-black.transition-colors {
+  font-size: 17px;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div > section.py-12 > div.container-custom.max-w-5xl > div.bg-white.rounded-3xl.shadow-sm.overflow-hidden.mb-8 > div.p-6 > div.grid.grid-cols-1.gap-8 > div.rounded-xl.p-6.shadow-sm {
+  background-color: #ffffff;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div > section.py-12 > div.container-custom.max-w-5xl > div.bg-white.rounded-3xl.shadow-sm.overflow-hidden.mb-8 > div.p-6 > div.grid.grid-cols-1.gap-8 > div.rounded-xl.p-6.shadow-sm > form.space-y-5 > div.pt-2 > button.w-full.text-white.py-3.px-6.rounded-full.text-center.font-medium.transition-colors {
+  background-color: #fb4672;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > div.text-gray-800.py-3.overflow-hidden.border-b.border-pink-100 {
+  margin-top: 36px;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > section.py-12.bg-gray-50 > div.container-custom.max-w-6xl > div.grid.grid-cols-1.gap-8 > div.border.rounded-2xl.overflow-hidden.shadow-sm.transition-shadow.duration-300.flex.flex-col.h-full.p-4:nth-of-type(2) {
+  border-color: #ffffff;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > section.relative.flex.items-center.overflow-hidden {
+  height: auto;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > nav.fixed.top-0.w-full.z-50.transition-all.duration-300.py-4 {
+  height: 98px;
+}
+
+body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > section.relative.flex.items-center.overflow-hidden > div.container-custom.relative.z-10 {
+  padding-top: 15px;
 }
