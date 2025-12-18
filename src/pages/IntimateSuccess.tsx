@@ -318,30 +318,10 @@ const IntimateSuccess = () => {
     
     try {
       setVerificationLoading(true);
+      const formattedInputPhone = normalizePhone(formData.mobileNumber);
       
-      // First, check if user exists in telegram_sub_deleted (previously removed users)
-      const deletedUser = await checkDeletedUser(formData.mobileNumber);
-      
-      if (deletedUser) {
-        console.log('Found user in telegram_sub_deleted, skipping form');
-        setDeletedUserData(deletedUser);
-        setIsExistingDeletedUser(true);
-        setFormCompleted(true);
-        setCurrentStep(3); // Skip to Telegram login step
-        
-        // Store phone in localStorage
-        localStorage.setItem('verifiedPhone', formData.mobileNumber);
-        
-        toast({
-          title: 'Welcome back!',
-          description: 'We found your previous subscription. Please connect with Telegram to rejoin the group.',
-          variant: 'default'
-        });
-        return;
-      }
-      
-      // Check payment_kb_all for new users
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
+      // Fetch payment data first (needed for both new and returning users)
+      const paymentResponse = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
         headers: {
           'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -349,12 +329,11 @@ const IntimateSuccess = () => {
         }
       });
       
-      if (!response.ok) {
+      if (!paymentResponse.ok) {
         throw new Error('Failed to fetch payment data');
       }
       
-      const payments = await response.json();
-      const formattedInputPhone = normalizePhone(formData.mobileNumber);
+      const payments = await paymentResponse.json();
       
       // Find a payment that matches the phone number
       const matchedPaymentData = payments.find((payment: any) => {
@@ -367,6 +346,52 @@ const IntimateSuccess = () => {
                formattedInputPhone === customerPhone;
       });
       
+      // Check if user exists in telegram_sub_deleted (previously removed users)
+      const deletedUser = await checkDeletedUser(formData.mobileNumber);
+      
+      if (deletedUser) {
+        console.log('Found user in telegram_sub_deleted');
+        
+        // Cross-check with payment_kb_all to verify they have re-subscribed
+        if (matchedPaymentData) {
+          // Check if the payment is newer than when they were deleted (if we have expiry_date)
+          const deletedExpiry = deletedUser.expiry_date ? new Date(deletedUser.expiry_date) : null;
+          const paymentDate = matchedPaymentData.created_at ? new Date(matchedPaymentData.created_at) : 
+                             matchedPaymentData.payment_date ? new Date(matchedPaymentData.payment_date) : null;
+          
+          // If we can compare dates, check if payment is after expiry (re-subscription)
+          // Or if no dates available, just verify payment exists
+          const hasValidResubscription = !deletedExpiry || !paymentDate || paymentDate > deletedExpiry;
+          
+          if (hasValidResubscription) {
+            console.log('Verified re-subscription for deleted user');
+            setDeletedUserData(deletedUser);
+            setMatchedPayment(matchedPaymentData);
+            setIsExistingDeletedUser(true);
+            setFormCompleted(true);
+            setCurrentStep(3); // Skip to Telegram login step
+            
+            localStorage.setItem('verifiedPhone', formData.mobileNumber);
+            
+            toast({
+              title: 'Welcome back!',
+              description: 'Your re-subscription has been verified. Please connect with Telegram to rejoin.',
+              variant: 'default'
+            });
+            return;
+          }
+        }
+        
+        // Deleted user but no valid payment found - they need to subscribe again
+        toast({
+          title: 'Subscription Required',
+          description: 'Your previous subscription has expired. Please subscribe again to rejoin the group.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      // New user - check if they have a valid payment
       if (matchedPaymentData) {
         setMatchedPayment(matchedPaymentData);
         localStorage.setItem('verifiedPhone', formData.mobileNumber);
