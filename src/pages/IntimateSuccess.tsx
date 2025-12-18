@@ -60,8 +60,10 @@ const IntimateSuccess = () => {
   const amount = queryParams?.get('amount') || '';
   
   // Form state
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for phone verification
   const [formCompleted, setFormCompleted] = useState(false);
+  const [isExistingDeletedUser, setIsExistingDeletedUser] = useState(false); // For users in telegram_sub_deleted
+  const [deletedUserData, setDeletedUserData] = useState<any>(null);
   const [lastSubmissionTime, setLastSubmissionTime] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -263,7 +265,138 @@ const IntimateSuccess = () => {
     }
   };
 
-  // Verify phone number against Supabase database
+  // Helper function to normalize phone numbers
+  const normalizePhone = (phone: string | null | undefined) => {
+    if (!phone) return '';
+    const phoneStr = String(phone);
+    const digits = phoneStr.replace(/\D/g, '');
+    return digits.slice(-10); // Get last 10 digits
+  };
+
+  // Check if user exists in telegram_sub_deleted table (previously removed users)
+  const checkDeletedUser = async (phoneNumber: string) => {
+    try {
+      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/telegram_sub_deleted?select=*', {
+        method: 'GET',
+        headers: {
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        }
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to fetch deleted users data');
+        return null;
+      }
+      
+      const deletedUsers = await response.json();
+      const formattedInputPhone = normalizePhone(phoneNumber);
+      
+      // Find a deleted user that matches the phone number
+      const matchedDeletedUser = deletedUsers.find((user: any) => {
+        const userPhone = normalizePhone(user.phone_number);
+        return formattedInputPhone === userPhone;
+      });
+      
+      return matchedDeletedUser || null;
+    } catch (error) {
+      console.error('Error checking deleted users:', error);
+      return null;
+    }
+  };
+
+  // Initial phone verification at the beginning
+  const verifyPhoneInitial = async () => {
+    if (!formData.mobileNumber || formData.mobileNumber.length < 10) {
+      toast({
+        title: 'Phone number required',
+        description: 'Please enter a valid 10-digit phone number to continue.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    try {
+      setVerificationLoading(true);
+      
+      // First, check if user exists in telegram_sub_deleted (previously removed users)
+      const deletedUser = await checkDeletedUser(formData.mobileNumber);
+      
+      if (deletedUser) {
+        console.log('Found user in telegram_sub_deleted, skipping form');
+        setDeletedUserData(deletedUser);
+        setIsExistingDeletedUser(true);
+        setFormCompleted(true);
+        setCurrentStep(3); // Skip to Telegram login step
+        
+        // Store phone in localStorage
+        localStorage.setItem('verifiedPhone', formData.mobileNumber);
+        
+        toast({
+          title: 'Welcome back!',
+          description: 'We found your previous subscription. Please connect with Telegram to rejoin the group.',
+          variant: 'default'
+        });
+        return;
+      }
+      
+      // Check payment_kb_all for new users
+      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
+        method: 'GET',
+        headers: {
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch payment data');
+      }
+      
+      const payments = await response.json();
+      const formattedInputPhone = normalizePhone(formData.mobileNumber);
+      
+      // Find a payment that matches the phone number
+      const matchedPaymentData = payments.find((payment: any) => {
+        const paymentPhone = normalizePhone(payment.phone);
+        const paymentPhoneNumber = normalizePhone(payment.phone_number);
+        const customerPhone = normalizePhone(payment.customer_phone);
+        
+        return formattedInputPhone === paymentPhone || 
+               formattedInputPhone === paymentPhoneNumber ||
+               formattedInputPhone === customerPhone;
+      });
+      
+      if (matchedPaymentData) {
+        setMatchedPayment(matchedPaymentData);
+        localStorage.setItem('verifiedPhone', formData.mobileNumber);
+        setCurrentStep(0); // Proceed to form step 1
+        
+        toast({
+          title: 'Phone Verified!',
+          description: 'Your payment has been verified. Please complete the registration form.',
+          variant: 'default'
+        });
+      } else {
+        toast({
+          title: 'Verification Failed',
+          description: 'We could not find a payment associated with this phone number. Please check your number or contact support.',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('Error during initial phone verification:', error);
+      toast({
+        title: 'Error',
+        description: 'Could not verify your phone number. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
+  // Verify phone number against Supabase database (for form submission)
   const verifyPhoneNumber = async () => {
     try {
       setVerificationLoading(true);
@@ -287,18 +420,10 @@ const IntimateSuccess = () => {
       const payments = await response.json();
       console.log('Verification process started');
       
+      const formattedInputPhone = normalizePhone(formData.mobileNumber);
+      
       // Find a payment that matches the phone number
-      const matchedPayment = payments.find((payment: any) => {
-        // Normalize phone numbers by removing any non-digit characters and comparing only the last 10 digits
-        const normalizePhone = (phone: string | null | undefined) => {
-          if (!phone) return '';
-          // Convert to string in case it's a number
-          const phoneStr = String(phone);
-          const digits = phoneStr.replace(/\D/g, '');
-          return digits.slice(-10); // Get last 10 digits
-        };
-        
-        const formattedInputPhone = normalizePhone(formData.mobileNumber);
+      const matchedPaymentData = payments.find((payment: any) => {
         const paymentPhone = normalizePhone(payment.phone);
         const paymentPhoneNumber = normalizePhone(payment.phone_number);
         const customerPhone = normalizePhone(payment.customer_phone);
@@ -310,8 +435,8 @@ const IntimateSuccess = () => {
       
       console.log('Verification process completed');
       
-      if (matchedPayment) {
-        setMatchedPayment(matchedPayment);
+      if (matchedPaymentData) {
+        setMatchedPayment(matchedPaymentData);
         setFormCompleted(true);
         return true;
       } else {
@@ -735,45 +860,43 @@ const IntimateSuccess = () => {
       // Go to next step
       setCurrentStep(2);
     } 
-    // Step 3: Contact information
+    // Step 3: Additional contact info (email, referral)
     else if (currentStep === 2) {
-      if (!formData.mobileNumber || !formData.email) {
+      if (!formData.email) {
         toast({
           title: 'Incomplete information',
-          description: 'Please provide your mobile number and email to continue.',
+          description: 'Please provide your email to continue.',
           variant: 'destructive'
         });
         return;
       }
       
-      // Verify phone number and proceed (verifyPhoneNumber will submit the form)
-      // await submitFormToWebhook(); // This call is redundant as verifyPhoneNumber handles it
-      
-      // Verify phone number and proceed
-      const verified = await verifyPhoneNumber();
-      if (!verified) return;
-      
+      // Submit form data
+      await submitFormToWebhook();
+      setFormCompleted(true);
       setCurrentStep(3);
     }
   };
 
   // Form Step 1: Basic Information
   const renderStep1 = () => (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Membership Information</h2>
-      <p className="text-gray-700 mb-6">Please provide some basic information about yourself.</p>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">About You</h2>
+        <p className="text-sm text-gray-500 mt-1">Tell us a bit about yourself</p>
+      </div>
       
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div>
-          <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-            Your Gender <span className="text-red-500">*</span>
+          <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+            Gender <span className="text-rose-500">*</span>
           </label>
           <select
             id="gender"
             name="gender"
             value={formData.gender}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            className="w-full h-11 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
             required
           >
             <option value="">Select your gender</option>
@@ -785,8 +908,8 @@ const IntimateSuccess = () => {
         </div>
         
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-            Your Location <span className="text-red-500">*</span>
+          <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+            Location <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
@@ -794,52 +917,52 @@ const IntimateSuccess = () => {
             name="location"
             value={formData.location}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-            placeholder="e.g. Mumbai, India"
+            className="w-full h-11 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+            placeholder="Mumbai, India"
             required
           />
         </div>
         
         <div>
-          <label htmlFor="problems" className="block text-sm font-medium text-gray-700 mb-1">
-            What problems are you facing? <span className="text-red-500">*</span>
+          <label htmlFor="problems" className="block text-sm font-medium text-gray-700 mb-2">
+            What challenges are you facing? <span className="text-rose-500">*</span>
           </label>
           <textarea
             id="problems"
             name="problems"
             value={formData.problems}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all resize-none"
             rows={3}
-            placeholder="Please describe any issues you're experiencing..."
+            placeholder="Describe any issues you're experiencing..."
             required
           />
         </div>
         
         <div>
-          <label htmlFor="joinReason" className="block text-sm font-medium text-gray-700 mb-1">
-            Why did you join this group? <span className="text-red-500">*</span>
+          <label htmlFor="joinReason" className="block text-sm font-medium text-gray-700 mb-2">
+            Why are you joining? <span className="text-rose-500">*</span>
           </label>
           <textarea
             id="joinReason"
             name="joinReason"
             value={formData.joinReason}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all resize-none"
             rows={3}
-            placeholder="What motivated you to join our community?"
+            placeholder="What motivated you to join?"
             required
           />
         </div>
       </div>
       
-      <div className="mt-6 flex justify-end">
+      <div className="flex justify-end pt-4">
         <button
-          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
+          className="inline-flex items-center justify-center h-11 px-6 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleCompleteStep}
           disabled={!formData.gender || !formData.location || !formData.problems || !formData.joinReason}
         >
-          Next <ArrowRight className="ml-2 h-4 w-4" />
+          Continue <ArrowRight className="ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
@@ -847,246 +970,265 @@ const IntimateSuccess = () => {
 
   // Form Step 2: Terms and Agreements
   const renderStep2 = () => (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Membership Agreement</h2>
-      <p className="text-gray-700 mb-6">Please read and agree to the following terms and conditions.</p>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">Community Guidelines</h2>
+        <p className="text-sm text-gray-500 mt-1">Please review and accept our terms</p>
+      </div>
       
-      <div className="space-y-4 max-h-[400px] overflow-y-auto p-4 bg-gray-50 rounded-lg mb-4">
+      <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
         <div className="mb-4">
-          <h3 className="font-medium text-gray-800 mb-2">Mandatory Guidelines</h3>
-          <p className="text-sm text-gray-700 mb-4">
-            Your participation in our group requires adherence to the following guidelines:
-          </p>
+          <h3 className="text-sm font-medium text-gray-900 mb-3">Mandatory Guidelines</h3>
           
           <div className="space-y-3">
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="hookupAgreement"
                 name="hookupAgreement"
                 checked={formData.hookupAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="hookupAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">1. Prohibition of Hookup or Dating Solicitations:</span> This group is solely for constructive discussions and prohibits any attempts to initiate or solicit romantic or sexual encounters. Any such actions, including private propositions, will result in immediate removal from the group.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">No hookup solicitations</span> - This group prohibits romantic or sexual encounter requests.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="privacyAgreement"
                 name="privacyAgreement"
                 checked={formData.privacyAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="privacyAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">2. Privacy and Confidentiality:</span> Respecting the privacy of all members is paramount. Any use of screenshots or group content for purposes such as public display, harassment, or blackmail is strictly prohibited and will be treated as a severe breach of trust.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Privacy & confidentiality</span> - No screenshots or sharing group content externally.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="participationAgreement"
                 name="participationAgreement"
                 checked={formData.participationAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="participationAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">3. Voluntary Participation:</span> Members acknowledge that all interactions, opinions, and advice within the group are voluntary and non-professional. Users engage at their own discretion and bear personal responsibility for any actions taken based on shared advice or content.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Voluntary participation</span> - All interactions are voluntary and non-professional.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="respectAgreement"
                 name="respectAgreement"
                 checked={formData.respectAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="respectAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">4. Respect and Empathy:</span> Members are expected to engage with empathy, respect, and consideration towards others. Behaviors that ridicule, mock, or humiliate fellow members are unacceptable and will not be tolerated.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Respect & empathy</span> - Engage with consideration towards others.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="contentAgreement"
                 name="contentAgreement"
                 checked={formData.contentAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="contentAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">5. Content Restrictions:</span> Group content should contribute positively and be relevant to our discussions on intimacy. Sharing of memes, jokes, or pornographic materials is strictly prohibited to maintain the group's focus on constructive dialogue.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Content restrictions</span> - No memes, jokes, or inappropriate materials.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="nonJudgmentalAgreement"
                 name="nonJudgmentalAgreement"
                 checked={formData.nonJudgmentalAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="nonJudgmentalAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">6. Non-Judgmental Environment:</span> It is essential to create an environment where members feel safe to share openly without fear of judgment. Shaming, finger-pointing, or making judgmental comments is strictly prohibited.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Non-judgmental environment</span> - No shaming or judgmental comments.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="participateAgreement"
                 name="participateAgreement"
                 checked={formData.participateAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="participateAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">7. Active Participation:</span> Active involvement from all members enriches our group dynamics. Prolonged inactivity may result in membership revocation to ensure an engaged community.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Active participation</span> - Prolonged inactivity may result in removal.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="sensitiveTopicsAgreement"
                 name="sensitiveTopicsAgreement"
                 checked={formData.sensitiveTopicsAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="sensitiveTopicsAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">8. Sensitive Topics:</span> Discussions on sensitive subjects must be approached with sensitivity and appropriate language to respect the diversity of perspectives among members.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Sensitive topics</span> - Approach with sensitivity and appropriate language.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="anonymityAgreement"
                 name="anonymityAgreement"
                 checked={formData.anonymityAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="anonymityAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">9. Anonymity Protection:</span> Protecting members' identities is crucial. Revealing any member's identity without explicit consent is a serious violation of privacy and will not be tolerated.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Anonymity protection</span> - Never reveal member identities without consent.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="liabilityAgreement"
                 name="liabilityAgreement"
                 checked={formData.liabilityAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="liabilityAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">10. Liability Disclaimer:</span> The Company and the influencers affiliated with this group shall not be held liable for the actions of any User. Although the Company provides a platform for discussion and the influencers offer guidance, they bear no responsibility for individual user actions or behaviours in any way.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">Liability disclaimer</span> - Company is not liable for user actions.
+              </span>
+            </label>
             
-            <div className="flex items-start">
+            <label className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 id="explicitLanguageAgreement"
                 name="explicitLanguageAgreement"
                 checked={formData.explicitLanguageAgreement}
                 onChange={handleInputChange}
-                className="mt-1 mr-3"
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
               />
-              <label htmlFor="explicitLanguageAgreement" className="text-sm text-gray-700">
-                <span className="font-medium">11. Explicit Language Prohibition:</span> The use of sexually explicit language or any content that could trigger sexually inappropriate reactions is strictly forbidden within the group. Such actions may constitute criminal offenses under the Indian Penal Code (IPC), and offenders will be subject to legal prosecution and appropriate punishment as per the law.
-              </label>
-            </div>
+              <span className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">No explicit language</span> - Sexually explicit content is forbidden.
+              </span>
+            </label>
           </div>
         </div>
         
-        <div className="flex items-start mt-4">
+        <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 bg-gray-50 cursor-pointer">
           <input
             type="checkbox"
             id="additionalGuidelinesAgreement"
             name="additionalGuidelinesAgreement"
             checked={formData.additionalGuidelinesAgreement}
             onChange={handleInputChange}
-            className="mt-1 mr-3"
+            className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
           />
-          <label htmlFor="additionalGuidelinesAgreement" className="text-sm text-gray-700">
-            <span className="font-medium">Additional Guidelines:</span> I have read and agree to all additional guidelines, including the following:
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Private Messaging Policy: Private messaging or 'DM' of other members without their explicit permission is not allowed. Members wishing to send private messages must seek permission in a transparent manner within the group.</li>
-              <li>Legal Action for Harassment: Should any member face harassment within the group, and upon thorough investigation, if the allegations are found to be true, the company will take legal action under the applicable laws.</li>
-              <li>Limitation of Liability: Neither the Company nor the influencers associated with this group shall be held liable for the actions of any User.</li>
-            </ul>
-          </label>
-        </div>
+          <span className="text-sm text-gray-600">
+            <span className="font-medium text-gray-900">I agree to all additional guidelines</span> including DM policies, harassment reporting, and limitation of liability.
+          </span>
+        </label>
       </div>
       
-      <div className="mt-6 flex justify-between">
+      <div className="flex justify-between pt-4">
         <button
-          className="bg-white border border-[#FF7A9A] text-[#FF7A9A] hover:bg-gray-50 py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
+          className="inline-flex items-center justify-center h-11 px-6 border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
           onClick={prevStep}
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </button>
         
         <button
-          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
+          className="inline-flex items-center justify-center h-11 px-6 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleCompleteStep}
           disabled={!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || 
                    !formData.respectAgreement || !formData.contentAgreement || !formData.nonJudgmentalAgreement || 
                    !formData.participateAgreement || !formData.sensitiveTopicsAgreement || !formData.anonymityAgreement || 
                    !formData.liabilityAgreement || !formData.explicitLanguageAgreement || !formData.additionalGuidelinesAgreement}
         >
-          Next <ArrowRight className="ml-2 h-4 w-4" />
+          Continue <ArrowRight className="ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
   );
 
-  // Form Step 3: Contact Information
-  const renderStep3 = () => (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Contact Information</h2>
-      <p className="text-gray-700 mb-6">Please provide your contact details to complete your registration.</p>
-      
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700 mb-1">
-            Your Mobile Number <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="tel"
-            id="mobileNumber"
-            name="mobileNumber"
-            value={formData.mobileNumber}
-            onChange={handlePhoneNumberChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-            placeholder="e.g. 9876543210"
-            maxLength={10}
-            required
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Please note you will be added to the community only after validating your mobile number. Please enter the right number.
-          </p>
+  // Initial Step: Phone Verification (Step -1)
+  const renderPhoneVerification = () => (
+    <div className="space-y-6">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 mb-4">
+          <Lock className="h-6 w-6 text-rose-500" />
         </div>
-        
+        <h2 className="text-lg font-semibold text-gray-900">Verify Your Number</h2>
+        <p className="text-sm text-gray-500 mt-1">Enter the mobile number used during payment</p>
+      </div>
+      
+      <div>
+        <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700 mb-2">
+          Mobile Number <span className="text-rose-500">*</span>
+        </label>
+        <input
+          type="tel"
+          id="mobileNumber"
+          name="mobileNumber"
+          value={formData.mobileNumber}
+          onChange={handlePhoneNumberChange}
+          className="w-full h-12 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 text-center text-lg tracking-wider placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+          placeholder="9876543210"
+          maxLength={10}
+          required
+        />
+        <p className="text-xs text-gray-500 mt-2 text-center">
+          We'll verify your subscription with this number
+        </p>
+      </div>
+      
+      <div className="flex justify-center pt-2">
+        <button
+          className="inline-flex items-center justify-center h-11 px-8 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={verifyPhoneInitial}
+          disabled={!formData.mobileNumber || formData.mobileNumber.length < 10 || verificationLoading}
+        >
+          {verificationLoading ? 'Verifying...' : 'Verify & Continue'} <ArrowRight className="ml-2 h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+
+  // Form Step 3: Additional Contact Information (Email & Referral)
+  const renderStep3 = () => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">Contact Details</h2>
+        <p className="text-sm text-gray-500 mt-1">How can we reach you?</p>
+      </div>
+      
+      <div className="space-y-5">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Your Email ID <span className="text-red-500">*</span>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            Email Address <span className="text-rose-500">*</span>
           </label>
           <input
             type="email"
@@ -1094,15 +1236,15 @@ const IntimateSuccess = () => {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-            placeholder="e.g. yourname@example.com"
+            className="w-full h-11 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+            placeholder="you@example.com"
             required
           />
         </div>
         
         <div>
-          <label htmlFor="referral" className="block text-sm font-medium text-gray-700 mb-1">
-            Referred by
+          <label htmlFor="referral" className="block text-sm font-medium text-gray-700 mb-2">
+            Referral Code <span className="text-gray-400 font-normal">(optional)</span>
           </label>
           <input
             type="text"
@@ -1110,29 +1252,26 @@ const IntimateSuccess = () => {
             name="referral"
             value={formData.referral}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-            placeholder="If you have a referral code, enter it here"
+            className="w-full h-11 px-4 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+            placeholder="Enter referral code"
           />
-          <p className="text-xs text-gray-500 mt-1">
-            If you have a referral code, use this space to enter it.
-          </p>
         </div>
       </div>
       
-      <div className="mt-6 flex justify-between">
+      <div className="flex justify-between pt-4">
         <button
-          className="bg-white border border-[#FF7A9A] text-[#FF7A9A] hover:bg-gray-50 py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
+          className="inline-flex items-center justify-center h-11 px-6 border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
           onClick={prevStep}
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </button>
         
         <button
-          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
+          className="inline-flex items-center justify-center h-11 px-6 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleCompleteStep}
-          disabled={!formData.mobileNumber || !formData.email}
+          disabled={!formData.email}
         >
-          Submit <ArrowRight className="ml-2 h-4 w-4" />
+          Complete <ArrowRight className="ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
@@ -1140,78 +1279,68 @@ const IntimateSuccess = () => {
 
   // Form Step 4: Thank You and Telegram Login
   const renderStep4 = () => (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Thank You!</h2>
-      <div className="text-center mb-6">
-        <div className="flex justify-center mb-4">
-          <div className="bg-[#E6F7EB] text-[#10B981] p-4 rounded-full">
-            <Check className="h-8 w-8" strokeWidth={3} />
-          </div>
+    <div className="space-y-6">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-50 mb-4">
+          <Check className="h-7 w-7 text-emerald-500" strokeWidth={3} />
         </div>
-        <p className="text-gray-700">
-          Dear Subscriber,
-        </p>
-        <p className="text-gray-700 mt-2">
-          I wanted to take a moment to express my sincere gratitude. Your kindness and support mean the world to me. Thank you for being an incredible part of our community. 🌟
-        </p>
-        <p className="text-gray-700 mt-4 font-medium">
-          Warm regards 😊
-        </p>
-        <p className="text-gray-700 mt-1">
-          Khushboo Bist
-        </p>
+        <h2 className="text-xl font-semibold text-gray-900">
+          {isExistingDeletedUser ? 'Welcome Back!' : 'You\'re All Set!'}
+        </h2>
+        {isExistingDeletedUser ? (
+          <p className="text-sm text-gray-500 mt-2">
+            Hi {deletedUserData?.customer_name || 'there'}! Connect with Telegram to rejoin.
+          </p>
+        ) : (
+          <p className="text-sm text-gray-500 mt-2">
+            Thank you for joining our community
+          </p>
+        )}
       </div>
       
-      <div className="mt-8">
-        <h3 className="font-serif text-xl font-medium text-gray-800 mb-4">Join Our Telegram Group</h3>
-        <p className="text-gray-700 mb-6">
+      <div className="bg-gray-50 rounded-xl p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <MessageCircle className="h-5 w-5 text-rose-500" />
+          <h3 className="font-medium text-gray-900">Connect Telegram</h3>
+        </div>
+        <p className="text-sm text-gray-600 mb-4">
           {formCompleted 
-            ? "Click the button below to connect with Telegram and join our community."
+            ? "Click below to connect and join our Telegram group."
             : "Please wait while we verify your information..."}
         </p>
         
         {telegramData ? (
-          <div className="bg-[#E6F7EB] p-6 rounded-lg border border-[#D1E7DD] shadow-sm">
-            <div className="flex items-center mb-3">
-              <div className="bg-[#10B981] text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <CheckCircle size={16} />
-              </div>
-              <h4 className="font-medium text-[#0F766E]">Successfully Connected</h4>
+          <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="h-5 w-5 text-emerald-500" />
+              <span className="font-medium text-emerald-700">Connected Successfully</span>
             </div>
-            <p className="text-[#0F766E] font-medium mb-3">
-              Thank you, {telegramData.first_name}! You're all set to join our Telegram group. 
-              Check your Telegram app for the invitation link.
+            <p className="text-sm text-emerald-600">
+              Welcome, {telegramData.first_name}! Check Telegram for your invite.
             </p>
-            <div className="bg-white p-3 rounded-lg border border-[#D1E7DD] text-sm text-[#0F766E]">
-              <p className="mb-1">
-                <span className="font-medium">Telegram ID:</span> {telegramData.id} 
-                {telegramData.username && ` (@${telegramData.username})`}
-              </p>
-              <p>
-                <span className="font-medium">Phone:</span> {formData.mobileNumber}
-              </p>
-            </div>
+            {telegramData.username && (
+              <p className="text-xs text-emerald-500 mt-1">@{telegramData.username}</p>
+            )}
           </div>
         ) : (
           <div className="flex justify-center">
             {formCompleted ? (
               <div ref={telegramLoginContainerRef} className="telegram-login-container">
-                {/* Telegram widget will be inserted here by useEffect */}
-                <div className="animate-pulse bg-[#F0F0F5] h-12 w-48 rounded-lg"></div>
+                <div className="animate-pulse bg-gray-200 h-11 w-48 rounded-lg"></div>
               </div>
             ) : (
-              <div className="bg-[#F0F0F5] text-gray-400 py-3 px-6 rounded-full text-center">
-                Telegram Login (Verifying your information...)
+              <div className="bg-gray-100 text-gray-400 py-3 px-6 rounded-lg text-sm">
+                Verifying...
               </div>
             )}
           </div>
         )}
       </div>
       
-      <div className="mt-6 flex justify-center">
+      <div className="text-center pt-4">
         <Link 
           to="/" 
-          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors"
+          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
         >
           Return to Home
         </Link>
@@ -1258,104 +1387,96 @@ const IntimateSuccess = () => {
   }, [formCompleted]);
 
   return (
-    <div className="bg-[#FFE5EC]">
-      <section className="py-12 md:py-16 lg:py-20">
-        <div className="container-custom max-w-5xl">
-          <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
-            <div className="p-6 md:p-8">
-              <div className="text-center mb-8">
-                <div className="flex justify-center mb-6">
-                  <div className="bg-[#E6F7EB] text-[#10B981] p-4 rounded-full">
-                    <Check className="h-12 w-12" strokeWidth={3} />
-                  </div>
-                </div>
-                
-                <div className="text-[#FF7A9A] text-sm font-medium mb-1">PAYMENT CONFIRMED</div>
-                <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium text-gray-800 mb-3">
-                  Complete Your Registration
-                </h1>
-                <p className="text-gray-700 font-medium">
-                  Please fill out the form below to join our Intimate Talks community
-                </p>
-              </div>
-              
-              {verificationLoading ? (
-                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8 flex justify-center items-center">
-                  <div className="animate-pulse flex flex-col items-center">
-                    <div className="h-12 w-12 rounded-full bg-[#FFE5EC] mb-4"></div>
-                    <div className="h-4 w-48 bg-[#FFE5EC] rounded"></div>
-                    <p className="mt-4 text-[#FF7A9A]">Verifying your payment...</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8">
-                  {/* Progress indicator */}
-                  <div className="mb-8">
-                    <div className="flex justify-between">
-                      {[1, 2, 3, 4].map((step) => (
-                        <div key={step} className="flex flex-col items-center">
-                          <div 
-                            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              currentStep + 1 >= step 
-                                ? 'bg-[#FF7A9A] text-white' 
-                                : 'bg-[#F0F0F5] text-gray-400'
-                            }`}
-                          >
-                            {currentStep + 1 > step ? (
-                              <Check className="h-4 w-4" />
-                            ) : (
-                              <span>{step}</span>
-                            )}
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-lg mx-auto px-4 py-8 md:py-12">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-medium rounded-full mb-4">
+            <Check className="h-3 w-3" />
+            Payment Confirmed
+          </div>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+            Complete Registration
+          </h1>
+          <p className="text-sm text-gray-500">
+            Join the Intimate Talks community
+          </p>
+        </div>
+        
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          {verificationLoading ? (
+            <div className="p-8 flex flex-col items-center">
+              <div className="animate-spin h-8 w-8 border-2 border-rose-500 border-t-transparent rounded-full mb-4"></div>
+              <p className="text-sm text-gray-500">Verifying...</p>
+            </div>
+          ) : (
+            <div className="p-6">
+              {/* Progress Steps */}
+              {!isExistingDeletedUser && currentStep < 3 && (
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-2">
+                    {['Verify', 'Info', 'Terms', 'Contact'].map((label, index) => {
+                      const stepNum = index;
+                      const adjustedCurrent = currentStep + 1;
+                      const isActive = adjustedCurrent === stepNum;
+                      const isComplete = adjustedCurrent > stepNum;
+                      return (
+                        <div key={label} className="flex items-center">
+                          <div className={`
+                            w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transition-all
+                            ${isComplete ? 'bg-rose-500 text-white' : ''}
+                            ${isActive ? 'bg-rose-500 text-white ring-4 ring-rose-100' : ''}
+                            ${!isActive && !isComplete ? 'bg-gray-100 text-gray-400' : ''}
+                          `}>
+                            {isComplete ? <Check className="h-3.5 w-3.5" /> : index + 1}
                           </div>
-                          <span className={`text-xs mt-1 ${
-                            currentStep + 1 >= step 
-                              ? 'text-[#FF7A9A]' 
-                              : 'text-gray-400'
-                          }`}>
-                            {step === 1 ? 'Info' : 
-                             step === 2 ? 'Terms' : 
-                             step === 3 ? 'Contact' : 'Complete'}
-                          </span>
+                          {index < 3 && (
+                            <div className={`w-full h-0.5 mx-1 ${adjustedCurrent > stepNum ? 'bg-rose-500' : 'bg-gray-100'}`} style={{ width: '40px' }} />
+                          )}
                         </div>
-                      ))}
-                    </div>
-                    <div className="mt-2 h-1 bg-[#F0F0F5] rounded-full">
-                      <div 
-                        className="h-full bg-[#FF7A9A] rounded-full transition-all duration-300"
-                        style={{ width: `${((currentStep + 1) / 4) * 100}%` }}
-                      ></div>
-                    </div>
+                      );
+                    })}
                   </div>
-                  
-                  {currentStep === 0 && renderStep1()}
-                  {currentStep === 1 && renderStep2()}
-                  {currentStep === 2 && renderStep3()}
-                  {currentStep === 3 && renderStep4()}
+                  <div className="flex justify-between px-1">
+                    {['Verify', 'Info', 'Terms', 'Contact'].map((label, index) => {
+                      const adjustedCurrent = currentStep + 1;
+                      return (
+                        <span key={label} className={`text-xs ${adjustedCurrent >= index ? 'text-gray-700' : 'text-gray-400'}`}>
+                          {label}
+                        </span>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
               
-              <p className="text-gray-700 text-center mb-6">
-                Once you've joined our Telegram group, you'll have access to exclusive content, discussions, and resources to enhance your intimate life.
-              </p>
-              
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link 
-                  to="/" 
-                  className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
-                >
-                  Return to Home
-                </Link>
-                <Link 
-                  to="/guide" 
-                  className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors"
-                >
-                  Explore 69 Positions Playbooks for couples
-                </Link>
-              </div>
+              {/* Form Steps */}
+              {currentStep === -1 && renderPhoneVerification()}
+              {currentStep === 0 && renderStep1()}
+              {currentStep === 1 && renderStep2()}
+              {currentStep === 2 && renderStep3()}
+              {currentStep === 3 && renderStep4()}
             </div>
+          )}
+        </div>
+        
+        {/* Footer Links */}
+        <div className="mt-6 text-center">
+          <p className="text-xs text-gray-400 mb-4">
+            Get access to exclusive content and discussions
+          </p>
+          <div className="flex justify-center gap-4">
+            <Link to="/" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              Home
+            </Link>
+            <span className="text-gray-300">•</span>
+            <Link to="/guide" className="text-sm text-rose-500 hover:text-rose-600 transition-colors">
+              Explore Guides
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
