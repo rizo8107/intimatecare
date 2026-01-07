@@ -5,7 +5,7 @@ import { format, parseISO, isToday, isTomorrow, addDays } from 'date-fns';
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzQ5ODM5NDAwLCJleHAiOjE5MDc2MDU4MDB9.sWCsUjb5xqDn6pIkPlhHScIHJ1ytr8rlTH-SdrHLuZE';
 
 // Add error checking for required Supabase configuration
 if (!supabaseKey) {
@@ -88,18 +88,18 @@ const StudentBookingForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStep, setFormStep] = useState(1);
-  
+
   // Payment-related state
   const [isLoading, setIsLoading] = useState(false);
   const [storedCfOrderId, setStoredCfOrderId] = useState<string>('');
   const [paymentOutcome, setPaymentOutcome] = useState<any>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [isPollingStatus, setIsPollingStatus] = useState(false);
-  
+
   // Confirmation page state
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingDetails, setBookingDetails] = useState<any>(null);
-  
+
   // Session types and available slots state
   const [sessionTypes, setSessionTypes] = useState<SessionType[]>([]);
   const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
@@ -107,11 +107,11 @@ const StudentBookingForm = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
-  
+
   // Refs for polling control
   const pollingActiveRef = useRef(false);
   const pollingTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Payment constants
   const FINAL_PAYMENT_STATUSES = ['SUCCESS', 'FAILED', 'CANCELLED', 'PAID'];
   const MAX_POLLING_ATTEMPTS = 20;
@@ -124,11 +124,11 @@ const StudentBookingForm = () => {
         .from('session_types')
         .select('*')
         .order('id');
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (data) {
         setSessionTypes(data);
         // Select the first session type by default if available
@@ -147,7 +147,7 @@ const StudentBookingForm = () => {
       });
     }
   };
-  
+
   // Fetch available slots for a specific session type
   const fetchAvailableSlots = async (sessionTypeId: number) => {
     setIsLoadingSlots(true);
@@ -161,17 +161,17 @@ const StudentBookingForm = () => {
         .gte('slot_date', new Date().toISOString().split('T')[0]) // Only future dates
         .order('slot_date')
         .order('start_time');
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (data) {
         setAvailableSlots(data);
         // Clear any previously selected slot
         setSelectedSlot(null);
         setSelectedDate('');
-        
+
         // Update form data
         setFormData(prev => ({
           ...prev,
@@ -191,14 +191,14 @@ const StudentBookingForm = () => {
       setIsLoadingSlots(false);
     }
   };
-  
+
   // Handle session type selection
   const handleSessionTypeChange = (sessionTypeId: number) => {
     setSelectedSessionType(sessionTypeId);
     setFormData(prev => ({ ...prev, sessionTypeId }));
     fetchAvailableSlots(sessionTypeId);
   };
-  
+
   // Handle date selection
   const handleDateSelection = (date: string) => {
     setSelectedDate(date);
@@ -209,7 +209,7 @@ const StudentBookingForm = () => {
       preferredTime: ''
     }));
   };
-  
+
   // Handle slot selection
   const handleSlotSelection = (slot: AvailableSlot) => {
     setSelectedSlot(slot);
@@ -220,7 +220,7 @@ const StudentBookingForm = () => {
       selectedSlotId: slot.id
     }));
   };
-  
+
   // Format date for display
   const formatDateForDisplay = (dateString: string) => {
     const date = parseISO(dateString);
@@ -232,36 +232,36 @@ const StudentBookingForm = () => {
       return format(date, 'EEE, MMM d'); // e.g., "Mon, Jan 1"
     }
   };
-  
+
   // Format time for display in 12-hour format
   const formatTimeForDisplay = (timeString: string) => {
     // First remove seconds if present
     const timeWithoutSeconds = timeString.replace(/:00$/, '');
-    
+
     // Convert to 12-hour format
     const [hours, minutes] = timeWithoutSeconds.split(':').map(Number);
     const period = hours >= 12 ? 'PM' : 'AM';
     const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-    
+
     return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
   };
-  
+
   // Get unique dates from available slots
   const getUniqueDates = () => {
     const uniqueDates = [...new Set(availableSlots.map(slot => slot.slot_date))];
     return uniqueDates.sort();
   };
-  
+
   // Get slots for a specific date
   const getSlotsByDate = (date: string) => {
     return availableSlots.filter(slot => slot.slot_date === date);
   };
-  
+
   // Fetch session types on component mount
   useEffect(() => {
     fetchSessionTypes();
   }, []);
-  
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -336,7 +336,7 @@ const StudentBookingForm = () => {
           pollingActiveRef.current = false;
           setIsPollingStatus(false);
           if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
-          
+
           if (statusData.payment_status === 'SUCCESS') {
             toast({
               title: 'Payment Successful!',
@@ -381,7 +381,7 @@ const StudentBookingForm = () => {
   const submitFormAfterPayment = async () => {
     try {
       setIsLoading(true);
-      
+
       // Prepare data for database insertion
       const bookingData = {
         // Personal Information
@@ -389,13 +389,13 @@ const StudentBookingForm = () => {
         gender: formData.gender,
         email: formData.email,
         phone: `+91${formData.phone}`, // Add +91 prefix to phone number
-        
+
         // Student Information
         college: formData.college,
         course_and_year: formData.courseAndYear,
         location: formData.location,
         id_card_filename: formData.idCard?.name || null,
-        
+
         // Session Details
         session_type: 'Student Session',
         preferred_date: formData.preferredDate,
@@ -422,7 +422,7 @@ const StudentBookingForm = () => {
           return '00:00:00';
         })(),
         slot_id: formData.selectedSlotId,
-        
+
         // Session Questions
         brings_to_session: formData.bringsToSession,
         hopes_to_gain: formData.hopesToGain,
@@ -431,33 +431,33 @@ const StudentBookingForm = () => {
         looking_for: formData.lookingFor,
         anything_else: formData.anythingElse || '',
         join_whatsapp_channel: formData.joinWhatsappChannel,
-        
+
         // Payment Information
         price: 299.00,
         payment_status: 'PAID',
         cf_order_id: storedCfOrderId,
         cf_payment_id: paymentOutcome?.cf_payment_id || null,
         payment_timestamp: new Date().toISOString(),
-        
+
         // System Fields
         status: 'BOOKED'
       };
-      
+
       // Insert booking data into the student_bookings table
       const { data, error } = await supabase
         .from('student_bookings')
         .insert([bookingData])
         .select();
-      
+
       if (error) {
         console.error('Error inserting booking:', error);
         throw new Error(`Database error: ${error.message}`);
       }
-      
+
       // Set booking details for confirmation page
       setBookingDetails(data?.[0] || bookingData);
       setShowConfirmation(true);
-      
+
       // Track successful booking with Facebook Pixel
       if (window.fbq) {
         window.fbq('track', 'CompleteRegistration', {
@@ -467,13 +467,13 @@ const StudentBookingForm = () => {
           currency: 'INR'
         });
       }
-      
+
       // Show success toast
       toast({
         title: "Booking confirmed successfully!",
         description: "Payment received. We'll contact you soon to confirm your session.",
       });
-      
+
       // Also send data to webhook for backward compatibility
       try {
         const submissionData = new FormData();
@@ -491,7 +491,7 @@ const StudentBookingForm = () => {
         submissionData.append('price', '₹299');
         submissionData.append('paymentStatus', 'PAID');
         submissionData.append('cfOrderId', storedCfOrderId);
-        
+
         // Send to webhook in background (don't await)
         fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
           method: 'POST',
@@ -580,17 +580,17 @@ const StudentBookingForm = () => {
       toast({ title: "Missing information", description: "Please fill in all required fields.", variant: "destructive" });
       return false;
     }
-    
+
     if (!selectedSessionType) {
       toast({ title: "Session type required", description: "Please select a session type.", variant: "destructive" });
       return false;
     }
-    
+
     if (!formData.preferredDate || !formData.preferredTime) {
       toast({ title: "Date and time required", description: "Please select an available date and time slot.", variant: "destructive" });
       return false;
     }
-    
+
     return true;
   };
 
@@ -789,7 +789,7 @@ const StudentBookingForm = () => {
                   <span className="text-green-700 font-medium text-sm">₹299 PAID</span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <div className="mb-4">
@@ -824,7 +824,7 @@ const StudentBookingForm = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800">Your Information</h3>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
@@ -867,7 +867,7 @@ const StudentBookingForm = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800">What's Next?</h3>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mr-3">
@@ -1216,7 +1216,7 @@ const StudentBookingForm = () => {
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {sessionTypes.map((type) => (
-                        <div 
+                        <div
                           key={type.id}
                           onClick={() => handleSessionTypeChange(type.id)}
                           className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSessionType === type.id ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-300 hover:border-blue-300'}`}
@@ -1233,7 +1233,7 @@ const StudentBookingForm = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* Date Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -1246,7 +1246,7 @@ const StudentBookingForm = () => {
                     ) : availableSlots.length > 0 ? (
                       <div className="flex overflow-x-auto pb-2 space-x-2">
                         {getUniqueDates().map((date) => (
-                          <div 
+                          <div
                             key={date}
                             onClick={() => handleDateSelection(date)}
                             className={`flex-shrink-0 p-3 border rounded-lg cursor-pointer transition-all ${selectedDate === date ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-200'}`}
@@ -1262,7 +1262,7 @@ const StudentBookingForm = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Time Slot Selection */}
                   {selectedDate && (
                     <div>
@@ -1284,7 +1284,7 @@ const StudentBookingForm = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Hidden inputs to store the values */}
                   <input type="hidden" name="preferredDate" value={formData.preferredDate} />
                   <input type="hidden" name="preferredTime" value={formData.preferredTime} />

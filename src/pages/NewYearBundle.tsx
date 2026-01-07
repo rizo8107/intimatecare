@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, ArrowRight, Star, Zap, Shield, Clock, Gift, Lock, Sparkles, MessageCircle } from 'lucide-react';
-import AboutPreview from '../components/AboutPreview';
+import { CheckCircle, ArrowRight, Star, Zap, Shield, Clock, Gift, Lock, Sparkles, MessageCircle, Heart, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import AboutPreviewModern from '../components/AboutPreviewModern';
 
 const NewYearBundle = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -26,217 +27,206 @@ const NewYearBundle = () => {
   const products = [
     {
       title: "69+ Saucy Positions",
-      subtitle: "Spice Up Your Life",
+      subtitle: "The Bestseller",
       image: "/69.jpg",
-      description: "Illustrated guide with detailed instructions for 69 exciting positions and variations for every body type.",
-      features: ["Illustrated Instructions", "Body Type Variations", "Foreplay Tips"]
+      description: "Beautifully illustrated guide with step-by-step instructions for 69+ exciting positions and variations for every body type.",
+      features: ["Anatomical Illustrations", "Body Type Variations", "Communication Tips"]
     },
     {
-      title: "Break The Routine",
-      subtitle: "30+ Day Challenge",
+      title: "30-Day Couple Challenge",
+      subtitle: "Routine Breaker",
       image: "/images/32 days v2.jpg",
-      description: "Carefully crafted daily activities designed to break routines, ignite passion, and create deeper connection.",
-      features: ["30+ Daily Tasks", "Connection Prompts", "Passion Igniters"]
+      description: "Daily activities designed to break routines, ignite passion, and create deeper connection with your partner.",
+      features: ["30 Ready-to-use Tasks", "Connection Prompts", "Novelty Inducers"]
     },
     {
-      title: "Intimate Talks",
-      subtitle: "Exclusive Product",
+      title: "Pleasure School Access",
+      subtitle: "The Community",
       image: "/telegram.png",
-      description: "Private Telegram community access for expert answers, supportive discussions, and exclusive Q&A sessions.",
-      features: ["Expert Support", "Private Community", "Weekly Q&A"]
+      description: "Exclusive access to our private Telegram community for expert guidance, live Q&A, and a safe space for real talk.",
+      features: ["Expert Q&A Sessions", "Supportive Peer Group", "Priority Updates"]
     }
   ];
 
   return (
-    <div className="bg-[#1A0B0B] min-h-screen text-white overflow-x-hidden font-sans">
-      {/* Urgency Banner */}
-      <div className="bg-[#D4AF37] text-[#1A0B0B] py-2 text-center font-bold sticky top-0 z-50 shadow-md">
-        <p className="text-sm md:text-base flex items-center justify-center gap-2">
-          <Zap className="w-4 h-4 animate-pulse" />
-          NEW YEAR SPECIAL: 30% OFF ENDS IN {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
-        </p>
-      </div>
-
+    <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="relative pt-16 pb-24 px-4 overflow-hidden">
-        {/* Background Sparkles/Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-4xl bg-radial-gradient from-[#4A1D1D] to-transparent opacity-50 blur-3xl -z-10"></div>
-        
-        <div className="container mx-auto max-w-4xl text-center">
-          <div className="flex justify-center gap-2 mb-6">
-            <Sparkles className="text-[#D4AF37] w-6 h-6 animate-spin-slow" />
-            <Sparkles className="text-[#D4AF37] w-4 h-4" />
-            <Sparkles className="text-[#D4AF37] w-8 h-8 animate-bounce" />
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-4 tracking-tight leading-tight">
-            New Year,<br />
-            <span className="text-[#D4AF37]">New Beginnings</span><br />
-            Sex Ed Bundle
-          </h1>
-          
-          <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
-            Everything you need to transform your intimacy, spice up your bedroom, and connect deeper with your partner in 2026.
-          </p>
+      <section className="relative pt-20 pb-24 overflow-hidden bg-slate-50/50">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
 
-          {/* Product Showcase */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 px-4">
-            {products.map((product, idx) => (
-              <div key={idx} className="group relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4 transition-all duration-300 hover:scale-105 hover:bg-white/10 hover:border-[#D4AF37]/50 shadow-xl">
-                <div className="relative aspect-[3/4] rounded-xl overflow-hidden mb-4 shadow-lg">
-                  <img 
-                    src={product.image} 
-                    alt={product.title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A0B0B]/80 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4 text-left">
-                    <p className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-1">{product.subtitle}</p>
-                    <h3 className="text-lg font-bold text-white">{product.title}</h3>
+        <div className="container-custom">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in-up">
+            <span className="badge-premium mb-6">Holiday Exclusive</span>
+            <h1 className="text-5xl md:text-8xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
+              New Year,<br />
+              <span className="text-gradient">New Connections</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-slate-500 font-medium mb-12 leading-relaxed max-w-2xl mx-auto">
+              Transform your intimacy in 2026 with our ultimate pleasure ecosystem. The complete toolkit for deeper bonds.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-8 pt-8 border-t border-slate-200">
+              {[
+                { icon: Clock, text: "Lifetime Access" },
+                { icon: Shield, text: "100% Confidential" },
+                { icon: Gift, text: "Bonus Content" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <item.icon className="w-4 h-4 text-primary" />
+                  <span className="font-black text-slate-900 uppercase tracking-widest text-[10px]">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Bundle Value Section */}
+      <section className="section-padding overflow-hidden">
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-3 gap-12">
+            {products.map((product, index) => (
+              <div key={index} className="group relative bg-white rounded-[3rem] p-4 border border-slate-100 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] hover:shadow-2xl transition-all duration-700 animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
+                <div className="relative h-72 rounded-[2.5rem] overflow-hidden mb-8">
+                  <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+                  <div className="absolute bottom-6 left-6">
+                    <span className="badge-premium !bg-white/20 !text-white !border-white/20 backdrop-blur-md mb-2">{product.subtitle}</span>
+                    <h3 className="text-2xl font-black text-white">{product.title}</h3>
                   </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{product.description}</p>
-                  <ul className="space-y-2">
+                <div className="px-6 pb-6 text-center lg:text-left">
+                  <p className="text-slate-500 font-medium mb-8 line-clamp-2">{product.description}</p>
+                  <div className="space-y-3 mb-8">
                     {product.features.map((f, i) => (
-                      <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
-                        <CheckCircle className="w-3 h-3 text-[#D4AF37]" />
-                        {f}
-                      </li>
+                      <div key={i} className="flex items-center gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                        <span className="text-slate-600 font-bold text-sm tracking-tight">{f}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Pricing Card */}
-          <div className="max-w-md mx-auto relative mb-12">
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] rounded-[2.5rem] blur opacity-30 animate-pulse"></div>
-            <div className="relative bg-[#2A1515] rounded-[2rem] border-2 border-[#D4AF37] p-8 md:p-10 shadow-2xl overflow-hidden">
-              {/* Decorative Frame like in image */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#D4AF37] -translate-x-1 -translate-y-1"></div>
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#D4AF37] translate-x-1 -translate-y-1"></div>
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#D4AF37] -translate-x-1 translate-y-1"></div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#D4AF37] translate-x-1 translate-y-1"></div>
-
-              <div className="flex justify-around items-center mb-6">
-                <div className="text-center">
-                  <p className="text-gray-400 text-sm uppercase font-bold tracking-widest mb-1">SLAP</p>
-                  <p className="text-2xl text-gray-500 line-through font-bold">₹2297</p>
+      {/* High-Converting Pricing Strip */}
+      <section className="py-24 bg-slate-950 text-white relative overflow-hidden text-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-30" />
+        <div className="container-custom relative z-10">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">Claim Your Special Price</h2>
+            <div className="bg-white/5 border border-white/10 rounded-[3rem] p-10 backdrop-blur-xl mb-12">
+              <div className="flex justify-center items-center gap-8 mb-8">
+                <div>
+                  <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-1">Normal SLAP</p>
+                  <p className="text-3xl text-slate-600 line-through font-bold">₹2,297</p>
                 </div>
-                <div className="h-12 w-px bg-white/10"></div>
-                <div className="text-center">
-                  <p className="text-gray-400 text-sm uppercase font-bold tracking-widest mb-1 text-[#D4AF37]">PRICE</p>
-                  <p className="text-5xl text-white font-bold">₹1599</p>
+                <div className="h-16 w-px bg-white/10" />
+                <div>
+                  <p className="text-primary font-black uppercase tracking-widest text-xs mb-1">Limited Offer</p>
+                  <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">₹1,599</p>
                 </div>
               </div>
-              
-              <a 
+
+              <a
                 href={purchaseUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group w-full inline-flex items-center justify-center gap-3 bg-[#D4AF37] hover:bg-[#B8860B] text-[#1A0B0B] font-black py-5 px-8 rounded-xl shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-95 text-xl uppercase tracking-wider"
+                className="w-full btn-premium-primary text-xl py-6 hover:scale-105 transition-transform"
               >
-                SPICE UP YOUR NEW YEAR!
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                SPICE UP YOUR NEW YEAR
+                <ArrowRight className="w-6 h-6" />
               </a>
-              
-              <p className="mt-6 text-gray-400 text-xs flex items-center justify-center gap-2">
-                <Lock className="w-3 h-3" /> SECURE CHECKOUT • INSTANT DELIVERY
+              <p className="mt-6 text-slate-500 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                <Lock className="w-3.5 h-3.5" /> Secure SSL Checkout • Instant Access
               </p>
             </div>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
-            <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#D4AF37]" /> Lifetime Access</div>
-            <div className="flex items-center gap-2"><Shield className="w-4 h-4 text-[#D4AF37]" /> 100% Confidential</div>
-            <div className="flex items-center gap-2"><Gift className="w-4 h-4 text-[#D4AF37]" /> Free Bonus Content</div>
+
+            <div className="flex justify-center gap-12 text-slate-400">
+              <div className="text-center">
+                <div className="text-2xl font-black text-white mb-1">100%</div>
+                <div className="text-[10px] uppercase font-bold tracking-widest">Confidential</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-black text-white mb-1">Instant</div>
+                <div className="text-[10px] uppercase font-bold tracking-widest">Digital Delivery</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-black text-white mb-1">2026</div>
+                <div className="text-[10px] uppercase font-bold tracking-widest">Fresh Content</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-12 bg-white/5 border-y border-white/5">
-        <div className="container mx-auto px-4">
-          <p className="text-center text-xs text-gray-500 uppercase tracking-widest mb-8">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40">
-            {['BBC.jpg', 'Vogue.jpg', 'Mint.jpg', 'Deccan.jpg', 'Huf.jpg'].map((logo, index) => (
-              <img key={index} src={`/Featured/${logo}`} alt={logo} className="h-6 md:h-8 w-auto grayscale" />
+      {/* Featured In */}
+      <section className="py-20 bg-white">
+        <div className="container-custom">
+          <p className="text-center text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-12">As Featured In</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 grayscale">
+            {['BBC', 'Vogue', 'Mint', 'Deccan', 'Huf'].map((logo, index) => (
+              <img key={index} src={`/Featured/${logo}.jpg`} alt={logo} className="h-8 md:h-12 w-auto object-contain hover:grayscale-0 hover:opacity-100 transition-all duration-500" />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Deep Dive Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-transparent to-[#2A1515]">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 text-[#D4AF37]">What You're Getting</h2>
-            <p className="text-gray-400">A complete ecosystem for your intimate health and pleasure</p>
+      {/* Deep Dives Section */}
+      <section className="section-padding bg-slate-50">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <h2 className="section-title">What's Inside The Box</h2>
+            <p className="text-xl text-slate-500 font-medium">A curated selection of our most powerful tools.</p>
           </div>
 
-          <div className="space-y-12">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="order-2 md:order-1">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                  <Star className="text-[#D4AF37] w-6 h-6" /> 69+ Saucy Positions
-                </h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
-                  Bring excitement and variety to your bedroom with our bestseller. Each position is beautifully illustrated and includes step-by-step instructions on how to move, where to touch, and how to adjust for comfort and maximum satisfaction.
-                </p>
-                <ul className="space-y-3">
-                  {["Illustrated for clarity", "Variations for all body types", "Focus on dual pleasure"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-gray-400">
-                      <CheckCircle className="w-5 h-5 text-green-500" /> {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="order-1 md:order-2 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                <img src="/69.jpg" alt="69 Positions" className="w-full" />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                <img src="/images/32 days v2.jpg" alt="30 Day Challenge" className="w-full" />
+          <div className="space-y-32">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div className="relative group">
+                <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <img src="/69.jpg" alt="Positions" className="relative rounded-[3rem] shadow-2xl z-10 border-8 border-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                  <Sparkles className="text-[#D4AF37] w-6 h-6" /> 30+ Day Challenge
-                </h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
-                  Stuck in the same routine? This challenge is designed to reignite the spark. With 30 unique, non-intimidating, and fun tasks, you'll rediscover why you fell for each other and build new habits of intimacy.
+                <span className="badge-premium mb-6">Volume I</span>
+                <h3 className="text-4xl md:text-5xl font-black text-slate-950 mb-6 tracking-tight">The Position Playbook</h3>
+                <p className="text-xl text-slate-600 font-medium mb-8 leading-relaxed">
+                  Say goodbye to routine. Our bestseller includes beautiful illustrations and clinical-yet-saucy advice on how to explore 69+ positions.
                 </p>
-                <ul className="space-y-3">
-                  {["Break predictable patterns", "Connection prompts", "Novelty-based pleasure"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-gray-400">
-                      <CheckCircle className="w-5 h-5 text-green-500" /> {item}
+                <ul className="space-y-4 mb-10">
+                  {["Illustrated step-by-step", "Focus on dual satisfaction", "Variation for every body"].map((item, i) => (
+                    <li key={i} className="flex items-center gap-4 text-slate-700 font-bold">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      </div>
+                      {item}
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="order-2 md:order-1">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                  <MessageCircle className="text-[#D4AF37] w-6 h-6" /> Intimate Talks Community
-                </h3>
-                <p className="text-gray-700 md:text-gray-300 mb-6 leading-relaxed">
-                  Join 100+ members in our private Telegram group. This is your safe space to ask questions, learn from experts, and connect with like-minded people. No judgment, just real talk about intimacy and pleasure.
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div className="order-2 lg:order-1">
+                <span className="badge-premium mb-6">Volume II</span>
+                <h3 className="text-4xl md:text-5xl font-black text-slate-950 mb-6 tracking-tight">The 30-Day Spark</h3>
+                <p className="text-xl text-slate-600 font-medium mb-8 leading-relaxed">
+                  A daily prompt-based system to rebuild connection and excitement. Each task takes less than 15 minutes but lasts a lifetime.
                 </p>
-                <ul className="space-y-3">
-                  {["Direct access to Khushboo", "Supportive environment", "Exclusive content"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-gray-400">
-                      <CheckCircle className="w-5 h-5 text-green-500" /> {item}
+                <ul className="space-y-4 mb-10">
+                  {["No-intimidation tasks", "Psychology-backed connection", "Routine breaking systems"].map((item, i) => (
+                    <li key={i} className="flex items-center gap-4 text-slate-700 font-bold">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      </div>
+                      {item}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="order-1 md:order-2 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                <img src="/telegram.png" alt="Intimate Talks" className="w-full" />
+              <div className="order-1 lg:order-2 relative group">
+                <div className="absolute -inset-4 bg-accent/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <img src="/images/32 days v2.jpg" alt="Challenge" className="relative rounded-[3rem] shadow-2xl z-10 border-8 border-white" />
               </div>
             </div>
           </div>
@@ -244,19 +234,24 @@ const NewYearBundle = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 px-4 bg-[#1A0B0B]">
-        <div className="container mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-serif font-bold mb-12">What Couples Are Saying</h2>
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="text-center mb-16 px-4">
+            <h2 className="section-title">Trusted by Real Couples</h2>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { text: "The bundle is a game-changer! The 69 positions guide is so clear and the 30-day challenge actually brought us closer.", author: "Couple from Mumbai" },
-              { text: "Finally, content that is practical and respectful. The Telegram group is such a safe space to ask questions.", author: "Riya & Karan" },
-              { text: "Best New Year investment we've made. The variety in the positions playbook is insane!", author: "Siddharth, Bangalore" }
-            ].map((t, idx) => (
-              <div key={idx} className="bg-white/5 p-8 rounded-2xl border border-white/10 text-left relative">
-                <Star className="text-[#D4AF37] w-5 h-5 mb-4 absolute top-6 right-6" />
-                <p className="text-gray-300 italic mb-6">"{t.text}"</p>
-                <p className="text-[#D4AF37] font-bold text-sm">— {t.author}</p>
+              { text: "The bundle is a total game-changer. The positions guide is so clear and the challenge actually brought us closer together.", author: "Priya & Rohan" },
+              { text: "Finally, content that is practical and respectful. We loved the variety in the playbook. Worth every rupee.", author: "Anjali S." },
+              { text: "The Telegram group alone is worth the price. Such a safe space to ask real questions without judgment.", author: "Vikram" }
+            ].map((t, i) => (
+              <div key={i} className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
+                <div className="flex gap-1 mb-6 text-[#FFB800]">
+                  {[...Array(5)].map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
+                </div>
+                <p className="text-lg text-slate-700 italic font-medium mb-8 leading-relaxed">"{t.text}"</p>
+                <div className="font-black text-slate-950 uppercase tracking-widest text-xs">— {t.author}</div>
               </div>
             ))}
           </div>
@@ -264,38 +259,37 @@ const NewYearBundle = () => {
       </section>
 
       {/* Author Section */}
-      <AboutPreview />
+      <AboutPreviewModern />
 
-      {/* Final CTA Footer */}
-      <div className="bg-[#2A1515] py-20 px-4 text-center border-t border-[#D4AF37]/30">
-        <div className="container mx-auto max-w-3xl">
-          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">Don't Wait For The Spark</h2>
-          <p className="text-xl text-gray-400 mb-10 italic">Create it yourself with the New Year Bundle.</p>
-          
-          <div className="inline-block bg-[#1A0B0B] border-2 border-[#D4AF37] rounded-3xl p-10 shadow-2xl w-full max-w-md">
-            <div className="flex justify-center items-baseline gap-2 mb-8">
-              <span className="text-gray-500 line-through text-xl font-bold">₹2297</span>
-              <span className="text-6xl font-black text-white">₹1599</span>
+      {/* Final CTA Strip */}
+      <section className="py-24 bg-slate-950 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="container-custom relative z-10 text-center">
+          <div className="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-[4rem] p-12 md:p-20 backdrop-blur-xl">
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter">Your Transformation Starts Now</h2>
+            <p className="text-xl text-slate-400 font-medium mb-12">Don't wait for the spark. Create it with our complete bundle.</p>
+
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
+              <div className="flex items-center gap-4">
+                <span className="text-2xl text-slate-600 line-through font-bold">₹2,297</span>
+                <span className="text-5xl font-black text-white">₹1,599</span>
+              </div>
+              <a
+                href={purchaseUrl}
+                className="btn-premium-primary !bg-white !text-primary text-xl px-12 py-6 shadow-2xl transform hover:scale-105"
+              >
+                Instant Access
+              </a>
             </div>
-            
-            <a 
-              href={purchaseUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-3 bg-[#D4AF37] hover:bg-[#B8860B] text-[#1A0B0B] font-black py-5 px-8 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 uppercase tracking-wider text-xl"
-            >
-              Get Instant Access
-              <ArrowRight className="w-6 h-6" />
-            </a>
-            
-            <div className="mt-8 flex justify-center gap-4 text-gray-500 text-xs uppercase tracking-widest font-bold">
-              <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Secure</span>
-              <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Discreet</span>
-              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Forever</span>
+
+            <div className="flex flex-wrap justify-center gap-6 text-slate-500 font-bold text-[10px] uppercase tracking-[0.2em]">
+              <span className="flex items-center gap-2"><Shield className="w-3.5 h-3.5" /> 100% Secure</span>
+              <span className="flex items-center gap-2"><Lock className="w-3.5 h-3.5" /> Discreet Billing</span>
+              <span className="flex items-center gap-2"><Zap className="w-3.5 h-3.5" /> Instant Delivery</span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

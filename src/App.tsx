@@ -7,13 +7,13 @@ import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Index from "./pages/Index";
-import About from "./pages/About";
+import AboutModern from "./pages/AboutModern";
 import Sessions from "./pages/Sessions";
 import StudentBooking from "./pages/StudentBooking";
 import InstructorBooking from "./pages/InstructorBooking";
 import DynamicInstructorBooking from "./pages/DynamicInstructorBooking";
 import IntimateTalks from "./pages/IntimateTalks";
-import Guide from "./pages/Guide";
+import GuideModern from "./pages/GuideModern";
 import SessionsModern from "./pages/SessionsModern";
 import IntimateTalksModern from "./pages/IntimateTalksModern";
 import InstructorsModern from "./pages/InstructorsModern";
@@ -36,6 +36,7 @@ import InstructorsPage from './pages/Instructors';
 import WaitingListAdmin from './pages/WaitingListAdmin';
 import Webinars from './pages/Webinars';
 import Programs from './pages/Programs';
+import Products from './pages/Products';
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import StickyCtaBar from "./components/StickyCtaBar";
@@ -67,19 +68,20 @@ const App = () => (
           <ScrollToTop />
           <GoogleAnalytics />
           <ClarityEvents />
-          <main className="flex-grow pt-16 md:pt-20">
+          <main className="flex-grow pt-[88px] md:pt-[112px]">
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/programs" element={<Programs />} />
+              <Route path="/products" element={<Products />} />
               <Route path="/instructors" element={<InstructorsModern />} />
-              <Route path="/about" element={<About />} />
+              <Route path="/about" element={<AboutModern />} />
               <Route path="/issues" element={<Issues />} />
               <Route path="/student-booking" element={<StudentBooking />} />
               <Route path="/instructor-booking" element={<InstructorBooking />} />
               <Route path="/instructor/:instructorName" element={<DynamicInstructorBooking />} />
               <Route path="/join-group" element={<JoinGroup />} />
               <Route path="/telegram-test" element={<TelegramTest />} />
-              <Route path="/guide" element={<Guide />} />
+              <Route path="/guide" element={<GuideModern />} />
               <Route path="/freebie" element={<Freebie />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/intimate-success" element={<IntimateSuccess />} />

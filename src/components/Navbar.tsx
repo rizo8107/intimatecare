@@ -1,308 +1,277 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Sparkles, BookOpen, Heart, Calendar, Zap, Heart as HeartSolid } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+
+const TopBanner = () => {
+  const { pathname } = useLocation();
+  const [proofIndex, setProofIndex] = useState(0);
+
+  const proofs = [
+    { text: "Sarah from Mumbai just booked a 1:1 session", time: "2 min ago" },
+    { text: "Couple from Delhi downloaded the 69 Position Playbook", time: "5 min ago" },
+    { text: "Priya joined the Pleasure School Community", time: "8 min ago" },
+  ];
+
+  useEffect(() => {
+    if (pathname !== '/') return;
+    const interval = setInterval(() => {
+      setProofIndex((prev) => (prev + 1) % proofs.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [pathname]);
+
+  const getBannerContent = () => {
+    if (pathname === '/') {
+      return (
+        <div className="flex items-center justify-center gap-4 text-[11px] font-bold tracking-tight">
+          <div className="flex items-center gap-2 animate-fade-in-right">
+            <HeartSolid className="w-3 h-3 text-primary fill-primary" />
+            <span className="text-white/90">{proofs[proofIndex].text}</span>
+          </div>
+          <div className="h-2 w-[1px] bg-white/20" />
+          <span className="text-white/40 uppercase text-[9px] tracking-widest">{proofs[proofIndex].time}</span>
+        </div>
+      );
+    }
+
+    if (pathname === '/guide' || pathname === '/30-day-challenge' || pathname === '/newyear-bundle' || pathname === '/intimatetalks') {
+      const text = pathname === '/newyear-bundle'
+        ? "NEW YEAR SPECIAL: 30% OFF ENDS SOON!"
+        : "LIMITED OFFER: 30% OFF + FREE BONUS GUIDE! ⚡";
+
+      return (
+        <div className="flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-[0.2em]">
+          <Zap className="w-3 h-3 text-primary fill-primary animate-pulse" />
+          <span>{text}</span>
+          <Zap className="w-3 h-3 text-primary fill-primary animate-pulse" />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const content = getBannerContent();
+  if (!content) return null;
+
+  return (
+    <div className="bg-slate-950 text-white py-2 relative overflow-hidden border-b border-white/5">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 opacity-50" />
+      <div className="container-custom relative z-10">
+        {content}
+      </div>
+    </div>
+  );
+};
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
 
-  const closeMenu = () => {
-    setIsOpen(false);
-  };
-
-  // Add scroll event listener to change navbar style on scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
-
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     closeMenu();
   }, [location.pathname]);
 
-  // Check if the current route matches the link
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'py-2 backdrop-blur-lg bg-white/90 shadow-sm' 
-          : 'py-4 bg-white/80'
-      }`}
-    >
-      <div className="container-custom">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center group">
-            <h1 className="font-serif text-2xl font-medium text-[#FF7A9A] relative">
-              Khushboo{" "}
-              <span className="font-cursive inline-block transition-transform group-hover:scale-110 origin-bottom-left">
-                Bist
-              </span>
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FF7A9A] transition-all duration-300 group-hover:w-full"></span>
-            </h1>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            <NavLink to="/" active={isActive('/') }>
-              Home
-            </NavLink>
-
-            {/* Premium Sessions */}
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] text-gray-700 hover:text-[#FF7A9A]">
-                Premium 1:1 Sessions with Khushboo
-                <ChevronDown size={16} className="ml-1 group-hover:rotate-180 transition-transform duration-200" />
-              </button>
-              <div className="absolute left-0 mt-1 w-72 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[#F0F0F5] overflow-hidden">
-                <Link to="/sessions" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/sessions') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Exclusive 1:1 Coaching</div>
-                      <div className="text-xs text-gray-500">Deep dive support directly with Khushboo</div>
-                    </div>
-                  </div>
-                </Link>
-                <a
-                  href="https://topmate.io/intimatecare/1823535"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block hover:bg-[#FFE5EC] transition-colors"
-                >
-                  <div className="flex items-start px-4 py-3">
-                    <div>
-                      <div className="font-medium text-gray-800">Student Support Session</div>
-                      <div className="text-xs text-gray-500">Compassionate sessions for students</div>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-
-            {/* Playbooks & Digital Guides */}
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] text-gray-700 hover:text-[#FF7A9A]">
-                Playbooks & Digital Guides
-                <ChevronDown size={16} className="ml-1 group-hover:rotate-180 transition-transform duration-200" />
-              </button>
-              <div className="absolute left-0 mt-1 w-72 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[#F0F0F5] overflow-hidden">
-                <Link to="/guide" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/guide') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Couples 69 Position Playbook</div>
-                      <div className="text-xs text-gray-500">Experiment with confidence & joy</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="/30-day-challenge" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/30-day-challenge') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">30-Day Couple Pleasure Challenge</div>
-                      <div className="text-xs text-gray-500">Daily sparks to reignite your bond</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="/intimatetalks" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/intimatetalks') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Join Our Pleasure School Community</div>
-                      <div className="text-xs text-gray-500">Group learning, prompts & accountability</div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </div>
-
-            {/* Expert Healing */}
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] text-gray-700 hover:text-[#FF7A9A]">
-                Expert Healing & Support
-                <ChevronDown size={16} className="ml-1 group-hover:rotate-180 transition-transform duration-200" />
-              </button>
-              <div className="absolute left-0 mt-1 w-80 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[#F0F0F5] overflow-hidden">
-                <Link to="/instructor/Vishakha Parwani" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/instructors') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Psychology & Emotional Wellness</div>
-                      <div className="text-xs text-gray-500">Therapeutic care with trusted experts</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="/instructor/Mansi" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/coming-soon') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Holistic Listening & Healing</div>
-                      <div className="text-xs text-gray-500">Safe spaces for release & integration</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="/instructor/Charu" className="block hover:bg-[#FFE5EC] transition-colors">
-                  <div className={`flex items-start px-4 py-3 ${isActive('/coming-soon') ? 'bg-[#FFE5EC]' : ''}`}>
-                    <div>
-                      <div className="font-medium text-gray-800">Ayurvedic Mind–Body Healing</div>
-                      <div className="text-xs text-gray-500">Traditional care for embodied balance</div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </div>
-
-            <NavLink to="/webinars" active={isActive('/webinars')}>
-              Live Monthly Masterclasses
-            </NavLink>
-
-            <NavLink to="/contact" active={isActive('/contact')}>
-              Contact
-            </NavLink>
-
-            <Link 
-              to="/freebie" 
-              className={`ml-2 px-5 py-2 rounded-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white font-medium text-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
-                isActive('/freebie') ? 'shadow-md' : ''
-              }`}
-            >
-              Free Guide
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="p-2 rounded-full text-gray-700 focus:outline-none hover:bg-[#FFE5EC] transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X size={24} className="text-[#FF7A9A]" /> : <Menu size={24} className="text-[#FF7A9A]" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <div 
-          className={`md:hidden transition-all duration-300 ease-in-out ${
-            isOpen 
-              ? 'max-h-[80vh] opacity-100 mt-4 overflow-y-auto' 
-              : 'max-h-0 opacity-0 overflow-hidden'
+    <header className="fixed top-0 w-full z-[100]">
+      <TopBanner />
+      <nav
+        className={`w-full transition-all duration-500 ${scrolled
+          ? 'py-3 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)]'
+          : 'py-5 bg-white border-b border-slate-50'
           }`}
-        >
-          <div className="bg-white rounded-xl shadow-sm p-4 space-y-4 border border-[#F0F0F5]">
-            <MobileNavLink to="/" active={isActive('/')} onClick={closeMenu}>
-              Home
-            </MobileNavLink>
+      >
+        <div className="container-custom">
+          <div className="flex justify-between items-center">
+            <Link to="/" className="flex items-center group relative z-10">
+              <div className="flex flex-col">
+                <span className="text-2xl font-extrabold tracking-tight text-slate-900 group-hover:text-primary transition-colors duration-300">
+                  Intimate Care<span className="text-primary">.</span>
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 -mt-1 group-hover:text-slate-600 transition-colors">
+                  Khushboo Bist
+                </span>
+              </div>
+            </Link>
 
-            <div className="space-y-2 rounded-2xl border border-[#F8D7E5] bg-[#FFF6FA] p-3">
-              <div className="text-xs uppercase tracking-wider text-[#FF5A84] font-semibold">Premium 1:1 Sessions with Khushboo</div>
-              <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>
-                Exclusive 1:1 Coaching
-              </MobileNavLink>
-              <a
-                href="https://topmate.io/intimatecare/1823535"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block px-4 py-3 rounded-md transition-all text-gray-700 hover:bg-white hover:text-[#FF7A9A]"
-                onClick={closeMenu}
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center bg-slate-100/50 backdrop-blur-md border border-white/40 p-1.5 rounded-full">
+              <NavLink to="/" active={isActive('/')}>
+                Home
+              </NavLink>
+
+              <NavLink to="/products" active={isActive('/products')}>
+                Our Products
+              </NavLink>
+
+              <NavDropdown
+                label="1:1 Coaching"
+                icon={<Heart className="w-4 h-4" />}
+                items={[
+                  { title: "Exclusive 1:1 Coaching", sub: "Personalized intimacy strategy", to: "/sessions" },
+                  { title: "Student Support", sub: "Compassionate specialized care", href: "https://topmate.io/intimatecare/1823535" },
+                ]}
+                isActive={isActive('/sessions')}
+              />
+
+              <NavDropdown
+                label="Expert Team"
+                icon={<Sparkles className="w-4 h-4" />}
+                items={[
+                  { title: "Emotional Wellness", sub: "Therapeutic psychology care", to: "/instructor/Vishakha Parwani" },
+                  { title: "Holistic Healing", sub: "Safe spaces for release", to: "/instructor/Mansi" },
+                  { title: "Ayurvedic Care", sub: "Traditional mind-body balance", to: "/instructor/Charu" },
+                ]}
+                isActive={isActive('/instructors')}
+              />
+
+              <NavLink to="/webinars" active={isActive('/webinars')}>
+                Masterclasses
+              </NavLink>
+            </div>
+
+            <div className="hidden lg:flex items-center gap-3">
+              <Link
+                to="/freebie"
+                className="px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200 hover:-translate-y-0.5"
               >
-                Student Support Session
-              </a>
-            </div>
-
-            <div className="space-y-2 rounded-2xl border border-[#E5D9FF] bg-[#F8F5FF] p-3">
-              <div className="text-xs uppercase tracking-wider text-[#7C5CFF] font-semibold">Playbooks & Digital Guides</div>
-              <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>
-                Couples 69 Position Playbook
-              </MobileNavLink>
-              <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>
-                30-Day Couple Pleasure Challenge
-              </MobileNavLink>
-              <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>
-                Join Our Pleasure School Community
-              </MobileNavLink>
-            </div>
-
-            <div className="space-y-2 rounded-2xl border border-[#D9F0E6] bg-[#F4FFFA] p-3">
-              <div className="text-xs uppercase tracking-wider text-[#2C9D75] font-semibold">Expert Healing & Support (Team Khushboo)</div>
-              <MobileNavLink to="/instructor/Vishakha Parwani" active={isActive('/instructor/Vishakha Parwani')} onClick={closeMenu}>
-                Psychology & Emotional Wellness
-              </MobileNavLink>
-              <MobileNavLink to="/instructor/Mansi" active={isActive('/instructor/Mansi')} onClick={closeMenu}>
-                Holistic Listening & Healing
-              </MobileNavLink>
-              <MobileNavLink to="/instructor/Charu" active={isActive('/instructor/Charu')} onClick={closeMenu}>
-                Ayurvedic Mind–Body Healing
-              </MobileNavLink>
-            </div>
-
-            <div className="space-y-2 rounded-2xl border border-[#FFE4C4] bg-[#FFF8F0] p-3">
-              <div className="text-xs uppercase tracking-wider text-[#E07A2C] font-semibold">Live Experiences</div>
-              <MobileNavLink to="/webinars" active={isActive('/webinars')} onClick={closeMenu}>
-                Live Monthly Masterclasses
-              </MobileNavLink>
-              <MobileNavLink to="/contact" active={isActive('/contact')} onClick={closeMenu}>
-                Contact
-              </MobileNavLink>
-            </div>
-            
-            <div className="pt-4">
-              <Link 
-                to="/freebie" 
-                className="block w-full py-3 rounded-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white font-medium text-center transition-all"
-                onClick={closeMenu}
+                Free Guide
+              </Link>
+              <Link
+                to="/contact"
+                className="px-6 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5"
               >
-                Get Your Free Guide
+                Book Call
               </Link>
             </div>
+
+            {/* Mobile menu button */}
+            <div className="lg:hidden flex items-center gap-2">
+              <Link
+                to="/contact"
+                className="px-4 py-2 rounded-full bg-primary text-white text-[11px] font-bold uppercase tracking-wider shadow-lg shadow-primary/20"
+              >
+                Book Call
+              </Link>
+              <button
+                onClick={toggleMenu}
+                className="p-2.5 rounded-2xl bg-slate-100 text-slate-900 hover:bg-slate-200 transition-all focus:outline-none"
+                aria-label="Toggle menu"
+              >
+                {isOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          <div
+            className={`lg:hidden fixed inset-x-4 top-24 pt-4 pb-8 transition-all duration-500 ease-out z-40 ${isOpen
+              ? 'translate-y-0 opacity-100'
+              : '-translate-y-8 opacity-0 pointer-events-none'
+              }`}
+          >
+            <div className="bg-white/95 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-white/40 p-6 space-y-3 overflow-hidden">
+              <div className="flex flex-col gap-1">
+                <MobileNavLink to="/" active={isActive('/')} onClick={closeMenu}>Home</MobileNavLink>
+
+                <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Coaching & Guides</div>
+                <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>1:1 Sessions</MobileNavLink>
+                <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>Playbooks</MobileNavLink>
+                <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>Challenges</MobileNavLink>
+                <MobileNavLink to="/newyear-bundle" active={isActive('/newyear-bundle')} onClick={closeMenu}>New Year Bundle</MobileNavLink>
+
+                <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Community</div>
+                <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>Pleasure School</MobileNavLink>
+                <MobileNavLink to="/webinars" active={isActive('/webinars')} onClick={closeMenu}>Masterclasses</MobileNavLink>
+                <MobileNavLink to="/freebie" active={isActive('/freebie')} onClick={closeMenu}>Free Resources</MobileNavLink>
+              </div>
+
+              <div className="pt-4 mt-4 border-t border-slate-100 flex gap-2">
+                <Link to="/contact" className="flex-1 py-4 bg-primary text-white rounded-2xl font-bold text-center shadow-lg shadow-primary/20" onClick={closeMenu}>
+                  Book Discovery Call
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 };
 
-// Desktop navigation link component
-const NavLink = ({ to, active, children }) => (
+const NavDropdown = ({ label, items, icon, isActive }: any) => {
+  return (
+    <div className="relative group px-1">
+      <button
+        className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${isActive
+          ? 'text-primary bg-primary/5'
+          : 'text-slate-600 hover:text-slate-900 hover:bg-white'
+          }`}
+      >
+        {label}
+        <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+      </button>
+
+      <div className="absolute left-0 mt-3 w-80 bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl opacity-0 invisible translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 border border-slate-100/50 p-4">
+        <div className="grid gap-1">
+          {items.map((item: any, i: number) => {
+            const Content = (
+              <div className="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 group/item hover:bg-slate-50">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover/item:bg-primary/10 flex items-center justify-center text-primary transition-colors">
+                  {icon}
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-bold text-slate-900 group-hover/item:text-primary transition-colors">{item.title}</span>
+                  <span className="text-xs text-slate-500">{item.sub}</span>
+                </div>
+              </div>
+            );
+
+            return item.to ? (
+              <Link key={i} to={item.to} className="block">{Content}</Link>
+            ) : (
+              <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="block">{Content}</a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NavLink = ({ to, active, children }: any) => (
   <Link
     to={to}
-    className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[#FFE5EC] ${
-      active 
-        ? 'text-[#FF7A9A] bg-[#FFE5EC]' 
-        : 'text-gray-700 hover:text-[#FF7A9A]'
-    }`}
+    className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${active
+      ? 'text-primary bg-white shadow-sm'
+      : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+      }`}
   >
     {children}
-    {active && (
-      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-[#FF7A9A] rounded-full"></span>
-    )}
   </Link>
 );
 
-// Mobile navigation link component
-const MobileNavLink = ({ to, active, onClick, children }) => (
+const MobileNavLink = ({ to, active, onClick, children }: any) => (
   <Link
     to={to}
-    className={`block px-4 py-3 rounded-md transition-all ${
-      active 
-        ? 'bg-[#FFE5EC] text-[#FF7A9A] font-medium' 
-        : 'text-gray-700 hover:bg-gray-50 hover:text-[#FF7A9A]'
-    }`}
+    className={`px-4 py-3.5 rounded-2xl text-[15px] font-bold transition-all ${active
+      ? 'bg-primary/5 text-primary'
+      : 'text-slate-700 active:bg-slate-50'
+      }`}
     onClick={onClick}
   >
     {children}
@@ -310,3 +279,4 @@ const MobileNavLink = ({ to, active, onClick, children }) => (
 );
 
 export default Navbar;
+

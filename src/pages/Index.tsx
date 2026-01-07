@@ -1,7 +1,6 @@
 import HeroModern from "@/components/HeroModern";
-import SocialProofBar from "@/components/SocialProofBar";
 import TrustBadges from "@/components/TrustBadges";
-import ServicesGrid from "@/components/ServicesGrid";
+import ProductsPreview from "@/components/ProductsPreview";
 import FeaturedIn from "@/components/FeaturedIn";
 import AboutPreviewModern from "@/components/AboutPreviewModern";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
@@ -13,36 +12,33 @@ import NewsletterModern from "@/components/NewsletterModern";
 const Index = () => {
   return (
     <div className="flex flex-col">
-      {/* Live Social Proof Notification Bar */}
-      <SocialProofBar />
-      
       {/* Modern Hero with Video CTA */}
       <HeroModern />
-      
+
       {/* Trust Badges Strip */}
       <TrustBadges />
-      
+
       {/* Featured In Logos */}
       <FeaturedIn />
-      
-      {/* Services Grid - Main Offerings */}
-      <ServicesGrid />
-      
+
+      {/* Products Preview - Main Offerings */}
+      <ProductsPreview />
+
       {/* About Section - Build Trust */}
       <AboutPreviewModern />
-      
+
       {/* Testimonials Carousel - Social Proof */}
       <TestimonialsCarousel />
-      
+
       {/* Meet the Team/Instructors */}
       <SessionsPreview />
-      
+
       {/* FAQ Section - Overcome Objections */}
       <FAQSection />
-      
+
       {/* Strong CTA Section */}
       <CTASection />
-      
+
       {/* Newsletter with Lead Magnet */}
       <NewsletterModern />
     </div>

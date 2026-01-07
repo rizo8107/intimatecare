@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Gift, ArrowRight, Check } from 'lucide-react';
+import { Mail, Gift, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const NewsletterModern = () => {
@@ -46,81 +46,86 @@ const NewsletterModern = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-[#FFF7EC] relative overflow-hidden">
+    <section className="section-padding bg-slate-50/50 relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2" />
 
       <div className="container-custom relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Icon */}
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FF7A9A] mb-8">
-            <Gift className="w-8 h-8 text-white" />
-          </div>
-
-          {/* Headline */}
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-900 mb-6">
-            Get Weekly Intimacy Tips
-            <br />
-            <span className="text-[#FF7A9A]">
-              + Free Guide
-            </span>
-          </h2>
-
-          {/* Subheadline */}
-          <p className="text-lg text-gray-600 mb-10 max-w-xl mx-auto">
-            Join 10,000+ subscribers getting practical tips on intimacy, communication, 
-            and pleasure delivered to your inbox every week.
-          </p>
-
-          {/* Form or Success Message */}
-          {isSubscribed ? (
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-8 max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-4">
-                <Check className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">You're In!</h3>
-              <p className="text-gray-600">Check your inbox for your free guide and welcome email.</p>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-[3rem] p-10 md:p-20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] border border-slate-100 text-center relative overflow-hidden">
+            {/* Subtitle Badge */}
+            <div className="inline-flex items-center gap-2 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full mb-10 border border-primary/10">
+              <Sparkles className="w-3.5 h-3.5" />
+              Join 10,000+ Others
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-full text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF5A84] focus:border-transparent"
-                  />
+
+            {/* Headline */}
+            <h2 className="section-title mb-6">
+              Get Weekly Intimacy Tips
+              <br />
+              <span className="text-gradient">
+                + Free Pleasure Guide
+              </span>
+            </h2>
+
+            {/* Subheadline */}
+            <p className="text-xl text-slate-500 font-medium mb-12 max-w-xl mx-auto leading-relaxed">
+              Practical tips on intimacy, communication, and pleasure delivered to your inbox every week.
+            </p>
+
+            {/* Form or Success Message */}
+            {isSubscribed ? (
+              <div className="bg-emerald-50 border border-emerald-100 rounded-[2rem] p-10 max-w-md mx-auto animate-fade-in-up">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
+                  <Check className="w-8 h-8 text-white stroke-[3px]" />
                 </div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="group inline-flex items-center justify-center gap-2 bg-[#FF7A9A] text-white font-semibold px-6 py-4 rounded-full hover:bg-[#FF5A84] hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-300 disabled:opacity-50"
-                >
-                  {isLoading ? 'Joining...' : 'Get Free Guide'}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
+                <h3 className="text-2xl font-black text-slate-900 mb-3">You're In!</h3>
+                <p className="text-slate-600 font-medium">Check your inbox for your free guide and welcome email.</p>
               </div>
-              <p className="text-sm text-gray-500 mt-4">
-                No spam, ever. Unsubscribe anytime.
-              </p>
-            </form>
-          )}
+            ) : (
+              <form onSubmit={handleSubmit} className="max-w-md mx-auto animate-fade-in-up">
+                <div className="flex flex-col gap-4">
+                  <div className="relative group">
+                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-[1.5rem] text-slate-900 font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/30 transition-all text-lg"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
+                  >
+                    {isLoading ? 'Joining...' : 'Get Your Free Guide'}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+                <p className="text-sm font-bold text-slate-400 mt-6 tracking-tight">
+                  No spam, ever. Unsubscribe anytime in one click.
+                </p>
+              </form>
+            )}
 
-          {/* Benefits */}
-          <div className="flex flex-wrap justify-center gap-6 mt-12 text-gray-500 text-sm">
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-400" />
-              <span>Weekly tips</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-400" />
-              <span>Free intimacy guide</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-400" />
-              <span>Exclusive offers</span>
+            {/* Benefits */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 pt-12 border-t border-slate-50">
+              {[
+                { label: "Weekly expert tips", icon: Check },
+                { label: "Free intimacy guide", icon: Check },
+                { label: "Exclusive offers", icon: Check }
+              ].map((benefit, i) => (
+                <div key={i} className="flex items-center justify-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                    <benefit.icon className="w-3 h-3 text-emerald-500 stroke-[3px]" />
+                  </div>
+                  <span className="text-xs font-black text-slate-500 uppercase tracking-widest">{benefit.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -130,3 +135,4 @@ const NewsletterModern = () => {
 };
 
 export default NewsletterModern;
+

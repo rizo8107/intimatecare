@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { User, ShieldCheck } from 'lucide-react';
 import DayScheduleButton from './DayScheduleButton';
 
 interface Instructor {
@@ -17,31 +17,54 @@ interface Instructor {
 
 const DynamicInstructorCard: React.FC<{ instructor: Instructor }> = ({ instructor }) => {
   return (
-    <div className="bg-[#FFF6F8] border border-[#FFE5EC] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col h-full p-4">
-      <div className="w-full h-80 rounded-xl overflow-hidden mb-4">
-        <img src={instructor.profile_image_url} alt={instructor.name} className="w-full h-full object-cover" />
+    <div className="group rounded-[2.5rem] bg-white border border-slate-100 p-4 shadow-sm hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 h-full flex flex-col">
+      {/* Image Container */}
+      <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] mb-6">
+        <img
+          src={instructor.profile_image_url}
+          alt={instructor.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+        {/* Verification Badge */}
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/50 shadow-lg">
+          <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Verified Expert</span>
+        </div>
       </div>
-      <div className="text-center flex-grow flex flex-col">
-        <h3 className="text-2xl font-serif font-bold text-gray-800 mb-1">{instructor.name}</h3>
-        <p style={{ color: instructor.highlight_color }} className="font-medium text-md mb-3">{instructor.specialization}</p>
-        <p className="text-gray-600 text-sm mb-3 px-2">{instructor.bio.substring(0, 120)}...</p>
+
+      {/* Content */}
+      <div className="px-4 pb-4 flex-grow flex flex-col">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Active Now</span>
+        </div>
+
+        <h3 className="text-2xl font-black text-slate-950 mb-1 group-hover:text-primary transition-colors tracking-tight">{instructor.name}</h3>
+        <p className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: instructor.highlight_color }}>
+          {instructor.specialization}
+        </p>
+
+        <p className="text-slate-500 font-medium leading-relaxed mb-8 flex-grow">
+          {instructor.bio.substring(0, 100)}...
+        </p>
 
         {/* Booking actions */}
-        <div className="mt-auto grid grid-cols-1 gap-2">
+        <div className="space-y-3">
           {instructor.dayschedule_url ? (
             <DayScheduleButton
               url={instructor.dayschedule_url}
-              colors={{ primary: '#FF5A84', secondary: '#FFE5EC' }}
-              label="Book with Calendar"
-              className="w-full bg-[#FF5A84] text-white text-center py-3 rounded-lg font-semibold hover:bg-[#FF4A7A] transition-colors duration-300 shadow-md"
+              colors={{ primary: '#FF7A9A', secondary: '#FDF2F8' }}
+              label="Book Private Session"
+              className="w-full btn-premium-primary !py-4 text-sm"
             />
           ) : null}
 
-          <Link 
+          <Link
             to={`/instructor/${instructor.name}`}
-            className="block w-full border border-[#FF5A84] text-[#FF5A84] text-center py-3 rounded-lg font-semibold hover:bg-rose-50 transition-colors duration-300"
+            className="btn-premium-outline w-full !py-4 text-sm font-black uppercase tracking-widest"
           >
-            View Profile
+            <User className="w-4 h-4 mr-2" />
+            Expert Profile
           </Link>
         </div>
       </div>
@@ -50,3 +73,4 @@ const DynamicInstructorCard: React.FC<{ instructor: Instructor }> = ({ instructo
 };
 
 export default DynamicInstructorCard;
+

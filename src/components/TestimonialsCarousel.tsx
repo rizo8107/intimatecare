@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Quote, CheckCircle2 } from 'lucide-react';
 
 const TestimonialsCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,7 +15,7 @@ const TestimonialsCarousel = () => {
       service: "30-Day Pleasure Challenge"
     },
     {
-      name: "Anonymous",
+      name: "Anjali",
       location: "Delhi",
       image: null,
       rating: 5,
@@ -44,7 +44,7 @@ const TestimonialsCarousel = () => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, testimonials.length]);
 
@@ -59,77 +59,95 @@ const TestimonialsCarousel = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-[#FFF7EC] overflow-hidden">
+    <section className="section-padding bg-slate-50/50 overflow-hidden">
       <div className="container-custom">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-block px-4 py-1.5 bg-pink-100 text-[#FF5A84] rounded-full text-sm font-medium mb-4">
-            Success Stories
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
+          <span className="badge-premium mb-6">Success Stories</span>
+          <h2 className="section-title">
             Real Couples, Real
-            <span className="text-[#FF7A9A]"> Transformations</span>
+            <span className="text-gradient"> Transformations</span>
           </h2>
-          <p className="text-lg text-gray-600">
-            Join thousands of couples who have reignited their passion and deepened their connection.
+          <p className="text-xl text-slate-500 font-medium">
+            Join thousands who have reignited their passion and deepened their connection through our guided approach.
           </p>
         </div>
 
         {/* Testimonial Carousel */}
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-5xl mx-auto">
           {/* Main Card */}
-          <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 relative overflow-hidden">
+          <div className="bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] p-10 md:p-16 relative overflow-hidden transition-all duration-500 border border-slate-100/50">
             {/* Quote Icon */}
-            <Quote className="absolute top-8 right-8 w-16 h-16 text-pink-100" />
-            
+            <div className="absolute top-10 right-10 opacity-[0.05] pointer-events-none">
+              <Quote className="w-40 h-40 text-primary rotate-12" />
+            </div>
+
             {/* Content */}
-            <div className="relative z-10">
+            <div className="relative z-10 flex flex-col items-center text-center">
               {/* Rating */}
-              <div className="flex gap-1 mb-6">
+              <div className="flex gap-1 mb-8 bg-slate-50 px-4 py-2 rounded-full">
                 {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="w-5 h-5 fill-[#FFB800] text-[#FFB800]" />
                 ))}
               </div>
 
               {/* Testimonial Text */}
-              <p className="text-xl md:text-2xl text-gray-700 leading-relaxed mb-8 font-medium">
-                "{testimonials[currentIndex].text}"
-              </p>
+              <blockquote className="text-2xl md:text-3xl lg:text-4xl text-slate-800 leading-tight mb-12 font-black tracking-tight max-w-3xl">
+                “{testimonials[currentIndex].text}”
+              </blockquote>
 
               {/* Author Info */}
-              <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex flex-col items-center sm:flex-row sm:justify-center gap-6 pt-10 border-t border-slate-100 w-full">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-pink-400 flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-primary/20">
                     {testimonials[currentIndex].name.charAt(0)}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-gray-800">{testimonials[currentIndex].name}</h4>
-                    <p className="text-sm text-gray-500">{testimonials[currentIndex].location}</p>
+                  <div className="text-left">
+                    <h4 className="text-xl font-black text-slate-950 flex items-center gap-2">
+                      {testimonials[currentIndex].name}
+                      <CheckCircle2 className="w-4 h-4 text-primary fill-primary/10" title="Verified Transformation" />
+                    </h4>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{testimonials[currentIndex].location}</p>
                   </div>
                 </div>
-                <div className="px-4 py-2 bg-pink-50 rounded-full">
-                  <span className="text-sm font-medium text-[#FF5A84]">{testimonials[currentIndex].service}</span>
+                <div className="hidden sm:block w-[1px] h-10 bg-slate-200" />
+                <div className="px-6 py-2.5 bg-primary/5 rounded-full border border-primary/10">
+                  <span className="text-xs font-black text-primary uppercase tracking-widest">{testimonials[currentIndex].service}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Navigation Arrows */}
-          <button 
-            onClick={goToPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-6 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-pink-50 transition-colors"
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
-          </button>
-          <button 
-            onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-6 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-pink-50 transition-colors"
-          >
-            <ChevronRight className="w-6 h-6 text-gray-600" />
-          </button>
+          <div className="absolute top-1/2 -translate-y-1/2 -left-8 -right-8 flex justify-between pointer-events-none hidden lg:flex">
+            <button
+              onClick={goToPrev}
+              className="pointer-events-auto w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-slate-400 hover:text-primary transition-all hover:scale-110 active:scale-95 group border border-slate-100"
+            >
+              <ChevronLeft className="w-8 h-8 group-hover:-translate-x-1 transition-transform" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="pointer-events-auto w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-slate-400 hover:text-primary transition-all hover:scale-110 active:scale-95 group border border-slate-100"
+            >
+              <ChevronRight className="w-8 h-8 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
 
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-8">
+          {/* Mobile Arrows & Dots */}
+          <div className="flex flex-col items-center mt-12 gap-8 lg:hidden">
+            <div className="flex gap-4">
+              <button onClick={goToPrev} className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-slate-600 active:scale-90 transition-all border border-slate-100">
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button onClick={goToNext} className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-slate-600 active:scale-90 transition-all border border-slate-100">
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+
+          {/* Progress Indicators */}
+          <div className="flex justify-center gap-3 mt-12 lg:mt-16">
             {testimonials.map((_, index) => (
               <button
                 key={index}
@@ -137,29 +155,28 @@ const TestimonialsCarousel = () => {
                   setIsAutoPlaying(false);
                   setCurrentIndex(index);
                 }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
-                    ? 'bg-[#FF5A84] w-8' 
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
+                className={`h-1.5 rounded-full transition-all duration-700 ${index === currentIndex
+                    ? 'bg-primary w-12'
+                    : 'bg-slate-200 w-2 hover:bg-slate-300'
+                  }`}
               />
             ))}
           </div>
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mt-24">
           {[
-            { number: "2,500+", label: "Couples Helped" },
-            { number: "4.9/5", label: "Average Rating" },
-            { number: "98%", label: "Satisfaction Rate" },
-            { number: "50+", label: "Countries" }
+            { number: "2,500+", label: "Couples Helped", color: "text-primary" },
+            { number: "4.9/5", label: "Average Rating", color: "text-[#FFB800]" },
+            { number: "98%", label: "Satisfaction Rate", color: "text-emerald-500" },
+            { number: "50+", label: "Countries Served", color: "text-blue-500" }
           ].map((stat, index) => (
-            <div key={index} className="text-center p-6 bg-white rounded-2xl shadow-sm">
-              <div className="text-3xl md:text-4xl font-bold text-[#FF7A9A] mb-2">
+            <div key={index} className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+              <div className={`text-3xl md:text-5xl font-black ${stat.color} mb-3 tracking-tighter`}>
                 {stat.number}
               </div>
-              <p className="text-gray-600 text-sm">{stat.label}</p>
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -169,3 +186,4 @@ const TestimonialsCarousel = () => {
 };
 
 export default TestimonialsCarousel;
+

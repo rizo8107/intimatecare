@@ -9,8 +9,7 @@ const ServicesGrid = () => {
       description: "Deep, personalized sessions with Khushboo to address your unique intimacy challenges and goals.",
       price: "From ₹2,500",
       link: "/sessions",
-      gradient: "bg-pink-500",
-      bgGradient: "bg-[#FFE9EC]",
+      color: "from-pink-500 to-rose-600",
       badge: "Most Popular"
     },
     {
@@ -20,8 +19,7 @@ const ServicesGrid = () => {
       price: "Special Pricing",
       link: "https://topmate.io/intimatecare/1823535",
       external: true,
-      gradient: "bg-sky-500",
-      bgGradient: "bg-[#E6F4FF]"
+      color: "from-sky-500 to-blue-600",
     },
     {
       icon: BookOpen,
@@ -30,8 +28,7 @@ const ServicesGrid = () => {
       price: "₹699",
       originalPrice: "₹999",
       link: "/guide",
-      gradient: "bg-violet-500",
-      bgGradient: "bg-[#EFE6FF]",
+      color: "from-violet-500 to-purple-600",
       badge: "Bestseller"
     },
     {
@@ -41,108 +38,101 @@ const ServicesGrid = () => {
       price: "₹599",
       originalPrice: "₹999",
       link: "/30-day-challenge",
-      gradient: "bg-amber-500",
-      bgGradient: "bg-[#FFF3E0]",
-      badge: "New"
+      color: "from-amber-400 to-orange-500",
+      badge: "Highly Rated"
     },
     {
       icon: MessageCircle,
-      title: "Pleasure School Community",
+      title: "Intimate Talks",
       description: "Join our exclusive Telegram group for ongoing support, discussions, and expert Q&A sessions.",
       price: "Free to Join",
       link: "/intimatetalks",
-      gradient: "bg-emerald-500",
-      bgGradient: "bg-[#E5F6F0]"
+      color: "from-emerald-400 to-teal-500",
     },
-    {
-      icon: Video,
-      title: "Live Masterclasses",
-      description: "Monthly live sessions covering trending topics in intimacy, pleasure, and relationships.",
-      price: "Included in Community",
-      link: "/webinars",
-      gradient: "bg-indigo-500",
-      bgGradient: "bg-[#E8ECFF]"
-    }
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-[#FFF7EC]">
+    <section className="section-padding bg-slate-50/50">
       <div className="container-custom">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-block px-4 py-1.5 bg-pink-100 text-[#FF5A84] rounded-full text-sm font-medium mb-4">
-            Our Services
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+        <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
+          <span className="badge-premium mb-6">Explore Our Path</span>
+          <h2 className="section-title">
             Everything You Need for a
-            <span className="text-[#FF7A9A]"> Fulfilling Intimate Life</span>
+            <span className="text-gradient"> Fulfilling Connection</span>
           </h2>
-          <p className="text-lg text-gray-600">
-            From personalized coaching to self-paced resources, find the perfect path to deeper connection and pleasure.
+          <p className="text-xl text-slate-500 font-medium">
+            Find the perfect path to deeper pleasure through personalized coaching or self-paced digital guides.
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => {
-            const cardClassName = `group relative ${service.bgGradient} rounded-3xl p-6 lg:p-8 border border-gray-100 hover:border-pink-200 hover:shadow-2xl hover:shadow-pink-100/50 transition-all duration-500 hover:-translate-y-2 overflow-hidden`;
-            
             const cardContent = (
-              <>
+              <div className="card-modern h-full flex flex-col group p-8 lg:p-10 relative overflow-hidden">
+                {/* Accent Background */}
+                <div className={`absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br ${service.color} opacity-[0.03] group-hover:opacity-10 rounded-full transition-opacity duration-500`} />
+
                 {/* Badge */}
                 {service.badge && (
-                  <div className={`absolute top-4 right-4 px-3 py-1 ${service.gradient} text-white text-xs font-bold rounded-full`}>
+                  <div className={`absolute top-6 right-8 px-4 py-1.5 bg-gradient-to-r ${service.color} text-white text-[10px] font-black uppercase tracking-wider rounded-full shadow-lg shadow-primary/20`}>
                     {service.badge}
                   </div>
                 )}
 
-                {/* Icon */}
-                <div className={`w-14 h-14 rounded-2xl ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <service.icon className="w-7 h-7 text-white" />
+                {/* Icon Container */}
+                <div className={`w-16 h-16 rounded-[1.25rem] bg-gradient-to-br ${service.color} p-[1px] mb-8 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                  <div className="w-full h-full bg-white rounded-[1.2rem] flex items-center justify-center">
+                    <service.icon className="w-8 h-8 text-primary" />
+                  </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-[#FF5A84] transition-colors">
+                <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-primary transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-gray-600 mb-6 line-clamp-3">
+                <p className="text-slate-500 font-medium mb-10 line-clamp-3 leading-relaxed">
                   {service.description}
                 </p>
 
-                {/* Price & CTA */}
-                <div className="flex items-center justify-between mt-auto">
-                  <div>
-                    <span className="text-lg font-bold text-gray-800">{service.price}</span>
-                    {service.originalPrice && (
-                      <span className="ml-2 text-sm text-gray-400 line-through">{service.originalPrice}</span>
-                    )}
+                {/* Bottom Bar */}
+                <div className="mt-auto pt-8 border-t border-slate-100 flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Pricing</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-black text-slate-900 tracking-tight">{service.price}</span>
+                      {service.originalPrice && (
+                        <span className="text-sm font-bold text-slate-300 line-through">{service.originalPrice}</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center group-hover:bg-[#FF7A9A] transition-all duration-300">
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+
+                  <div className={`w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:translate-x-1 shadow-sm`}>
+                    <ArrowRight className="w-6 h-6" />
                   </div>
                 </div>
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </>
+              </div>
             );
 
-            if (service.external) {
-              return (
-                <a
-                  key={index}
-                  href={service.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cardClassName}
-                >
-                  {cardContent}
-                </a>
-              );
-            }
-
-            return (
-              <Link key={index} to={service.link} className={cardClassName}>
+            return service.external ? (
+              <a
+                key={index}
+                href={service.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {cardContent}
+              </a>
+            ) : (
+              <Link
+                key={index}
+                to={service.link}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 {cardContent}
               </Link>
             );
@@ -154,3 +144,4 @@ const ServicesGrid = () => {
 };
 
 export default ServicesGrid;
+

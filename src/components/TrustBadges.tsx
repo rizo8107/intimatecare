@@ -5,12 +5,12 @@ const TrustBadges = () => {
     {
       icon: Shield,
       title: "100% Confidential",
-      description: "Your privacy is our priority"
+      description: "Privacy is our priority"
     },
     {
       icon: Award,
       title: "Certified Expert",
-      description: "USA-certified sex educator"
+      description: "USA-certified educator"
     },
     {
       icon: Lock,
@@ -20,22 +20,22 @@ const TrustBadges = () => {
     {
       icon: Clock,
       title: "Flexible Timing",
-      description: "Book at your convenience"
+      description: "Book when you're ready"
     }
   ];
 
   return (
-    <section className="py-8 bg-white border-y border-gray-100">
+    <section className="py-10 bg-slate-50/50 border-y border-slate-100">
       <div className="container-custom">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {badges.map((badge, index) => (
-            <div key={index} className="flex items-center gap-3 justify-center md:justify-start">
-              <div className="w-12 h-12 rounded-xl bg-pink-50 flex items-center justify-center flex-shrink-0">
-                <badge.icon className="w-6 h-6 text-[#FF5A84]" />
+            <div key={index} className="flex items-center gap-4 group justify-center lg:justify-start">
+              <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform duration-500">
+                <badge.icon className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-800 text-sm">{badge.title}</h4>
-                <p className="text-xs text-gray-500">{badge.description}</p>
+                <h4 className="font-extrabold text-slate-900 text-sm tracking-tight">{badge.title}</h4>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{badge.description}</p>
               </div>
             </div>
           ))}
@@ -46,3 +46,4 @@ const TrustBadges = () => {
 };
 
 export default TrustBadges;
+

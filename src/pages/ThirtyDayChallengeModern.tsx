@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle, Sparkles, Heart, Calendar, ArrowRight, Star, Shield, Clock, Zap, Gift, Users, ChevronDown } from 'lucide-react';
+import { CheckCircle, Sparkles, Heart, Calendar, ArrowRight, Star, Shield, Clock, Zap, Gift, Users, ChevronDown, CheckCircle2 } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -58,7 +58,7 @@ const ThirtyDayChallengeModern = () => {
     },
     {
       question: "Is this suitable for all couples?",
-      answer: "Yes! Whether you're newly dating or married for decades, the challenges are designed to work for couples at any stage. Each activity can be adapted to your comfort level."
+      answer: "Yes! Whether you're newly dating or married for decades, the challenges are designed to work for couples at any stage."
     },
     {
       question: "What if we miss a day?",
@@ -66,171 +66,136 @@ const ThirtyDayChallengeModern = () => {
     },
     {
       question: "Is the content explicit?",
-      answer: "The challenge includes a mix of emotional connection activities and sensual experiences. Everything is tasteful and focused on building intimacy, not just physical pleasure."
+      answer: "The challenge includes a mix of emotional connection activities and sensual experiences. Everything is tasteful and focused on building intimacy."
     }
   ];
 
   const testimonials = [
     {
-      text: "By day 15, we were communicating about our desires in ways we never had before. The structured challenges made it easy to try new things without awkwardness.",
-      author: "Married couple, 5 years",
+      text: "By day 15, we were communicating about our desires in ways we never had before. The challenges made it easy to try new things.",
+      author: "Pooja & Sameer",
       rating: 5
     },
     {
-      text: "We were stuck in such a routine that intimacy felt like a chore. This challenge brought back the excitement and anticipation we had when we first met.",
-      author: "Dating couple, 3 years",
+      text: "We were stuck in such a routine that intimacy felt like a chore. This challenge brought back the excitement and anticipation.",
+      author: "Rahul & Neha",
       rating: 5
     },
     {
       text: "The daily prompts gave us something to look forward to. It's like having a relationship coach guiding you every day.",
-      author: "Newlyweds",
+      author: "Vikram & Anjali",
       rating: 5
     }
   ];
 
   return (
-    <div className="bg-gradient-to-b from-[#FFF5F7] via-white to-[#FFF0F5] min-h-screen">
-      {/* Urgency Banner */}
-      <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white py-3 text-center animate-pulse">
-        <div className="container-custom">
-          <p className="text-sm md:text-base font-bold flex items-center justify-center gap-2">
-            <Zap className="w-4 h-4" />
-            ⏰ LIMITED TIME: 40% OFF - Only ₹599 (Regular ₹999)
-            <Zap className="w-4 h-4" />
-          </p>
-        </div>
-      </div>
-
+    <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="py-12 md:py-20">
-        <div className="container-custom max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="relative pt-20 pb-24 overflow-hidden bg-slate-50/50">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
             {/* Left - Content */}
-            <div>
-              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-                <Sparkles className="w-4 h-4" />
-                30-Day Transformation Program
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-6 leading-tight">
-                Break The Same-Sex
-                <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent"> Routine</span>
+            <div className="animate-fade-in-up">
+              <span className="badge-premium mb-6">30-Day Experience</span>
+
+              <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
+                Break Your <br />
+                <span className="text-gradient">Routine</span>
               </h1>
-              
-              <p className="text-xl text-gray-600 mb-4 leading-relaxed">
-                <span className="font-bold text-[#FF5A84]">30+ Ways to Explore Pleasure</span> — Daily prompts and activities designed to reignite passion and deepen your connection.
+
+              <p className="text-xl text-slate-500 font-medium mb-4 leading-relaxed max-w-xl">
+                Daily prompts and activities designed to reignite passion and deepen your connection.
               </p>
-              
-              <p className="text-lg text-gray-500 mb-8 italic">
+
+              <p className="text-lg text-primary font-black uppercase tracking-widest mb-10">
                 Crave, Connect & Come Again
               </p>
 
               {/* Social Proof */}
-              <div className="flex items-center gap-4 mb-8">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 border-2 border-white flex items-center justify-center text-white text-xs font-bold">
-                      {String.fromCharCode(64 + i)}
-                    </div>
+              <div className="flex items-center gap-6 mb-10 pb-10 border-b border-slate-100">
+                <div className="flex -space-x-3">
+                  {[10, 11, 12, 13].map((i) => (
+                    <img key={i} src={`https://i.pravatar.cc/100?u=${i}`} className="w-12 h-12 rounded-full border-4 border-white shadow-sm" alt="User" />
                   ))}
                 </div>
                 <div>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
+                  <p className="text-sm font-black text-slate-900 uppercase tracking-tighter">1,500+ COUPLES ENROLLED</p>
+                  <div className="flex items-center gap-1 text-[#FFB800]">
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-4 h-4 fill-current" />
                   </div>
-                  <p className="text-sm text-gray-600">1,500+ couples transformed</p>
                 </div>
               </div>
 
               {/* Price & CTA */}
-              <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl p-6 shadow-lg text-white mb-8">
-                <div className="flex items-center justify-between mb-4">
+              <div className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] border border-slate-100 mb-10 relative overflow-hidden group">
+                <div className="flex items-end gap-4 mb-8">
                   <div>
-                    <span className="text-white/70 line-through text-lg">₹999</span>
-                    <span className="text-4xl font-bold ml-3">₹599</span>
+                    <span className="text-slate-400 line-through text-lg font-bold">₹999</span>
+                    <div className="text-5xl font-black text-slate-950 tracking-tighter">₹599</div>
                   </div>
-                  <div className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
-                    Save 40%
+                  <div className="mb-2 bg-orange-500 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
+                    40% OFF
                   </div>
                 </div>
-                
-                <button 
+
+                <button
                   onClick={handleBuyNow}
                   disabled={isLoading}
-                  className="group w-full inline-flex items-center justify-center gap-2 bg-white text-orange-500 font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-70"
+                  className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
                 >
-                  {isLoading ? 'Processing...' : 'Start Your 30-Day Journey'}
+                  {isLoading ? 'Processing...' : 'Start Your Journey'}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-                
-                <div className="flex items-center justify-center gap-4 mt-4 text-sm text-white/80">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    Instant Access
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Shield className="w-4 h-4" />
-                    Secure Payment
-                  </div>
-                </div>
-              </div>
 
-              {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Users className="w-6 h-6 text-orange-500" />
+                <div className="grid grid-cols-2 gap-4 mt-8">
+                  <div className="flex items-center gap-3 text-slate-500">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">Instant Access</span>
                   </div>
-                  <p className="text-xs text-gray-600">For All Couples</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Calendar className="w-6 h-6 text-orange-500" />
+                  <div className="flex items-center gap-3 text-slate-500">
+                    <Shield className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">Secure Payment</span>
                   </div>
-                  <p className="text-xs text-gray-600">30+ Activities</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Gift className="w-6 h-6 text-orange-500" />
-                  </div>
-                  <p className="text-xs text-gray-600">Bonus Content</p>
                 </div>
               </div>
             </div>
 
             {/* Right - Image */}
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img 
-                  src="/images/32 days v2.jpg" 
-                  alt="30+ Ways to Explore Pleasure" 
-                  className="w-full h-auto"
+            <div className="relative group animate-fade-in">
+              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
+                <img
+                  src="/images/32 days v2.jpg"
+                  alt="30+ Ways to Explore Pleasure"
+                  className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
               </div>
-              
+
               {/* Floating Badge */}
-              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-bold px-6 py-3 rounded-full shadow-lg transform rotate-12 animate-bounce">
-                HOT! 🔥
+              <div className="absolute -top-6 -right-6 lg:-right-10 bg-orange-500 text-white font-black px-8 py-4 rounded-3xl shadow-2xl transform rotate-12 border border-white/10 animate-pulse">
+                HOT ITEM 🔥
               </div>
-              
-              {/* Countdown-style element */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-xl p-4 flex gap-4">
+
+              {/* Stats Card Overlay */}
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-6 border border-white/40 flex gap-8 items-center min-w-[300px]">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-500">30+</div>
-                  <div className="text-xs text-gray-500">Activities</div>
+                  <div className="text-3xl font-black text-orange-500 leading-none">30+</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Days</div>
                 </div>
-                <div className="w-px bg-gray-200"></div>
+                <div className="w-px h-8 bg-slate-200" />
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-pink-500">5</div>
-                  <div className="text-xs text-gray-500">Bonuses</div>
+                  <div className="text-3xl font-black text-primary leading-none">5</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Bonuses</div>
                 </div>
-                <div className="w-px bg-gray-200"></div>
+                <div className="w-px h-8 bg-slate-200" />
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-500">∞</div>
-                  <div className="text-xs text-gray-500">Pleasure</div>
+                  <div className="text-3xl font-black text-emerald-500 leading-none">∞</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Pleasure</div>
                 </div>
               </div>
             </div>
@@ -239,45 +204,44 @@ const ThirtyDayChallengeModern = () => {
       </section>
 
       {/* Why This Works */}
-      <section className="py-16 bg-white">
-        <div className="container-custom max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              Why This Challenge Works
-            </h2>
-            <p className="text-lg text-gray-600">Based on relationship psychology and sexual wellness research</p>
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in-up">
+            <span className="badge-premium mb-6">The Science</span>
+            <h2 className="section-title">Why It Works</h2>
+            <p className="text-xl text-slate-500 font-medium">Based on relationship psychology and sexual wellness research.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="text-center p-6 bg-gradient-to-br from-orange-50 to-pink-50 rounded-2xl">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div key={index} className="bg-slate-50 border border-slate-100 p-10 rounded-[2.5rem] hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-primary rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform">
                   <benefit.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
+                <h3 className="text-2xl font-black text-slate-950 mb-4 tracking-tight">{benefit.title}</h3>
+                <p className="text-slate-500 font-medium leading-relaxed">{benefit.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* What You'll Get */}
-      <section className="py-16 bg-gradient-to-br from-[#FFF5F7] to-[#F8F4FF]">
-        <div className="container-custom max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              What's Included
-            </h2>
+      {/* Checklist Section */}
+      <section className="section-padding bg-slate-950 text-white relative overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2" />
+
+        <div className="container-custom relative z-10">
+          <div className="max-w-3xl mx-auto text-center mb-20 animate-fade-in-up">
+            <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tight">What's Included</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {whatYouGet.map((item, index) => (
-              <div key={index} className="flex items-start gap-4 bg-white p-6 rounded-2xl shadow-sm">
-                <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-5 h-5 text-white" />
+              <div key={index} className="flex items-center gap-4 bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-all animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-white" />
                 </div>
-                <p className="text-gray-700 font-medium">{item}</p>
+                <span className="font-bold text-slate-300">{item}</span>
               </div>
             ))}
           </div>
@@ -285,28 +249,24 @@ const ThirtyDayChallengeModern = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
-        <div className="container-custom max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              What Couples Are Saying
-            </h2>
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="section-title">Success Stories</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-gradient-to-br from-orange-50 to-pink-50 p-6 rounded-2xl">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  ))}
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((t, i) => (
+              <div key={i} className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
+                <div className="flex gap-1 mb-6 text-[#FFB800]">
+                  {[...Array(t.rating)].map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
                 </div>
-                <p className="text-gray-700 mb-4 italic">"{testimonial.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-bold">
-                    {testimonial.author.charAt(0)}
+                <p className="text-lg text-slate-700 italic font-medium mb-8 leading-relaxed">"{t.text}"</p>
+                <div className="flex items-center gap-3 pt-6 border-t border-slate-200">
+                  <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 font-black">
+                    {t.author.charAt(0)}
                   </div>
-                  <span className="text-sm font-medium text-gray-600">{testimonial.author}</span>
+                  <span className="font-black text-slate-950 uppercase tracking-widest text-xs">{t.author}</span>
                 </div>
               </div>
             ))}
@@ -315,77 +275,63 @@ const ThirtyDayChallengeModern = () => {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 bg-gradient-to-br from-[#FFF5F7] to-[#F8F4FF]">
-        <div className="container-custom max-w-3xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              Frequently Asked Questions
-            </h2>
+      <section className="section-padding bg-slate-50/50">
+        <div className="container-custom max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="section-title">Common Questions</h2>
           </div>
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+              <div key={index} className={`group rounded-[2rem] border transition-all duration-500 overflow-hidden ${openFaq === index
+                ? 'bg-slate-900 border-slate-900 shadow-2xl'
+                : 'bg-white border-slate-100 shadow-sm'
+                }`}>
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between p-8 text-left outline-none"
                 >
-                  <span className="font-semibold text-gray-800">{faq.question}</span>
-                  <ChevronDown className={`w-5 h-5 text-orange-500 transition-transform ${openFaq === index ? 'rotate-180' : ''}`} />
-                </button>
-                {openFaq === index && (
-                  <div className="px-6 pb-6">
-                    <p className="text-gray-600">{faq.answer}</p>
+                  <span className={`text-lg font-black tracking-tight transition-colors duration-500 ${openFaq === index ? 'text-white' : 'text-slate-900'
+                    }`}>{faq.question}</span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openFaq === index ? 'bg-orange-500 text-white rotate-180' : 'bg-slate-100 text-slate-400'
+                    }`}>
+                    <ChevronDown className="w-5 h-5" />
                   </div>
-                )}
+                </button>
+                <div className={`transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                  <div className="px-8 pb-10 border-t border-white/10 pt-4">
+                    <p className={`text-lg font-medium leading-relaxed ${openFaq === index ? 'text-slate-300' : 'text-slate-500'
+                      }`}>{faq.answer}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-16 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500">
-        <div className="container-custom max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
-            Ready to Transform Your Intimate Life?
-          </h2>
-          <p className="text-xl text-white/90 mb-8">
-            Start your 30-day journey to deeper connection and more pleasure.
-          </p>
-          
-          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <span className="text-white/70 line-through text-xl">₹999</span>
-              <span className="text-5xl font-bold text-white">₹599</span>
+      {/* Final CTA Strip */}
+      <section className="py-20 bg-slate-950 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-16 backdrop-blur-xl">
+            <div className="text-center lg:text-left">
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">Ready to Begin?</h2>
+              <p className="text-xl text-slate-400 font-medium">Join 1,500+ couples today.</p>
             </div>
-            
-            <button 
-              onClick={handleBuyNow}
-              disabled={isLoading}
-              className="group w-full inline-flex items-center justify-center gap-2 bg-white text-orange-500 font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-70"
-            >
-              {isLoading ? 'Processing...' : 'Start Now - 40% Off'}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            
-            <p className="text-white/80 text-sm mt-4">
-              Instant download • Works for all couples • 100% confidential
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured In */}
-      <section className="py-12 bg-gray-50">
-        <div className="container-custom">
-          <p className="text-center text-sm text-gray-500 uppercase tracking-wider mb-8">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-            {['BBC.jpg', 'Vogue.jpg', 'Mint.jpg', 'Deccan.jpg', 'Huf.jpg'].map((logo, index) => (
-              <div key={index} className="w-24 md:w-32 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-                <img src={`/Featured/${logo}`} alt={logo} className="w-full h-auto" />
+            <div className="flex flex-col sm:flex-row items-center gap-8">
+              <div className="text-center sm:text-right">
+                <span className="text-slate-500 line-through font-bold">₹999</span>
+                <div className="text-4xl font-black text-white">₹599</div>
               </div>
-            ))}
+              <button
+                onClick={handleBuyNow}
+                className="btn-premium-primary !bg-white !text-primary transform hover:scale-105 shadow-2xl"
+              >
+                Start Challenge
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -394,3 +340,4 @@ const ThirtyDayChallengeModern = () => {
 };
 
 export default ThirtyDayChallengeModern;
+

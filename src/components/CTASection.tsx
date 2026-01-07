@@ -3,59 +3,73 @@ import { ArrowRight, Gift, Clock, Shield } from 'lucide-react';
 
 const CTASection = () => {
   return (
-    <section className="py-16 md:py-24 bg-[#f491c2] relative overflow-hidden">
+    <section className="section-padding relative overflow-hidden">
+      {/* High-Impact Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-rose-500 to-accent" />
+
+      {/* Decorative patterns */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
+      </div>
 
       <div className="container-custom relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-8">
-            <Gift className="w-5 h-5 text-white" />
-            <span className="text-white font-medium">Limited Time: Free Discovery Call</span>
-          </div>
-
-          {/* Headline */}
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-6 leading-tight">
-            Ready to Transform Your
-            <br />
-            Intimate Connection?
-          </h2>
-
-          {/* Subheadline */}
-          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-            Book a free 15-minute discovery call to discuss your goals and find the perfect path forward. 
-            No pressure, just genuine support.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link 
-              to="/sessions"
-              className="group inline-flex items-center justify-center gap-2 bg-white text-[#FF5A84] font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              Book Free Discovery Call
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link 
-              to="/freebie"
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-white font-bold px-8 py-4 rounded-full border-2 border-white/50 hover:bg-white/10 transition-all duration-300"
-            >
-              Get Free Guide First
-            </Link>
-          </div>
-
-          {/* Trust Indicators */}
-          <div className="flex flex-wrap justify-center gap-8 text-white/80">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              <span className="text-sm">15-min free call</span>
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-xl rounded-[3rem] p-10 md:p-20 border border-white/20 shadow-2xl text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-2.5 mb-10 border border-white/10">
+              <Gift className="w-5 h-5 text-white animate-pulse" />
+              <span className="text-white text-sm font-black uppercase tracking-widest">Limited Offer</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              <span className="text-sm">100% confidential</span>
+
+            {/* Headline */}
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-white mb-8 leading-[1.1] tracking-tighter">
+              Ready to Rediscover <br />
+              <span className="text-white/80">Your Connection?</span>
+            </h2>
+
+            {/* Subheadline */}
+            <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+              Take the first step towards a more fulfilling intimate life. Book your confidential 15-minute discovery call today.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+              <Link
+                to="/sessions"
+                className="btn-premium-primary !bg-white !text-primary transform hover:scale-105 transition-all text-lg py-5 px-10"
+              >
+                Book Free Discovery Call
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/freebie"
+                className="btn-premium-outline !border-white !text-white hover:!bg-white/10 text-lg py-5 px-10"
+              >
+                Download Free Guide
+              </Link>
             </div>
-            <div className="flex items-center gap-2">
-              <Gift className="w-5 h-5" />
-              <span className="text-sm">No obligation</span>
+
+            {/* Trust Indicators */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-10 border-t border-white/10">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10 text-white">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <span className="text-sm font-bold text-white uppercase tracking-widest">15-min free call</span>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10 text-white">
+                  <Shield className="w-6 h-6" />
+                </div>
+                <span className="text-sm font-bold text-white uppercase tracking-widest">100% confidential</span>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10 text-white">
+                  <Gift className="w-6 h-6" />
+                </div>
+                <span className="text-sm font-bold text-white uppercase tracking-widest">No obligation</span>
+              </div>
             </div>
           </div>
         </div>
@@ -65,3 +79,4 @@ const CTASection = () => {
 };
 
 export default CTASection;
+

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Download, BookOpen, Star, Shield, Clock, Users, ArrowRight, Gift, Zap, Heart, ChevronDown } from 'lucide-react';
+import { CheckCircle, Download, BookOpen, Star, Shield, Clock, ArrowRight, Gift, Zap, Heart, ChevronDown, CheckCircle2 } from 'lucide-react';
 
 const GuideModern = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -34,197 +34,192 @@ const GuideModern = () => {
 
   const testimonials = [
     {
-      text: "This guide transformed our bedroom experience! The instructions are clear, the illustrations are helpful, and the tips really work. Worth every penny!",
-      author: "Couple from Mumbai",
+      text: "This guide transformed our bedroom experience! The instructions are clear, the illustrations are helpful, and the tips really work.",
+      author: "Priya & Rahul",
+      location: "Mumbai",
       rating: 5
     },
     {
       text: "I bought this for my partner and me to try something new. We've had so much fun exploring these positions together. It's rekindled our passion!",
-      author: "Reader from Delhi",
+      author: "Sneha",
+      location: "Delhi",
       rating: 5
     },
     {
       text: "Finally, a guide that's tasteful, informative, and actually practical. The variations for different body types are a game-changer.",
-      author: "Happy Customer",
+      author: "Anjali",
+      location: "Bangalore",
       rating: 5
     }
   ];
 
   return (
-    <div className="bg-gradient-to-b from-[#FFF5F7] via-white to-[#FFF0F5] min-h-screen">
-      {/* Urgency Banner */}
-      <div className="bg-gradient-to-r from-[#FF5A84] to-[#9B59B6] text-white py-3 text-center">
-        <div className="container-custom">
-          <p className="text-sm md:text-base font-medium flex items-center justify-center gap-2">
-            <Zap className="w-4 h-4" />
-            <span>🔥 Limited Time: 30% OFF + Free Bonus Guide!</span>
-            <Zap className="w-4 h-4" />
-          </p>
-        </div>
-      </div>
-
+    <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="py-12 md:py-20">
-        <div className="container-custom max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="relative pt-20 pb-24 overflow-hidden bg-slate-50/50">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
             {/* Left - Content */}
-            <div>
-              <div className="inline-flex items-center gap-2 bg-pink-100 text-[#FF5A84] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-                <BookOpen className="w-4 h-4" />
-                Digital Playbook for Couples
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-6 leading-tight">
-                69 Position
-                <span className="bg-gradient-to-r from-[#FF5A84] to-[#9B59B6] bg-clip-text text-transparent"> Playbook</span>
+            <div className="animate-fade-in-up">
+              <span className="badge-premium mb-6">Digital Playbook</span>
+
+              <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
+                The 69 Position <br />
+                <span className="text-gradient">Experience</span>
               </h1>
-              
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Expert-crafted guide with illustrated positions to bring excitement, variety, and deeper connection to your intimate life.
+
+              <p className="text-xl text-slate-500 font-medium mb-10 leading-relaxed max-w-xl">
+                Expert-crafted guide with explained positions to bring variety, excitement, and deeper connection to your intimate life.
               </p>
 
               {/* Social Proof */}
-              <div className="flex items-center gap-4 mb-8">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 border-2 border-white flex items-center justify-center text-white text-xs font-bold">
-                      {String.fromCharCode(64 + i)}
-                    </div>
+              <div className="flex items-center gap-6 mb-10 pb-10 border-b border-slate-100">
+                <div className="flex -space-x-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <img key={i} src={`https://i.pravatar.cc/100?u=${i + 40}`} className="w-12 h-12 rounded-full border-4 border-white shadow-sm" alt="User" />
                   ))}
                 </div>
                 <div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 text-[#FFB800] mb-1">
                     {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} className="w-4 h-4 fill-current" />
                     ))}
                   </div>
-                  <p className="text-sm text-gray-600">2,000+ couples love it</p>
+                  <p className="text-sm font-black text-slate-900 uppercase tracking-tighter">2,500+ Couples Transformed</p>
                 </div>
               </div>
 
               {/* Price & CTA */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-pink-100 mb-8">
-                <div className="flex items-center justify-between mb-4">
+              <div className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] border border-slate-100 mb-10 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+
+                <div className="flex items-end gap-4 mb-8">
                   <div>
-                    <span className="text-gray-400 line-through text-lg">₹999</span>
-                    <span className="text-4xl font-bold text-[#FF5A84] ml-3">₹699</span>
+                    <span className="text-slate-400 line-through text-lg font-bold">₹999</span>
+                    <div className="text-5xl font-black text-slate-950 tracking-tighter">₹699</div>
                   </div>
-                  <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="mb-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
                     Save 30%
                   </div>
                 </div>
-                
-                <a 
+
+                <a
                   href="https://payments.cashfree.com/forms/69positionsebbok"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF5A84] to-[#FF7A9A] text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
                 >
-                  Get Instant Access
+                  Unlock Instant Access
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
-                
-                <div className="flex items-center justify-center gap-4 mt-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Download className="w-4 h-4" />
-                    Instant Download
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Shield className="w-4 h-4" />
-                    Secure Payment
-                  </div>
-                </div>
-              </div>
 
-              {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Shield className="w-6 h-6 text-[#FF5A84]" />
+                <div className="grid grid-cols-2 gap-4 mt-8">
+                  <div className="flex items-center gap-3 text-slate-500">
+                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
+                      <Download className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-widest">Digital PDF</span>
                   </div>
-                  <p className="text-xs text-gray-600">100% Confidential</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Clock className="w-6 h-6 text-[#FF5A84]" />
+                  <div className="flex items-center gap-3 text-slate-500">
+                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
+                      <Shield className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-widest">Secure Payment</span>
                   </div>
-                  <p className="text-xs text-gray-600">Instant Access</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Gift className="w-6 h-6 text-[#FF5A84]" />
-                  </div>
-                  <p className="text-xs text-gray-600">7-Day Guarantee</p>
                 </div>
               </div>
             </div>
 
             {/* Right - Image */}
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img 
-                  src="/69.jpg" 
-                  alt="69 Position Playbook" 
-                  className="w-full h-auto"
+            <div className="relative group animate-fade-in">
+              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
+                <img
+                  src="/69.jpg"
+                  alt="69 Position Playbook"
+                  className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
               </div>
-              
+
               {/* Floating Badge */}
-              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-bold px-6 py-3 rounded-full shadow-lg transform rotate-12">
-                BESTSELLER
+              <div className="absolute -top-6 -right-6 lg:-right-10 bg-slate-950 text-white font-black px-8 py-4 rounded-3xl shadow-2xl transform rotate-12 border border-white/10">
+                <div className="flex flex-col items-center">
+                  <span className="text-xs uppercase tracking-[0.2em] text-primary mb-1">Status</span>
+                  <span className="text-xl">BESTSELLER</span>
+                </div>
+              </div>
+
+              {/* Stats Card */}
+              <div className="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl p-6 border border-white/40 animate-float-delayed">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                    <Clock className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="font-black text-slate-900 leading-tight">Instant Delivery</p>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">To your inbox</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* What You'll Get */}
-      <section className="py-16 bg-white">
-        <div className="container-custom max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              What's Inside the Playbook
-            </h2>
-            <p className="text-lg text-gray-600">Everything you need to transform your intimate experiences</p>
+      {/* Features Grid */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in-up">
+            <span className="badge-premium mb-6">The Content</span>
+            <h2 className="section-title">What's Inside</h2>
+            <p className="text-xl text-slate-500 font-medium">Everything you need to transform your intimate experiences and explore new dimensions of pleasure.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="flex items-start gap-4 bg-gradient-to-r from-pink-50 to-purple-50 p-6 rounded-2xl">
-                <div className="w-10 h-10 bg-gradient-to-r from-[#FF5A84] to-[#FF7A9A] rounded-full flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-5 h-5 text-white" />
+              <div key={index} className="bg-slate-50 border border-slate-100 p-8 rounded-[2.5rem] hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+                <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-primary/20">
+                  <CheckCircle2 className="w-6 h-6 text-white stroke-[3px]" />
                 </div>
-                <p className="text-gray-700 font-medium">{feature}</p>
+                <p className="text-lg font-black text-slate-950 leading-tight tracking-tight">{feature}</p>
               </div>
             ))}
+            <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] flex flex-col justify-center animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+              <h3 className="text-2xl font-black mb-4">+ Free Bonus</h3>
+              <p className="text-slate-400 font-medium mb-6">Get our exclusive "Communication Guide" worth ₹499 for free.</p>
+              <Gift className="w-10 h-10 text-primary" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-gradient-to-br from-[#FFF5F7] to-[#F8F4FF]">
-        <div className="container-custom max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              What Couples Are Saying
-            </h2>
+      <section className="section-padding bg-slate-50/50">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="section-title">Verified Reviews</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white p-6 rounded-2xl shadow-lg">
-                <div className="flex gap-1 mb-4">
+              <div key={index} className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
+                <div className="flex gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="w-5 h-5 fill-[#FFB800] text-[#FFB800]" />
                   ))}
                 </div>
-                <p className="text-gray-700 mb-4 italic">"{testimonial.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white font-bold">
+                <blockquote className="text-lg text-slate-700 mb-8 font-medium leading-relaxed italic">
+                  “{testimonial.text}”
+                </blockquote>
+                <div className="flex items-center gap-4 pt-6 border-t border-slate-50">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-black shadow-lg shadow-primary/20">
                     {testimonial.author.charAt(0)}
                   </div>
-                  <span className="text-sm font-medium text-gray-600">{testimonial.author}</span>
+                  <div>
+                    <span className="block font-black text-slate-950">{testimonial.author}</span>
+                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{testimonial.location}</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -233,78 +228,65 @@ const GuideModern = () => {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 bg-white">
-        <div className="container-custom max-w-3xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              Frequently Asked Questions
-            </h2>
+      <section className="section-padding bg-white">
+        <div className="container-custom max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="section-title">Common Questions</h2>
           </div>
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-gray-50 rounded-2xl overflow-hidden">
+              <div key={index} className={`group rounded-[2rem] border transition-all duration-500 overflow-hidden ${openFaq === index
+                ? 'bg-slate-900 border-slate-900 shadow-2xl'
+                : 'bg-slate-50/50 border-slate-100'
+                }`}>
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between p-8 text-left outline-none"
                 >
-                  <span className="font-semibold text-gray-800">{faq.question}</span>
-                  <ChevronDown className={`w-5 h-5 text-[#FF5A84] transition-transform ${openFaq === index ? 'rotate-180' : ''}`} />
-                </button>
-                {openFaq === index && (
-                  <div className="px-6 pb-6">
-                    <p className="text-gray-600">{faq.answer}</p>
+                  <span className={`text-lg font-black tracking-tight transition-colors duration-500 ${openFaq === index ? 'text-white' : 'text-slate-900'
+                    }`}>{faq.question}</span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openFaq === index ? 'bg-primary text-white rotate-180' : 'bg-slate-200/50 text-slate-400'
+                    }`}>
+                    <ChevronDown className="w-5 h-5" />
                   </div>
-                )}
+                </button>
+                <div className={`transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                  }`}>
+                  <div className="px-8 pb-10 border-t border-white/10 pt-4">
+                    <p className={`text-lg font-medium leading-relaxed ${openFaq === index ? 'text-slate-300' : 'text-slate-500'
+                      }`}>{faq.answer}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#FF5A84] via-[#FF7A9A] to-[#9B59B6]">
-        <div className="container-custom max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
-            Ready to Transform Your Intimate Life?
-          </h2>
-          <p className="text-xl text-white/90 mb-8">
-            Join 2,000+ couples who have already discovered new dimensions of pleasure.
-          </p>
-          
-          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <span className="text-white/70 line-through text-xl">₹999</span>
-              <span className="text-5xl font-bold text-white">₹699</span>
+      {/* Final CTA Strip */}
+      <section className="py-20 bg-slate-950 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-16 backdrop-blur-xl">
+            <div className="text-center lg:text-left">
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">Ready to Begin?</h2>
+              <p className="text-xl text-slate-400 font-medium">Join 2,500+ couples today.</p>
             </div>
-            
-            <a 
-              href="https://payments.cashfree.com/forms/69positionsebbok"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group w-full inline-flex items-center justify-center gap-2 bg-white text-[#FF5A84] font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              Get Your Copy Now
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
-            
-            <p className="text-white/80 text-sm mt-4">
-              Instant download • 7-day guarantee • 100% confidential
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured In */}
-      <section className="py-12 bg-gray-50">
-        <div className="container-custom">
-          <p className="text-center text-sm text-gray-500 uppercase tracking-wider mb-8">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-            {['BBC.jpg', 'Vogue.jpg', 'Mint.jpg', 'Deccan.jpg', 'Huf.jpg'].map((logo, index) => (
-              <div key={index} className="w-24 md:w-32 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-                <img src={`/Featured/${logo}`} alt={logo} className="w-full h-auto" />
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="text-center sm:text-right">
+                <span className="text-slate-500 line-through font-bold">₹999</span>
+                <div className="text-4xl font-black text-white">₹699</div>
               </div>
-            ))}
+              <a
+                href="https://payments.cashfree.com/forms/69positionsebbok"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-premium-primary !bg-white !text-primary transform hover:scale-105"
+              >
+                Get My Copy
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -313,3 +295,4 @@ const GuideModern = () => {
 };
 
 export default GuideModern;
+

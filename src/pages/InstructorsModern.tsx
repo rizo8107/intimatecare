@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Link } from 'react-router-dom';
-import { Loader2, Star, Shield, Heart, Award, Users, ArrowRight, CheckCircle, MessageCircle } from 'lucide-react';
+import { Loader2, Star, Shield, Heart, Award, Users, ArrowRight, CheckCircle, MessageCircle, Sparkles, Brain, Leaf, Flower2 } from 'lucide-react';
 
 interface Instructor {
   id: string;
@@ -52,236 +52,173 @@ const InstructorsModern = () => {
     {
       title: "Psychology & Emotional Wellness",
       description: "Therapeutic care for mental health, trauma healing, and emotional balance",
-      icon: "🧠",
-      color: "bg-[#E6F4FF]",
+      icon: Brain,
+      color: "bg-blue-50 text-blue-600 border-blue-100",
     },
     {
       title: "Holistic Listening & Healing",
       description: "Safe spaces for release, integration, and deep listening practices",
-      icon: "🌿",
-      color: "bg-[#E5F6F0]",
+      icon: Leaf,
+      color: "bg-emerald-50 text-emerald-600 border-emerald-100",
     },
     {
       title: "Ayurvedic Mind-Body Healing",
       description: "Traditional care for embodied balance and natural wellness",
-      icon: "🪷",
-      color: "bg-[#FFF3E0]",
+      icon: Flower2,
+      color: "bg-orange-50 text-orange-600 border-orange-100",
     }
   ];
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#FFF7EC]">
+      <div className="flex justify-center items-center min-h-screen bg-slate-50">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-[#FF5A84] mx-auto mb-4" />
-          <p className="text-gray-600">Loading our expert coaches...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-[#FFF7EC]">
-        <div className="text-center text-red-500">
-          <p>{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 px-6 py-2 bg-[#FF5A84] text-white rounded-full"
-          >
-            Try Again
-          </button>
+          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-slate-600 font-medium">Loading our expert coaches...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#FFF7EC] min-h-screen">
+    <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="py-12 md:py-20">
-        <div className="container-custom max-w-6xl">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#FFE5F0] text-[#f491c2] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-              <Heart className="w-4 h-4" />
-              Expert Healing & Support
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-6 leading-tight">
-              Meet Our
-              <span className="text-[#f491c2]"> Expert Coaches</span>
+      <section className="relative pt-20 pb-24 overflow-hidden bg-slate-50/50">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+
+        <div className="container-custom relative z-10">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in-up">
+            <span className="badge-premium mb-6">THE EXPERTS</span>
+            <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-8 tracking-tighter leading-[1.05]">
+              Meet Our <br />
+              <span className="text-gradient">Expert Coaches</span>
             </h1>
-            
-            <p className="text-xl text-gray-600 leading-relaxed">
-              Compassionate professionals dedicated to your holistic well-being. 
-              Find the guide who resonates with your personal journey.
+            <p className="text-xl md:text-2xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed mb-12">
+              Compassionate professionals dedicated to your holistic well-being. Find the guide who resonates with your personal journey.
             </p>
-          </div>
 
-          {/* Trust Badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-            {trustBadges.map((badge, index) => (
-              <div key={index} className="bg-white rounded-2xl p-4 shadow-sm text-center">
-                <badge.icon className="w-8 h-8 text-[#f491c2] mx-auto mb-2" />
-                <h4 className="font-semibold text-gray-800 text-sm">{badge.title}</h4>
-                <p className="text-xs text-gray-500">{badge.description}</p>
-              </div>
-            ))}
+            {/* Specializations Grid */}
+            <div className="grid md:grid-cols-3 gap-6 pt-12 border-t border-slate-200">
+              {specializations.map((spec, index) => (
+                <div key={index} className={`flex flex-col items-center gap-4 p-6 rounded-3xl border ${spec.color} bg-white transition-transform hover:-translate-y-1 duration-500`}>
+                  <div className={`p-4 rounded-2xl ${spec.color} bg-white shadow-sm`}>
+                    <spec.icon className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-slate-950 text-sm uppercase tracking-wider mb-2">{spec.title}</h3>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed">{spec.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+      </section>
 
-          {/* Specializations */}
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
-            {specializations.map((spec, index) => (
-              <div key={index} className={`${spec.color} rounded-2xl p-6 text-gray-800 border border-white/60 shadow-sm`}>
-                <div className="text-3xl mb-3">{spec.icon}</div>
-                <h3 className="text-lg font-bold mb-1">{spec.title}</h3>
-                <p className="text-gray-600 text-sm">{spec.description}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Instructors Grid */}
-          {instructors.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {instructors.map((instructor) => (
-                <div 
-                  key={instructor.id}
-                  className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group border border-[#FFE5EC]"
-                >
-                  {/* Image */}
-                  <div className="relative overflow-hidden aspect-[3/4]">
-                    <img 
-                      src={instructor.profile_image_url || '/placeholder-avatar.jpg'} 
+      {/* Instructors List */}
+      <section className="section-padding">
+        <div className="container-custom">
+          {error ? (
+            <div className="text-center bg-red-50 border border-red-100 p-8 rounded-[2rem] max-w-2xl mx-auto">
+              <p className="text-red-500 font-bold mb-4">{error}</p>
+              <button onClick={() => window.location.reload()} className="btn-premium-primary">Try Again</button>
+            </div>
+          ) : instructors.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {instructors.map((instructor, index) => (
+                <div key={instructor.id} className="group flex flex-col animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
+                  <div className="relative rounded-[3rem] overflow-hidden aspect-[4/5] mb-8 shadow-2xl shadow-slate-200/50">
+                    <img
+                      src={instructor.profile_image_url || '/placeholder-avatar.jpg'}
                       alt={instructor.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                     />
-                    <div className="absolute inset-0 bg-black/35"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="text-xl font-bold text-white drop-shadow-sm">{instructor.name}</h3>
-                      <p className="text-white/90 text-sm drop-shadow-sm">{instructor.specialization}</p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60" />
+                    <div className="absolute bottom-8 left-8 right-8">
+                      <div className="badge-premium mb-3 !bg-white/20 !text-white !border-white/20 backdrop-blur-md">
+                        {instructor.specialization}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-6 flex flex-col h-full">
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{instructor.bio}</p>
-                    
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        ))}
+                  <div className="flex flex-col flex-grow">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-3xl font-black text-slate-950 tracking-tight">{instructor.name}</h3>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-black text-slate-950">5.0</span>
                       </div>
-                      <span className="text-sm text-gray-500">5.0</span>
                     </div>
+
+                    <p className="text-slate-500 font-medium mb-8 line-clamp-3 leading-relaxed">
+                      {instructor.bio}
+                    </p>
 
                     <Link
                       to={`/instructor/${instructor.name}`}
-                      className="group/btn w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+                      className="mt-auto w-full btn-premium-primary !bg-slate-950 !shadow-slate-950/20 py-5"
                     >
-                      Book Session
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      Book A Session
+                      <ArrowRight className="w-5 h-5" />
                     </Link>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-3xl shadow-sm">
-              <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">No Coaches Available</h3>
-              <p className="text-gray-500">Please check back soon for our expert coaches.</p>
+            <div className="text-center py-24 bg-slate-50 rounded-[4rem] border-2 border-dashed border-slate-200">
+              <Sparkles className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+              <h3 className="text-2xl font-black text-slate-950 mb-2">Expanding Our Team</h3>
+              <p className="text-slate-500 font-medium font-serif italic text-xl">New experts are coming soon...</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Why Choose Our Coaches */}
-      <section className="py-16 bg-white">
-        <div className="container-custom max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 mb-4">
-              Why Choose Our Coaches
-            </h2>
-            <p className="text-lg text-gray-600">Every coach brings unique expertise to your healing journey</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                title: "Certified & Qualified",
-                description: "All our coaches hold relevant certifications and have extensive experience in their fields.",
-                icon: Award
-              },
-              {
-                title: "Personalized Approach",
-                description: "Sessions are tailored to your specific needs, concerns, and goals for maximum impact.",
-                icon: Heart
-              },
-              {
-                title: "Confidential & Safe",
-                description: "Your privacy is paramount. All sessions are conducted in a secure, judgment-free environment.",
-                icon: Shield
-              },
-              {
-                title: "Holistic Healing",
-                description: "We address mind, body, and spirit for comprehensive well-being and lasting transformation.",
-                icon: Users
-              }
-            ].map((item, index) => (
-              <div key={index} className="flex items-start gap-4 bg-[#F4FFFA] p-6 rounded-2xl border border-[#D9F0E6]">
-                <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-800 mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-[#FFE5F0]">
-        <div className="container-custom max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#b53f76] mb-6">
-            Ready to Start Your Healing Journey?
-          </h2>
-          <p className="text-xl text-[#7a234d]/80 mb-8">
-            Choose a coach who resonates with you and take the first step towards transformation.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/sessions"
-              className="group inline-flex items-center justify-center gap-2 bg-[#f491c2] hover:bg-[#FF5A84] text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              Book with Khushboo
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              to="/contact"
-              className="group inline-flex items-center justify-center gap-2 bg-transparent border-2 border-[#b53f76] text-[#b53f76] font-bold py-4 px-8 rounded-full hover:bg-[#FFE5F0] transition-all duration-300"
-            >
-              Contact Us
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured In */}
-      <section className="py-12 bg-gray-50">
+      {/* Trust Grid */}
+      <section className="section-padding bg-slate-50">
         <div className="container-custom">
-          <p className="text-center text-sm text-gray-500 uppercase tracking-wider mb-8">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-            {['BBC.jpg', 'Vogue.jpg', 'Mint.jpg', 'Deccan.jpg', 'Huf.jpg'].map((logo, index) => (
-              <div key={index} className="w-24 md:w-32 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-                <img src={`/Featured/${logo}`} alt={logo} className="w-full h-auto" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {trustBadges.map((item, i) => (
+              <div key={i} className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                  <item.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-black text-slate-950 mb-2 tracking-tight">{item.title}</h3>
+                <p className="text-slate-500 font-medium text-sm leading-relaxed">{item.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Section */}
+      <section className="py-20 bg-white">
+        <div className="container-custom">
+          <p className="text-center text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-12">As Featured In</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 grayscale">
+            {['BBC', 'Vogue', 'Mint', 'Deccan', 'Huf'].map((logo, index) => (
+              <img key={index} src={`/Featured/${logo}.jpg`} alt={logo} className="h-8 md:h-12 w-auto object-contain hover:grayscale-0 hover:opacity-100 transition-all duration-500" />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Strip */}
+      <section className="py-20 bg-slate-950 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-16 backdrop-blur-xl">
+            <div className="text-center lg:text-left">
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter leading-tight">Start Your Journey</h2>
+              <p className="text-xl text-slate-400 font-medium">Book a session with one of our specialized guides.</p>
+            </div>
+            <div className="flex items-center gap-8">
+              <Link to="/contact" className="hidden sm:block text-white font-black uppercase tracking-widest text-[10px] hover:text-primary transition-colors">Partner With Us?</Link>
+              <Link to="/sessions" className="btn-premium-primary !bg-white !text-primary transform hover:scale-105 shadow-2xl">
+                Book Khushboo
+              </Link>
+            </div>
           </div>
         </div>
       </section>

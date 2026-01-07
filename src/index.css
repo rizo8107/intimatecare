@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap');
 
 /* tailwind directives */
 @tailwind base;
@@ -7,265 +7,179 @@
 
 @layer base {
   :root {
-    --background: 40 30% 98%;
-    --foreground: 320 14% 10%;
+    /* Pure & Professional Palette */
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 320 14% 10%;
+    --card-foreground: 224 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 320 14% 10%;
+    --popover-foreground: 224 71% 4%;
 
-    --primary: 340 80% 70%;
-    --primary-foreground: 355 100% 98%;
+    --primary: 342 85% 58%;
+    /* Brand Rose */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 160 40% 80%;
-    --secondary-foreground: 160 40% 20%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 224 71% 4%;
 
-    --muted: 60 10% 96%;
-    --muted-foreground: 320 10% 40%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 40 80% 80%;
-    --accent-foreground: 40 80% 20%;
+    --accent: 342 85% 96%;
+    --accent-foreground: 342 85% 30%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 320 10% 90%;
-    --input: 320 10% 90%;
-    --ring: 340 80% 70%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 342 85% 58%;
 
-    --radius: 0.75rem;
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 320 10% 30%;
-    --sidebar-primary: 340 80% 70%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 40 80% 90%;
-    --sidebar-accent-foreground: 40 80% 20%;
-    --sidebar-border: 320 10% 90%;
-    --sidebar-ring: 340 80% 70%;
+    --radius: 1.25rem;
   }
 
   .dark {
-    --background: 320 14% 6%;
-    --foreground: 60 10% 98%;
+    --background: 224 71% 4%;
+    --foreground: 210 20% 98%;
 
-    --card: 320 14% 8%;
-    --card-foreground: 60 10% 98%;
+    --card: 224 71% 4%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 320 14% 8%;
-    --popover-foreground: 60 10% 98%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 340 70% 60%;
-    --primary-foreground: 355 100% 98%;
+    --primary: 342 85% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 160 40% 40%;
-    --secondary-foreground: 60 10% 98%;
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 320 10% 15%;
-    --muted-foreground: 320 10% 70%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 19% 70%;
 
-    --accent: 40 70% 60%;
-    --accent-foreground: 60 10% 98%;
+    --accent: 215 28% 17%;
+    --accent-foreground: 210 20% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 10% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 20% 98%;
 
-    --border: 320 10% 15%;
-    --input: 320 10% 15%;
-    --ring: 340 70% 60%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 342 85% 58%;
   }
 }
 
 @layer base {
-  /* tailwind directives */
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20 selection:text-primary;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
   }
 
-  h1, h2, h3, h4, h5 {
-    @apply font-serif;
-  }
-  
-  .cursive {
-    @apply font-cursive;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-sans font-bold tracking-tight text-slate-900;
   }
 }
 
 @layer components {
-  /* tailwind directives */
   .container-custom {
     @apply container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl;
   }
-  
-  /* Topmate-inspired button styles with pastel colors */
-  .btn-primary {
-    @apply bg-[#FF9AB3] hover:bg-[#FF7A9A] text-white py-2.5 px-5 rounded-full font-medium transition-all text-sm shadow-sm hover:shadow-md;
-  }
-  
-  .btn-secondary {
-    @apply bg-[#9ADCBF] hover:bg-[#7ACCA7] text-[#2A6B4D] py-2.5 px-5 rounded-full font-medium transition-all text-sm shadow-sm hover:shadow-md;
-  }
-  
-  .btn-accent {
-    @apply bg-[#FFD6A5] hover:bg-[#FFC280] text-[#8A5A2B] py-2.5 px-5 rounded-full font-medium transition-all text-sm shadow-sm hover:shadow-md;
+
+  /* Premium Glassmorphism */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-xl;
   }
 
-  /* Topmate-inspired card styles */
-  .topmate-card {
-    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-5 border border-[#F0F0F5];
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-lg border border-white/10 shadow-2xl;
   }
-  
-  /* Topmate-inspired badge styles */
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+
+  /* Premium UI Elements */
+  .btn-premium {
+    @apply relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg overflow-hidden;
   }
-  
-  .badge-primary {
-    @apply bg-[#FFEBF0] text-[#FF7A9A];
+
+  .btn-premium-primary {
+    @apply btn-premium bg-primary text-white hover:bg-primary/90 shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1;
   }
-  
-  .badge-secondary {
-    @apply bg-[#E5FFF1] text-[#2A6B4D];
+
+  .btn-premium-outline {
+    @apply btn-premium bg-white/50 backdrop-blur-sm border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-1;
   }
-  
-  .badge-accent {
-    @apply bg-[#FFF2E5] text-[#8A5A2B];
+
+  .card-modern {
+    @apply bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2;
   }
-  
-  /* Topmate-inspired tab styles */
-  .tabs-container {
-    @apply flex space-x-1 rounded-lg bg-[#F5F5FA] p-1;
+
+  .input-modern {
+    @apply w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base transition-all focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none;
   }
-  
-  .tab {
-    @apply px-4 py-2 text-sm font-medium rounded-md transition-all;
+
+  .badge-premium {
+    @apply inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-accent text-accent-foreground border border-primary/10;
   }
-  
-  .tab-active {
-    @apply bg-white shadow-sm text-[#FF7A9A];
+
+  /* Special Effects */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-primary via-[#FF4672] to-[#FB4672];
   }
-  
-  .tab-inactive {
-    @apply text-gray-500 hover:text-gray-700 hover:bg-white/[0.5];
+
+  .glow-primary {
+    @apply shadow-[0_0_20px_rgba(251, 70, 114, 0.3)];
   }
-  
-  /* Topmate-inspired input styles */
-  .input-topmate {
-    @apply w-full rounded-lg border border-[#E5E5EF] bg-white px-3 py-2 text-sm shadow-sm focus:border-[#FF9AB3] focus:outline-none focus:ring-1 focus:ring-[#FF9AB3];
-  }
-  
-  /* Topmate-inspired toggle/switch */
-  .toggle-container {
-    @apply relative inline-flex h-6 w-11 items-center rounded-full;
-  }
-  
-  .toggle-active {
-    @apply bg-[#FF9AB3];
-  }
-  
-  .toggle-inactive {
-    @apply bg-[#E5E5EF];
-  }
-  
-  .toggle-handle {
-    @apply inline-block h-4 w-4 transform rounded-full bg-white transition;
-  }
-  
-  .toggle-handle-active {
-    @apply translate-x-6;
-  }
-  
-  .toggle-handle-inactive {
-    @apply translate-x-1;
-  }
-  
+
+  /* Spacing */
   .section-padding {
-    @apply py-12 md:py-16 lg:py-24;
+    @apply py-20 md:py-28 lg:py-40;
   }
-  
+
   .section-title {
-    @apply text-2xl md:text-3xl lg:text-4xl font-serif font-medium mb-4 md:mb-6;
-  }
-  
-  .section-subtitle {
-    @apply text-lg md:text-xl lg:text-2xl font-serif text-[#FF7A9A] mb-2 md:mb-4;
-  }
-  
-  /* Topmate-inspired stats card */
-  .stats-card {
-    @apply flex flex-col items-center justify-center p-4 bg-white rounded-xl shadow-sm;
-  }
-  
-  .stats-value {
-    @apply text-2xl font-bold text-gray-800;
-  }
-  
-  .stats-label {
-    @apply text-sm text-gray-500;
-  }
-
-  /* Topmate-inspired service card */
-  .service-card {
-    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-[#F0F0F5] overflow-hidden;
-  }
-
-  .service-card-header {
-    @apply p-4 border-b border-[#F0F0F5];
-  }
-
-  .service-card-body {
-    @apply p-4;
-  }
-
-  .service-card-footer {
-    @apply p-4 flex justify-between items-center border-t border-[#F0F0F5];
+    @apply text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 tracking-tight;
   }
 }
 
-/* Inspecta CSS Changes - Auto Applied */
-body > #root > div.flex.flex-col.min-h-screen > div.fixed.bottom-0.left-0.right-0.z-40.animate-slide-up > div.shadow-2xl {
-  background-color: #cf3682;
+/* Animations */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
-body > #root > div.flex.flex-col.min-h-screen > footer.text-white > div.karigai-container.py-8 {
-  padding-left: 30px;
-  padding-right: 30px;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow > div.min-h-screen > div > div.min-h-screen.bg-background > div > section.py-10 > div.konipai-container > div.grid.grid-cols-2 > a.group.bg-white.overflow-hidden.transition-all.duration-300.relative.flex.flex-col.shadow-sm > div.flex.flex-col.px-0.pb-0 > div.flex.flex-col.items-start.gap-1 > h3.font-bold.text-black.transition-colors {
-  font-size: 17px;
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
 }
 
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div > section.py-12 > div.container-custom.max-w-5xl > div.bg-white.rounded-3xl.shadow-sm.overflow-hidden.mb-8 > div.p-6 > div.grid.grid-cols-1.gap-8 > div.rounded-xl.p-6.shadow-sm {
-  background-color: #ffffff;
-}
-
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div > section.py-12 > div.container-custom.max-w-5xl > div.bg-white.rounded-3xl.shadow-sm.overflow-hidden.mb-8 > div.p-6 > div.grid.grid-cols-1.gap-8 > div.rounded-xl.p-6.shadow-sm > form.space-y-5 > div.pt-2 > button.w-full.text-white.py-3.px-6.rounded-full.text-center.font-medium.transition-colors {
-  background-color: #fb4672;
-}
-
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > div.text-gray-800.py-3.overflow-hidden.border-b.border-pink-100 {
-  margin-top: 36px;
-}
-
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > section.py-12.bg-gray-50 > div.container-custom.max-w-6xl > div.grid.grid-cols-1.gap-8 > div.border.rounded-2xl.overflow-hidden.shadow-sm.transition-shadow.duration-300.flex.flex-col.h-full.p-4:nth-of-type(2) {
-  border-color: #ffffff;
-}
-
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > section.relative.flex.items-center.overflow-hidden {
-  height: auto;
-}
-
-body > #root > div.flex.flex-col.min-h-screen > nav.fixed.top-0.w-full.z-50.transition-all.duration-300.py-4 {
-  height: 98px;
-}
-
-body > #root > div.flex.flex-col.min-h-screen > main.flex-grow.pt-16 > div.flex.flex-col > section.relative.flex.items-center.overflow-hidden > div.container-custom.relative.z-10 {
-  padding-top: 15px;
+.animate-pulse-soft {
+  animation: pulse-soft 4s ease-in-out infinite;
 }

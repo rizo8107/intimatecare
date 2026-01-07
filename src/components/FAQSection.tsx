@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, MessageCircle } from 'lucide-react';
+import { ChevronDown, MessageCircle, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const FAQSection = () => {
@@ -33,59 +33,69 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="section-padding bg-white">
       <div className="container-custom">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-20 items-start">
           {/* Left Column - Header */}
-          <div className="lg:sticky lg:top-32">
-            <span className="inline-block px-4 py-1.5 bg-pink-100 text-[#FF5A84] rounded-full text-sm font-medium mb-4">
-              FAQ
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
-              Questions?
-              <br />
-              <span className="bg-gradient-to-r from-[#FF5A84] to-[#9B59B6] bg-clip-text text-transparent">We've Got Answers</span>
+          <div className="lg:sticky lg:top-32 animate-fade-in-up">
+            <span className="badge-premium mb-6">FAQ</span>
+            <h2 className="section-title">
+              Common Questions <br />
+              <span className="text-gradient">Fully Answered</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Still have questions? We're here to help. Reach out anytime and we'll get back to you within 24 hours.
+            <p className="text-xl text-slate-500 font-medium mb-10 max-w-lg leading-relaxed">
+              We understand you might have questions about starting your journey. Here are answers to the most common inquiries.
             </p>
-            <Link 
-              to="/contact"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF5A84] to-[#FF7A9A] text-white font-semibold px-6 py-3 rounded-full hover:shadow-lg transition-all duration-300"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Contact Us
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <Link
+                to="/contact"
+                className="btn-premium-primary w-full sm:w-auto"
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Still have questions?
+              </Link>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-slate-50 border border-slate-100">
+                  <HelpCircle className="w-5 h-5 text-slate-400" />
+                </div>
+                <span className="text-sm font-bold text-slate-900">24/7 Support for Clients</span>
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Accordion */}
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             {faqs.map((faq, index) => (
-              <div 
+              <div
                 key={index}
-                className={`bg-gray-50 rounded-2xl overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? 'shadow-lg' : 'hover:shadow-md'
-                }`}
+                className={`group rounded-[2rem] border transition-all duration-500 overflow-hidden ${openIndex === index
+                    ? 'bg-slate-900 border-slate-900 shadow-2xl'
+                    : 'bg-slate-50/50 border-slate-100 hover:border-primary/20 hover:bg-white'
+                  }`}
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between p-8 text-left outline-none"
                 >
-                  <span className="font-semibold text-gray-800 pr-4">{faq.question}</span>
-                  <ChevronDown 
-                    className={`w-5 h-5 text-[#FF5A84] flex-shrink-0 transition-transform duration-300 ${
-                      openIndex === index ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className={`text-lg font-black tracking-tight transition-colors duration-500 ${openIndex === index ? 'text-white' : 'text-slate-900 group-hover:text-primary'
+                    }`}>
+                    {index + 1}. {faq.question}
+                  </span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openIndex === index ? 'bg-primary text-white rotate-180' : 'bg-slate-200/50 text-slate-400'
+                    }`}>
+                    <ChevronDown className="w-5 h-5" />
+                  </div>
                 </button>
-                <div 
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openIndex === index ? 'max-h-96' : 'max-h-0'
-                  }`}
+                <div
+                  className={`transition-all duration-500 ease-in-out ${openIndex === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+                    }`}
                 >
-                  <p className="px-6 pb-6 text-gray-600 leading-relaxed">
-                    {faq.answer}
-                  </p>
+                  <div className="px-8 pb-10 border-t border-white/10 pt-4">
+                    <p className={`text-lg font-medium leading-relaxed transition-colors duration-500 ${openIndex === index ? 'text-slate-300' : 'text-slate-500'
+                      }`}>
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -97,3 +107,4 @@ const FAQSection = () => {
 };
 
 export default FAQSection;
+
