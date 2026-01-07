@@ -5,19 +5,6 @@ import { motion } from 'framer-motion';
 
 const PRODUCTS_PREVIEW = [
     {
-        id: 1,
-        title: "1:1 Coaching",
-        subtitle: "Personalized Strategy",
-        description: "Personalized intimacy strategy sessions tailored to your specific needs and pace.",
-        price: "₹2,500",
-        image: "/sessions.webp",
-        icon: Heart,
-        rating: "4.9",
-        reviews: "850+",
-        link: "/sessions",
-        badge: "Most Popular"
-    },
-    {
         id: 2,
         title: "69 Position Playbook",
         subtitle: "Expert Guide",
@@ -68,6 +55,19 @@ const PRODUCTS_PREVIEW = [
         reviews: "150+",
         link: "/newyear-bundle",
         badge: "Best Value"
+    },
+    {
+        id: 1,
+        title: "1:1 Coaching",
+        subtitle: "Personalized Strategy",
+        description: "Personalized intimacy strategy sessions tailored to your specific needs and pace.",
+        price: "₹2,500",
+        image: "/sessions.webp",
+        icon: Heart,
+        rating: "4.9",
+        reviews: "850+",
+        link: "/sessions",
+        badge: "Most Popular"
     }
 ];
 

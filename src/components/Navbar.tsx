@@ -189,10 +189,10 @@ const Navbar = () => {
                 <MobileNavLink to="/" active={isActive('/')} onClick={closeMenu}>Home</MobileNavLink>
 
                 <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Coaching & Guides</div>
-                <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>1:1 Sessions</MobileNavLink>
                 <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>Playbooks</MobileNavLink>
                 <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>Challenges</MobileNavLink>
                 <MobileNavLink to="/newyear-bundle" active={isActive('/newyear-bundle')} onClick={closeMenu}>New Year Bundle</MobileNavLink>
+                <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>1:1 Sessions</MobileNavLink>
 
                 <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Community</div>
                 <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>Pleasure School</MobileNavLink>
