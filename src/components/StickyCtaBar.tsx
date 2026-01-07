@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, ArrowRight, Gift, Zap, Sparkles, MessageCircle, Heart, Phone } from 'lucide-react';
+import { X, ArrowRight, Gift, Zap, Sparkles, MessageCircle, Heart, Phone, ShoppingBag } from 'lucide-react';
 
 const StickyCtaBar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -64,11 +64,11 @@ const StickyCtaBar = () => {
     }
     // Default
     return {
-      text: "Book Discovery Call",
-      sub: "Free 15-min consultation with Khushboo.",
-      to: "/sessions",
-      icon: <Phone className="w-5 h-5" />,
-      color: "bg-primary"
+      text: "Explore Our Store",
+      sub: "Shop playbooks, courses & more.",
+      to: "/products",
+      icon: <ShoppingBag className="w-5 h-5" />,
+      color: "bg-slate-900"
     };
   };
 
