@@ -9,7 +9,7 @@ const TopBanner = () => {
   const proofs = [
     { text: "Sarah from Mumbai just booked a 1:1 session", time: "2 min ago" },
     { text: "Couple from Delhi downloaded the 69 Position Playbook", time: "5 min ago" },
-    { text: "Priya joined the Pleasure School Community", time: "8 min ago" },
+    { text: "Priya joined the Intimate Talks", time: "8 min ago" },
   ];
 
   useEffect(() => {
@@ -152,20 +152,20 @@ const Navbar = () => {
                 Free Guide
               </Link>
               <Link
-                to="/contact"
+                to="/products"
                 className="px-6 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5"
               >
-                Book Call
+                View Products
               </Link>
             </div>
 
             {/* Mobile menu button */}
             <div className="lg:hidden flex items-center gap-2">
               <Link
-                to="/contact"
+                to="/products"
                 className="px-4 py-2 rounded-full bg-primary text-white text-[11px] font-bold uppercase tracking-wider shadow-lg shadow-primary/20"
               >
-                Book Call
+                View Products
               </Link>
               <button
                 onClick={toggleMenu}

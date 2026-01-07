@@ -18,27 +18,19 @@ import {
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
-// Product Categories by Issues
-const ISSUES = [
-    "All Issues",
-    "Low Libido",
-    "Performance",
-    "Relationship Spark",
-    "Vaginismus",
-    "Communication",
-    "Pleasure Skills"
-];
+
 
 const PRODUCTS = [
     {
         id: 1,
-        title: "1:1 Confidential Coaching",
+        title: "1:1 Coaching",
+        subtitle: "Personalized Strategy",
         description: "Personalized intimacy strategy sessions tailored to your specific needs and pace.",
         price: "₹2,500",
         category: "Coaching",
         issue: ["Low Libido", "Performance", "Relationship Spark", "Vaginismus", "Communication"],
+        image: "/hero_banner/single-hero.png",
         icon: Heart,
-        color: "from-pink-500 to-rose-600",
         rating: "4.9",
         reviews: "850+",
         link: "/sessions",
@@ -47,13 +39,13 @@ const PRODUCTS = [
     {
         id: 2,
         title: "69 Position Playbook",
+        subtitle: "Expert Guide",
         description: "Expert-crafted guide with 69 illustrated positions to bring excitement and confidence.",
         price: "₹699",
-        originalPrice: "₹999",
         category: "Playbook",
         issue: ["Relationship Spark", "Pleasure Skills"],
+        image: "/69.jpg",
         icon: BookOpen,
-        color: "from-violet-500 to-purple-600",
         rating: "4.8",
         reviews: "1.2k+",
         link: "/guide",
@@ -62,13 +54,13 @@ const PRODUCTS = [
     {
         id: 3,
         title: "30-Day Couple Challenge",
+        subtitle: "Daily Sparks",
         description: "Daily sparks and activities designed to reignite passion and deepen your bond.",
         price: "₹599",
-        originalPrice: "₹999",
         category: "Challenge",
         issue: ["Relationship Spark", "Communication"],
+        image: "/images/32 days v2.jpg", // Using a fallback image for challenge
         icon: Target,
-        color: "from-amber-400 to-orange-500",
         rating: "5.0",
         reviews: "450+",
         link: "/30-day-challenge",
@@ -76,13 +68,14 @@ const PRODUCTS = [
     },
     {
         id: 4,
-        title: "Pleasure School Community",
+        title: "Intimate Talks",
+        subtitle: "Community Support",
         description: "Ongoing support, expert Q&A, and community discussions for lasting transformation.",
         price: "Free",
         category: "Community",
         issue: ["Communication", "Pleasure Skills"],
+        image: "/students.webp",
         icon: Zap,
-        color: "from-emerald-400 to-teal-500",
         rating: "4.7",
         reviews: "2.5k+",
         link: "/intimatetalks",
@@ -90,14 +83,14 @@ const PRODUCTS = [
     },
     {
         id: 5,
-        title: "The Ultimate Pleasure Bundle",
+        title: "Pleasure Bundle",
+        subtitle: "Complete Ecosystem",
         description: "Complete ecosystem including the playbook, challenge, and exclusive bonus content.",
         price: "₹999",
-        originalPrice: "₹1,999",
         category: "Bundle",
         issue: ["All Issues"],
+        image: "/bundle.jpg",
         icon: Sparkles,
-        color: "from-indigo-500 to-blue-600",
         rating: "4.9",
         reviews: "150+",
         link: "/newyear-bundle",
@@ -106,162 +99,114 @@ const PRODUCTS = [
 ];
 
 const Products = () => {
-    const [selectedIssue, setSelectedIssue] = useState("All Issues");
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredProducts = useMemo(() => {
         return PRODUCTS.filter(product => {
-            const matchesIssue = selectedIssue === "All Issues" ||
-                product.issue.includes(selectedIssue) ||
-                product.issue.includes("All Issues");
             const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 product.description.toLowerCase().includes(searchQuery.toLowerCase());
-            return matchesIssue && matchesSearch;
+            return matchesSearch;
         });
-    }, [selectedIssue, searchQuery]);
+    }, [searchQuery]);
 
     return (
         <div className="bg-white min-h-screen">
-            {/* Hero Section */}
-            <section className="relative py-20 overflow-hidden bg-slate-50">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/20 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2" />
-
-                <div className="container-custom relative z-10">
-                    <div className="max-w-3xl">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                        >
-                            <span className="badge-premium mb-6">Our Transformation Tools</span>
-                            <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
-                                Everything You Need for <br />
-                                <span className="text-gradient">Intimate Excellence</span>
-                            </h1>
-                            <p className="text-xl text-slate-500 font-medium leading-relaxed mb-8">
-                                Choose the perfect path to deeper pleasure. Filter by issue to find exactly what you need to transform your connection today.
-                            </p>
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Filter & Search Bar */}
-            <section className="sticky top-[88px] md:top-[112px] z-40 bg-white/80 backdrop-blur-xl border-b border-slate-100 py-6">
-                <div className="container-custom">
-                    <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-                        {/* Issue Filter Chips */}
-                        <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide w-full lg:w-auto">
-                            {ISSUES.map((issue) => (
-                                <button
-                                    key={issue}
-                                    onClick={() => setSelectedIssue(issue)}
-                                    className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 ${selectedIssue === issue
-                                        ? 'bg-slate-900 text-white shadow-lg shadow-slate-200'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                        }`}
-                                >
-                                    {issue}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Search Input */}
-                        <div className="relative w-full lg:w-[350px]">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             {/* Products Grid */}
-            <section className="py-20">
+            <section className="py-10">
                 <div className="container-custom">
                     {filteredProducts.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
                             <AnimatePresence mode="popLayout">
                                 {filteredProducts.map((product, index) => (
                                     <motion.div
                                         key={product.id}
                                         layout
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
+                                        initial={{ opacity: 0, y: 50 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
                                         exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                                        transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
                                     >
-                                        <Link to={product.link} className="block group h-full">
-                                            <div className="card-modern h-full flex flex-col p-8 relative overflow-hidden bg-white border border-slate-100 hover:border-primary/20 transition-all duration-500">
-                                                {/* Accent Gradient */}
-                                                <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${product.color} opacity-[0.03] group-hover:opacity-10 rounded-full transition-all duration-700 blur-2xl`} />
+                                        <Link to={product.link} className="group block h-full">
+                                            <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] p-2 md:p-4 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
+                                                {/* Image Container */}
+                                                <div className="relative aspect-[4/5] rounded-[1rem] md:rounded-[1.5rem] overflow-hidden mb-3 md:mb-6">
+                                                    <img
+                                                        src={product.image}
+                                                        alt={product.title}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                                    />
 
-                                                {/* Top Badge */}
-                                                <div className="flex items-center justify-between mb-8">
-                                                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${product.color} p-[1px] group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-slate-100`}>
-                                                        <div className="w-full h-full bg-white rounded-[0.9rem] flex items-center justify-center">
-                                                            <product.icon className="w-7 h-7 text-primary" />
-                                                        </div>
-                                                    </div>
+                                                    {/* Floating Badge (Left) */}
                                                     {product.badge && (
-                                                        <span className={`px-4 py-1.5 bg-gradient-to-r ${product.color} text-white text-[10px] font-black uppercase tracking-wider rounded-full shadow-lg`}>
-                                                            {product.badge}
-                                                        </span>
+                                                        <div className="absolute top-2 left-2 md:top-4 md:left-4 bg-black/60 backdrop-blur-md px-2 py-1 md:px-4 md:py-1.5 rounded-full border border-white/10 hidden xs:block">
+                                                            <span className="text-[8px] md:text-xs font-medium text-white tracking-wide">
+                                                                {product.badge}
+                                                            </span>
+                                                        </div>
                                                     )}
-                                                </div>
 
-                                                {/* Ratings */}
-                                                <div className="flex items-center gap-1.5 mb-4">
-                                                    <div className="flex items-center">
-                                                        {[1, 2, 3, 4, 5].map((s) => (
-                                                            <Star key={s} className={`w-3.5 h-3.5 ${s <= parseFloat(product.rating) ? 'fill-[#FFB800] text-[#FFB800]' : 'text-slate-200'}`} />
-                                                        ))}
+                                                    {/* Icon Badge (Right) */}
+                                                    <div className="absolute top-2 right-2 md:top-4 md:right-4 w-7 h-7 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
+                                                        <product.icon className="w-3.5 h-3.5 md:w-5 md:h-5 text-slate-900" />
                                                     </div>
-                                                    <span className="text-xs font-bold text-slate-900">{product.rating}</span>
-                                                    <span className="text-[10px] font-semibold text-slate-400">({product.reviews})</span>
+
+                                                    {/* Dots Indicator (Visual only) */}
+                                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex gap-1.5">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-white/50 backdrop-blur-sm" />
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-white/50 backdrop-blur-sm" />
+                                                    </div>
                                                 </div>
 
                                                 {/* Content */}
-                                                <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-primary transition-colors pr-8">
-                                                    {product.title}
-                                                </h3>
-                                                <p className="text-slate-500 font-medium mb-10 text-sm leading-relaxed">
-                                                    {product.description}
-                                                </p>
-
-                                                {/* Issue Tags */}
-                                                <div className="flex flex-wrap gap-2 mb-10 mt-auto">
-                                                    {product.issue.slice(0, 3).map((tag) => (
-                                                        <span key={tag} className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                    {product.issue.length > 3 && (
-                                                        <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
-                                                            +{product.issue.length - 3} More
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                {/* Price & Action */}
-                                                <div className="pt-8 border-t border-slate-50 flex items-center justify-between">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Total Value</span>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-2xl font-black text-slate-900 tracking-tight">{product.price}</span>
-                                                            {product.originalPrice && (
-                                                                <span className="text-sm font-bold text-slate-300 line-through">{product.originalPrice}</span>
-                                                            )}
+                                                <div className="px-1 md:px-2 pb-1 md:pb-2 flex flex-col flex-grow">
+                                                    <h3 className="text-sm md:text-2xl font-bold text-slate-900 mb-0.5 md:mb-1 tracking-tight leading-tight line-clamp-1">
+                                                        {product.title}
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 mb-2 md:mb-3">
+                                                        <p className="text-slate-400 font-medium text-[10px] md:text-sm line-clamp-1">
+                                                            {product.subtitle}
+                                                        </p>
+                                                        <span className="w-[1px] h-3 bg-slate-200" />
+                                                        <div className="flex items-center gap-1">
+                                                            <Star className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#FFB800] fill-[#FFB800]" />
+                                                            <span className="text-[10px] md:text-xs font-bold text-slate-600">{product.rating}</span>
+                                                            <span className="text-[9px] md:text-[10px] text-slate-400 font-medium">({product.reviews})</span>
                                                         </div>
                                                     </div>
-                                                    <div className="h-12 w-12 rounded-2xl bg-slate-50 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all duration-500 transform group-hover:translate-x-1">
-                                                        <ArrowRight className="w-6 h-6" />
+
+                                                    <p className="text-slate-500 text-[10px] md:text-sm leading-relaxed mb-4 md:mb-6 line-clamp-2">
+                                                        {product.description}
+                                                    </p>
+
+                                                    {/* Tags row - Hidden on small mobile */}
+                                                    <div className="hidden sm:flex flex-wrap gap-2 mb-6 mt-auto">
+                                                        {product.issue.slice(0, 2).map((tag) => (
+                                                            <span key={tag} className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                                                {tag}
+                                                            </span>
+                                                        ))}
+                                                        {product.issue.length > 2 && (
+                                                            <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                                                                +{product.issue.length - 2}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Footer */}
+                                                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between mt-auto gap-2">
+                                                        <div className="px-3 py-1.5 md:px-5 md:py-2.5 bg-slate-100 rounded-full text-center">
+                                                            <span className="text-slate-900 font-bold tracking-tight text-xs md:text-base">{product.price}</span>
+                                                        </div>
+                                                        <div className="flex items-center justify-center gap-2 px-4 py-2 md:px-6 md:py-2.5 bg-slate-900 rounded-full text-white font-medium group-hover:bg-primary transition-colors text-[10px] md:text-base">
+                                                            <span className="hidden md:inline">Buy Now</span>
+                                                            <span className="md:hidden">Buy</span>
+                                                            <div className="bg-white/20 rounded-full p-0.5 hidden md:block">
+                                                                <ArrowRight className="w-3 h-3 text-white -rotate-45 group-hover:rotate-0 transition-transform" />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -276,12 +221,12 @@ const Products = () => {
                                 <Search className="w-10 h-10 text-slate-300" />
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-2">No products found</h3>
-                            <p className="text-slate-500 font-medium mb-8">Try adjusting your filters or search query to find what you're looking for.</p>
+                            <p className="text-slate-500 font-medium mb-8">Try adjusting your search query to find what you're looking for.</p>
                             <button
-                                onClick={() => { setSelectedIssue("All Issues"); setSearchQuery(""); }}
+                                onClick={() => setSearchQuery("")}
                                 className="btn-premium-outline"
                             >
-                                Reset All Filters
+                                Clear Search
                             </button>
                         </div>
                     )}

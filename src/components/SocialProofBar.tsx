@@ -7,7 +7,7 @@ const SocialProofBar = () => {
   const proofs = [
     { icon: <Zap className="w-3.5 h-3.5 text-yellow-400" />, text: "Sarah from Mumbai just booked a 1:1 session", time: "2 min ago" },
     { icon: <ShoppingCart className="w-3.5 h-3.5 text-primary" />, text: "Couple from Delhi downloaded the 69 Position Playbook", time: "5 min ago" },
-    { icon: <Heart className="w-3.5 h-3.5 text-primary" />, text: "Priya joined the Pleasure School Community", time: "8 min ago" },
+    { icon: <Heart className="w-3.5 h-3.5 text-primary" />, text: "Priya joined the Intimate Talks", time: "8 min ago" },
     { icon: <Users className="w-3.5 h-3.5 text-emerald-400" />, text: "Rahul completed the 30-Day Challenge", time: "12 min ago" },
   ];
 

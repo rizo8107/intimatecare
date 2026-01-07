@@ -8,21 +8,12 @@ const StickyCtaBar = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Show after scrolling 800px
-      if (window.scrollY > 800 && !isDismissed) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Show immediately
+    setIsVisible(true);
   }, [isDismissed]);
 
-  // Don't show on contact page or booking confirmation
-  if (pathname === '/contact' || pathname === '/intimate-success') return null;
+  // Don't show on contact page, booking confirmation, or products page
+  if (pathname === '/contact' || pathname === '/intimate-success' || pathname === '/products') return null;
   if (!isVisible || isDismissed) return null;
 
   const getCtaContent = () => {
@@ -39,7 +30,7 @@ const StickyCtaBar = () => {
       return {
         text: "Join the 30-Day Challenge",
         sub: "Reignite your spark in just 30 days.",
-        to: "/30-day-challenge",
+        link: "https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine",
         icon: <Sparkles className="w-5 h-5" />,
         color: "bg-primary"
       };
@@ -57,7 +48,7 @@ const StickyCtaBar = () => {
       return {
         text: "Join Pleasure School",
         sub: "India's largest intimate wellness community.",
-        to: "/intimatetalks",
+        link: "https://payments.cashfree.com/forms/intimatetalks",
         icon: <MessageCircle className="w-5 h-5" />,
         color: "bg-slate-900"
       };
@@ -84,11 +75,11 @@ const StickyCtaBar = () => {
   const content = getCtaContent();
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-[90] animate-slide-up">
-      <div className={`${content.color} rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden relative backdrop-blur-md`}>
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl z-[90] animate-slide-up">
+      <div className={`${content.color} rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden relative backdrop-blur-md`}>
         <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent pointer-events-none" />
 
-        <div className="px-6 py-4">
+        <div className="px-5 py-3 md:px-6 md:py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Left - Icon & Text */}
             <div className="flex items-center gap-4 text-white">

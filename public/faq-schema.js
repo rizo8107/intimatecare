@@ -1,5 +1,5 @@
 // This script adds FAQ schema to the homepage for better SEO
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const script = document.createElement('script');
   script.type = 'application/ld+json';
   script.textContent = JSON.stringify(faqSchema);
-  
+
   // Add it to the head
   document.head.appendChild(script);
 });

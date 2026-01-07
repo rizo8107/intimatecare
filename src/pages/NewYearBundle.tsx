@@ -40,7 +40,7 @@ const NewYearBundle = () => {
       features: ["30 Ready-to-use Tasks", "Connection Prompts", "Novelty Inducers"]
     },
     {
-      title: "Pleasure School Access",
+      title: "Intimate Talks",
       subtitle: "The Community",
       image: "/telegram.png",
       description: "Exclusive access to our private Telegram community for expert guidance, live Q&A, and a safe space for real talk.",
@@ -53,182 +53,120 @@ const NewYearBundle = () => {
       {/* Hero Section */}
       <section className="relative pt-20 pb-24 overflow-hidden bg-slate-50/50">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2" />
 
-        <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center animate-fade-in-up">
-            <span className="badge-premium mb-6">Holiday Exclusive</span>
-            <h1 className="text-5xl md:text-8xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
-              New Year,<br />
-              <span className="text-gradient">New Connections</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-500 font-medium mb-12 leading-relaxed max-w-2xl mx-auto">
-              Transform your intimacy in 2026 with our ultimate pleasure ecosystem. The complete toolkit for deeper bonds.
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-8 pt-8 border-t border-slate-200">
-              {[
-                { icon: Clock, text: "Lifetime Access" },
-                { icon: Shield, text: "100% Confidential" },
-                { icon: Gift, text: "Bonus Content" }
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <item.icon className="w-4 h-4 text-primary" />
-                  <span className="font-black text-slate-900 uppercase tracking-widest text-[10px]">{item.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Bundle Value Section */}
-      <section className="section-padding overflow-hidden">
-        <div className="container-custom">
-          <div className="grid lg:grid-cols-3 gap-12">
-            {products.map((product, index) => (
-              <div key={index} className="group relative bg-white rounded-[3rem] p-4 border border-slate-100 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] hover:shadow-2xl transition-all duration-700 animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
-                <div className="relative h-72 rounded-[2.5rem] overflow-hidden mb-8">
-                  <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
-                  <div className="absolute bottom-6 left-6">
-                    <span className="badge-premium !bg-white/20 !text-white !border-white/20 backdrop-blur-md mb-2">{product.subtitle}</span>
-                    <h3 className="text-2xl font-black text-white">{product.title}</h3>
-                  </div>
-                </div>
-                <div className="px-6 pb-6 text-center lg:text-left">
-                  <p className="text-slate-500 font-medium mb-8 line-clamp-2">{product.description}</p>
-                  <div className="space-y-3 mb-8">
-                    {product.features.map((f, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
-                        <span className="text-slate-600 font-bold text-sm tracking-tight">{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* High-Converting Pricing Strip */}
-      <section className="py-24 bg-slate-950 text-white relative overflow-hidden text-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-30" />
         <div className="container-custom relative z-10">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">Claim Your Special Price</h2>
-            <div className="bg-white/5 border border-white/10 rounded-[3rem] p-10 backdrop-blur-xl mb-12">
-              <div className="flex justify-center items-center gap-8 mb-8">
-                <div>
-                  <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-1">Normal SLAP</p>
-                  <p className="text-3xl text-slate-600 line-through font-bold">₹2,297</p>
-                </div>
-                <div className="h-16 w-px bg-white/10" />
-                <div>
-                  <p className="text-primary font-black uppercase tracking-widest text-xs mb-1">Limited Offer</p>
-                  <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">₹1,599</p>
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
+            <div className="text-center lg:text-left animate-fade-in-up">
+              <span className="badge-premium mb-6">Holiday Exclusive Bundle</span>
+              <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-6 leading-[1.05] tracking-tighter">
+                New Year,<br />
+                <span className="text-gradient">New Connections</span>
+              </h1>
+              <p className="text-xl text-slate-500 font-medium mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                The ultimate pleasure toolkit for 2026. Get all our bestsellers in one complete package for deeper intimacy.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8">
+                <a
+                  href={purchaseUrl}
+                  className="btn-premium-primary text-lg w-full sm:w-auto px-10 py-4 shadow-xl shadow-primary/20 hover:shadow-primary/30"
+                >
+                  Get The Bundle - ₹1,599
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </a>
+                <div className="flex flex-col items-start bg-slate-100 px-4 py-2 rounded-xl">
+                  <span className="text-xs font-bold text-slate-500 line-through">Total Value ₹2,297</span>
+                  <span className="text-xs font-black text-emerald-600 uppercase tracking-wider">Save ₹698 Today</span>
                 </div>
               </div>
 
-              <a
-                href={purchaseUrl}
-                className="w-full btn-premium-primary text-xl py-6 hover:scale-105 transition-transform"
-              >
-                SPICE UP YOUR NEW YEAR
-                <ArrowRight className="w-6 h-6" />
-              </a>
-              <p className="mt-6 text-slate-500 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2">
-                <Lock className="w-3.5 h-3.5" /> Secure SSL Checkout • Instant Access
-              </p>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-slate-500 font-bold text-[10px] uppercase tracking-widest">
+                <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-primary" /> Lifetime Access</span>
+                <span className="flex items-center gap-2"><Shield className="w-3.5 h-3.5 text-primary" /> 100% Confidential</span>
+              </div>
             </div>
 
-            <div className="flex justify-center gap-12 text-slate-400">
-              <div className="text-center">
-                <div className="text-2xl font-black text-white mb-1">100%</div>
-                <div className="text-[10px] uppercase font-bold tracking-widest">Confidential</div>
+            {/* Right Image */}
+            <div className="relative animate-fade-in order-first lg:order-last mb-10 lg:mb-0">
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white bg-white">
+                <img
+                  src="/bundle.jpg"
+                  alt="New Year Bundle"
+                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000"
+                />
+
+                {/* Floating Badge */}
+                <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-[180px]">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Includes</p>
+                  <p className="font-serif font-bold text-slate-900 leading-tight">3 Bestselling Products + Bonuses</p>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-white mb-1">Instant</div>
-                <div className="text-[10px] uppercase font-bold tracking-widest">Digital Delivery</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-black text-white mb-1">2026</div>
-                <div className="text-[10px] uppercase font-bold tracking-widest">Fresh Content</div>
-              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute top-1/2 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured In */}
-      <section className="py-20 bg-white">
+      {/* What's Inside - Compact Grid */}
+      <section className="section-padding py-16 bg-white">
         <div className="container-custom">
-          <p className="text-center text-slate-400 font-black uppercase tracking-[0.2em] text-[10px] mb-12">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 grayscale">
-            {['BBC', 'Vogue', 'Mint', 'Deccan', 'Huf'].map((logo, index) => (
-              <img key={index} src={`/Featured/${logo}.jpg`} alt={logo} className="h-8 md:h-12 w-auto object-contain hover:grayscale-0 hover:opacity-100 transition-all duration-500" />
+          <div className="text-center mb-12">
+            <h2 className="section-title">Everything You Get</h2>
+            <p className="text-lg text-slate-500 font-medium">Three powerful tools, one unbeatable price.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {products.map((product, index) => (
+              <div key={index} className="group bg-slate-50 rounded-[2rem] p-6 border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
+                <div className="mb-6 relative aspect-[16/10] overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-primary border border-white/50">
+                    {product.subtitle}
+                  </div>
+                </div>
+
+                <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">{product.title}</h3>
+                <p className="text-slate-500 text-sm font-medium mb-6 leading-relaxed line-clamp-3">
+                  {product.description}
+                </p>
+
+                <div className="space-y-2 mb-6 border-t border-slate-100 pt-5">
+                  {product.features.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                      <span className="text-slate-700 font-bold text-xs">{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <a
+                  href={purchaseUrl}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-bold text-sm group-hover:bg-primary transition-colors"
+                >
+                  Included in Bundle
+                </a>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Deep Dives Section */}
-      <section className="section-padding bg-slate-50">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center mb-20">
-            <h2 className="section-title">What's Inside The Box</h2>
-            <p className="text-xl text-slate-500 font-medium">A curated selection of our most powerful tools.</p>
-          </div>
-
-          <div className="space-y-32">
-            <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <img src="/69.jpg" alt="Positions" className="relative rounded-[3rem] shadow-2xl z-10 border-8 border-white" />
-              </div>
-              <div>
-                <span className="badge-premium mb-6">Volume I</span>
-                <h3 className="text-4xl md:text-5xl font-black text-slate-950 mb-6 tracking-tight">The Position Playbook</h3>
-                <p className="text-xl text-slate-600 font-medium mb-8 leading-relaxed">
-                  Say goodbye to routine. Our bestseller includes beautiful illustrations and clinical-yet-saucy advice on how to explore 69+ positions.
-                </p>
-                <ul className="space-y-4 mb-10">
-                  {["Illustrated step-by-step", "Focus on dual satisfaction", "Variation for every body"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-4 text-slate-700 font-bold">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
-                      </div>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <div className="order-2 lg:order-1">
-                <span className="badge-premium mb-6">Volume II</span>
-                <h3 className="text-4xl md:text-5xl font-black text-slate-950 mb-6 tracking-tight">The 30-Day Spark</h3>
-                <p className="text-xl text-slate-600 font-medium mb-8 leading-relaxed">
-                  A daily prompt-based system to rebuild connection and excitement. Each task takes less than 15 minutes but lasts a lifetime.
-                </p>
-                <ul className="space-y-4 mb-10">
-                  {["No-intimidation tasks", "Psychology-backed connection", "Routine breaking systems"].map((item, i) => (
-                    <li key={i} className="flex items-center gap-4 text-slate-700 font-bold">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
-                      </div>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="order-1 lg:order-2 relative group">
-                <div className="absolute -inset-4 bg-accent/20 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <img src="/images/32 days v2.jpg" alt="Challenge" className="relative rounded-[3rem] shadow-2xl z-10 border-8 border-white" />
-              </div>
-            </div>
+          <div className="mt-12 text-center">
+            <a
+              href={purchaseUrl}
+              className="inline-flex items-center gap-2 btn-premium-primary px-12 py-4"
+            >
+              Get Instant Access
+              <ArrowRight className="w-5 h-5" />
+            </a>
+            <p className="mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest">30-Day Money Back Guarantee</p>
           </div>
         </div>
       </section>

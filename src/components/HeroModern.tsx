@@ -9,117 +9,104 @@ export default function HeroModern() {
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/30 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
 
       <div className="container-custom relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+
           {/* Left Content */}
-          <div className="order-2 lg:order-1 text-center lg:text-left">
-            {/* Trust Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-slate-100 rounded-full px-5 py-2.5 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] animate-fade-in-up">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-9 h-9 rounded-full bg-slate-100 border-2 border-white overflow-hidden shadow-sm">
-                    <img src={`https://i.pravatar.cc/150?u=${i + 10}`} alt="User" />
-                  </div>
-                ))}
-              </div>
-              <div className="h-4 w-[1px] bg-slate-200 mx-2" />
-              <span className="text-sm font-semibold text-slate-600">
-                <span className="text-slate-950">2,500+</span> Couples Transformed
+          <div className="lg:w-1/2 text-center lg:text-left pt-10 lg:pt-0">
+            {/* Minimalist Badge */}
+            <div className="inline-block mb-6 animate-fade-in-up">
+              <span className="py-2 px-4 rounded-full bg-slate-100/80 border border-slate-200 text-xs font-bold tracking-widest uppercase text-slate-600">
+                Redefining Intimacy
               </span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.05] mb-8 tracking-tighter animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.05] mb-6 tracking-tighter text-slate-950 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
               Reignite Your <br />
-              <span className="text-gradient">Intimate Connection</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-primary bg-300% animate-gradient">
+                Connection
+              </span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl sm:text-2xl text-slate-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-              Expert-guided sessions, proven playbooks & community support to help you experience
-              <span className="text-slate-900"> deeper pleasure</span> and lasting intimacy.
+            <p className="text-lg text-slate-500 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              Expert-guided playbooks, sessions, and community support to help you experience deeper pleasure and lasting intimacy.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-12 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
               <Link
-                to="/sessions"
-                className="btn-premium-primary text-xl px-12 h-16"
+                to="/products"
+                className="btn-premium-primary text-base px-10 py-4 h-auto shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transform hover:-translate-y-1 transition-all duration-300"
               >
-                Book Free Discovery Call
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                View Products
+              </Link>
+              <Link
+                to="/about"
+                className="inline-flex items-center justify-center px-10 py-4 text-base font-bold text-slate-700 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+              >
+                Learn More
               </Link>
             </div>
 
-            {/* Social Proof Stats */}
-            <div className="grid grid-cols-3 gap-8 pt-10 border-t border-slate-100 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-              <div className="space-y-1">
-                <div className="flex items-center justify-center lg:justify-start gap-0.5">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                  ))}
-                </div>
-                <p className="text-sm font-bold text-slate-900">4.9/5 Rating</p>
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Happy Couples</p>
+            {/* Simple Social Proof */}
+            <div className="flex items-center justify-center lg:justify-start gap-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+              <div className="flex -space-x-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full border-4 border-white overflow-hidden bg-slate-100">
+                    <img src={`https://i.pravatar.cc/150?u=${i + 30}`} alt="User" />
+                  </div>
+                ))}
               </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <Users className="w-5 h-5 text-primary" />
-                  <span className="text-2xl font-black text-slate-900 tracking-tight">10K+</span>
+              <div className="text-left">
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                  <span className="font-bold text-slate-900">4.9/5</span>
                 </div>
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Community Members</p>
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <Award className="w-5 h-5 text-primary" />
-                  <span className="text-2xl font-black text-slate-900 tracking-tight">Certified</span>
-                </div>
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">USA Institute</p>
+                <p className="text-xs font-semibold text-slate-500">From 10,000+ Happy Couples</p>
               </div>
             </div>
           </div>
 
-          {/* Right Content - Image */}
-          <div className="order-1 lg:order-2 relative group animate-fade-in">
-            <div className="relative mx-auto max-w-lg lg:max-w-none">
-              {/* Decorative shapes */}
-              <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
-
-              {/* Main Image Container */}
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
+          {/* Right Content - Hero Image */}
+          <div className="lg:w-1/2 relative lg:h-[600px] flex items-center justify-center animate-fade-in">
+            <div className="relative w-full max-w-[500px] lg:max-w-full">
+              {/* Main Image */}
+              <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200 border-4 border-white">
                 <img
                   src="/hero_banner/single-hero.png"
-                  alt="Khushboo Bist - Intimacy Coach"
-                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000"
+                  alt="Intimacy Coaching"
+                  className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-1000"
                 />
-              </div>
 
-              {/* Floating Card - Top Right */}
-              <div className="absolute -top-6 -right-6 lg:-right-12 bg-white/90 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-5 animate-float-delayed border border-white/40">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                    <ShieldCheck className="w-7 h-7 text-emerald-600" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900 leading-tight">100% Confidential</p>
-                    <p className="text-sm text-slate-500 font-medium">Safe & Private Environment</p>
+                {/* Glass Card - Bottom Right */}
+                <div className="absolute bottom-6 right-6 bg-white/80 backdrop-blur-xl border border-white/50 p-4 rounded-2xl shadow-xl max-w-[200px] hidden sm:block">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Featured In</p>
+                  <div className="flex items-center gap-2 opacity-70">
+                    <span className="font-serif font-bold text-slate-800">Vogue</span>
+                    <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                    <span className="font-serif font-bold text-slate-800">BBC</span>
                   </div>
                 </div>
               </div>
 
-              {/* Floating Card - Bottom Left */}
-              <div className="absolute -bottom-8 -left-6 lg:-left-12 bg-white/90 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-5 animate-float border border-white/40">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                    <CheckCircle2 className="w-7 h-7 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900 leading-tight">Expert Guidance</p>
-                    <p className="text-sm text-slate-500 font-medium">Certified Pleasure Coach</p>
-                  </div>
+              {/* Decorative Elements */}
+              <div className="absolute top-10 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+              {/* Floating Badge - Top Left */}
+              <div className="absolute top-10 -left-6 bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 flex items-center gap-3 animate-float border border-slate-50 z-20">
+                <div className="bg-green-100 p-2 rounded-xl">
+                  <ShieldCheck className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-slate-900">100% Secure</p>
+                  <p className="text-[10px] text-slate-500 font-semibold">Private & Confidential</p>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
