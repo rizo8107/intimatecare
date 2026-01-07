@@ -38,24 +38,24 @@ const AboutPreviewModern = () => {
             </div>
 
             {/* Floating Stats Card */}
-            <div className="absolute -bottom-10 -right-6 lg:-right-10 bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl p-8 max-w-xs border border-slate-100 animate-float">
-              <div className="flex items-center gap-5 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                  <ShieldCheck className="w-8 h-8 text-primary" />
+            <div className="absolute -bottom-16 -right-2 sm:-bottom-10 sm:-right-6 lg:-right-10 bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-5 sm:p-8 max-w-[200px] sm:max-w-xs border border-white/50 animate-float z-20">
+              <div className="flex items-center gap-3 sm:gap-5 mb-4 sm:mb-6">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+                  <ShieldCheck className="w-5 h-5 sm:w-8 sm:h-8 text-primary" />
                 </div>
                 <div>
-                  <p className="text-3xl font-black text-slate-900 tracking-tight">5+ Years</p>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Global Experience</p>
+                  <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">5+ Years</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">Global Experience</p>
                 </div>
               </div>
-              <div className="flex -space-x-3 mb-3">
+              <div className="flex -space-x-2 sm:-space-x-3 mb-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-slate-100 border-2 border-white overflow-hidden shadow-sm">
+                  <div key={i} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 border-2 border-white overflow-hidden shadow-sm">
                     <img src={`https://i.pravatar.cc/150?u=${i + 20}`} alt="Client" />
                   </div>
                 ))}
               </div>
-              <span className="text-sm font-bold text-slate-600">Join 2,500+ couples who rediscovered their spark.</span>
+              <span className="text-[10px] sm:text-sm font-bold text-slate-600 leading-tight block">Join 2,500+ couples who rediscovered their spark.</span>
             </div>
           </div>
 

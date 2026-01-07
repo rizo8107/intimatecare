@@ -11,7 +11,7 @@ import NewsletterModern from "@/components/NewsletterModern";
 
 const Index = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-noise">
       {/* Modern Hero with Video CTA */}
       <HeroModern />
 
