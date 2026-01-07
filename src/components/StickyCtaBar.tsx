@@ -21,8 +21,8 @@ const StickyCtaBar = () => {
       return {
         text: "The 69 Position Playbook",
         sub: "30% OFF Today + Free Bonus Guide!",
-        link: "https://payments.cashfree.com/forms/69pp",
-        icon: <Zap className="w-5 h-5" />,
+        link: "https://payments.cashfree.com/forms/69positionsebbok",
+        image: "/69.jpg",
         color: "bg-slate-950"
       };
     }
@@ -31,7 +31,7 @@ const StickyCtaBar = () => {
         text: "Join the 30-Day Challenge",
         sub: "Reignite your spark in just 30 days.",
         link: "https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine",
-        icon: <Sparkles className="w-5 h-5" />,
+        image: "/images/32 days v2.jpg",
         color: "bg-primary"
       };
     }
@@ -40,7 +40,7 @@ const StickyCtaBar = () => {
         text: "The New Year Bundle",
         sub: "Complete Pleasure Ecosystem - 30% OFF!",
         link: "https://payments.cashfree.com/forms/newyear",
-        icon: <Gift className="w-5 h-5" />,
+        image: "/bundle.jpg",
         color: "bg-slate-950"
       };
     }
@@ -49,7 +49,7 @@ const StickyCtaBar = () => {
         text: "Join Pleasure School",
         sub: "India's largest intimate wellness community.",
         link: "https://payments.cashfree.com/forms/intimatetalks",
-        icon: <MessageCircle className="w-5 h-5" />,
+        image: "/telegram.png",
         color: "bg-slate-900"
       };
     }
@@ -58,7 +58,7 @@ const StickyCtaBar = () => {
         text: "Book an Expert Session",
         sub: "Confidential 1:1 guidance with our specialists.",
         to: "/instructors",
-        icon: <Heart className="w-5 h-5" />,
+        image: "/sessions.webp",
         color: "bg-emerald-600"
       };
     }
@@ -67,7 +67,7 @@ const StickyCtaBar = () => {
       text: "Explore Our Store",
       sub: "Shop playbooks, courses & more.",
       to: "/products",
-      icon: <ShoppingBag className="w-5 h-5" />,
+      image: "/hero_banner/single-hero.png",
       color: "bg-slate-900"
     };
   };
@@ -82,39 +82,42 @@ const StickyCtaBar = () => {
         <div className="px-5 py-3 md:px-6 md:py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Left - Icon & Text */}
-            <div className="flex items-center gap-4 text-white">
-              <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-white/10 items-center justify-center">
-                {content.icon}
+            <div className="flex items-center gap-3 md:gap-4 text-white overflow-hidden">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-white/10 shrink-0 overflow-hidden border border-white/10">
+                <img src={(content as any).image} alt={(content as any).text} className="w-full h-full object-cover" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-base sm:text-lg font-black tracking-tight leading-none mb-1">
+
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm md:text-lg font-black tracking-tight leading-tight truncate">
                   {content.text}
                 </span>
-                <span className="text-[10px] sm:text-xs font-bold text-white/60 uppercase tracking-widest">
+                <span className="text-[10px] md:text-xs font-bold text-white/60 uppercase tracking-widest truncate">
                   {content.sub}
                 </span>
               </div>
             </div>
 
             {/* Right - CTA & Close */}
-            <div className="flex items-center gap-3">
-              {content.to ? (
+            <div className="flex items-center gap-2 md:gap-3 shrink-0">
+              {(content as any).to ? (
                 <Link
-                  to={content.to}
-                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-5 sm:px-8 py-3 rounded-2xl text-sm transition-all duration-300 hover:scale-105 shadow-xl"
+                  to={(content as any).to}
+                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"
                 >
-                  Get Started
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <span className="hidden sm:inline">Get Started</span>
+                  <span className="sm:hidden">View</span>
+                  <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               ) : (
                 <a
-                  href={content.link}
+                  href={(content as any).link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-5 sm:px-8 py-3 rounded-2xl text-sm transition-all duration-300 hover:scale-105 shadow-xl"
+                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"
                 >
-                  Buy Now
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <span className="hidden sm:inline">Buy Now</span>
+                  <span className="sm:hidden">Buy</span>
+                  <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                 </a>
               )}
 

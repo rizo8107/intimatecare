@@ -67,18 +67,35 @@ const Guide = () => {
       <section className="py-12 md:py-20">
         <div className="container-custom max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Right - Image (Moved to first for image-first layout) */}
+            <div className="relative order-first">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="/69.jpg"
+                  alt="69 Position Playbook"
+                  className="w-full h-auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+              </div>
+
+              {/* Floating Badge */}
+              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-bold px-6 py-3 rounded-full shadow-lg transform rotate-12">
+                BESTSELLER
+              </div>
+            </div>
+
             {/* Left - Content */}
             <div>
               <div className="inline-flex items-center gap-2 bg-pink-100 text-[#FF5A84] rounded-full px-4 py-1.5 text-sm font-medium mb-6">
                 <BookOpen className="w-4 h-4" />
                 Digital Playbook for Couples
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-6 leading-tight">
                 69 Position
                 <span className="bg-gradient-to-r from-[#FF5A84] to-[#9B59B6] bg-clip-text text-transparent"> Playbook</span>
               </h1>
-              
+
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Expert-crafted guide with illustrated positions to bring excitement, variety, and deeper connection to your intimate life.
               </p>
@@ -113,17 +130,17 @@ const Guide = () => {
                     Save 30%
                   </div>
                 </div>
-                
-                <a 
+
+                <a
                   href="https://payments.cashfree.com/forms/69positionsebbok"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF5A84] to-[#FF7A9A] text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  className="group w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF5A84] to-[#9B59B6] text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
                   Get Instant Access
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
-                
+
                 <div className="flex items-center justify-center gap-4 mt-4 text-sm text-gray-500">
                   <div className="flex items-center gap-1">
                     <Download className="w-4 h-4" />
@@ -156,23 +173,6 @@ const Guide = () => {
                   </div>
                   <p className="text-xs text-gray-600">7-Day Guarantee</p>
                 </div>
-              </div>
-            </div>
-
-            {/* Right - Image */}
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img 
-                  src="/69.jpg" 
-                  alt="69 Position Playbook" 
-                  className="w-full h-auto"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-              </div>
-              
-              {/* Floating Badge */}
-              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-bold px-6 py-3 rounded-full shadow-lg transform rotate-12">
-                BESTSELLER
               </div>
             </div>
           </div>
@@ -271,14 +271,14 @@ const Guide = () => {
           <p className="text-xl text-white/90 mb-8">
             Join 2,000+ couples who have already discovered new dimensions of pleasure.
           </p>
-          
+
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto">
             <div className="flex items-center justify-center gap-4 mb-6">
               <span className="text-white/70 line-through text-xl">₹999</span>
               <span className="text-5xl font-bold text-white">₹699</span>
             </div>
-            
-            <a 
+
+            <a
               href="https://payments.cashfree.com/forms/69positionsebbok"
               target="_blank"
               rel="noopener noreferrer"
@@ -287,7 +287,7 @@ const Guide = () => {
               Get Your Copy Now
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
-            
+
             <p className="text-white/80 text-sm mt-4">
               Instant download • 7-day guarantee • 100% confidential
             </p>

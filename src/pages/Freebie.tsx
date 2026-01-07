@@ -13,10 +13,10 @@ const Freebie = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       console.log('Submitting form data to webhook...');
-      
+
       const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/freebie', {
         method: 'POST',
         headers: {
@@ -30,16 +30,16 @@ const Freebie = () => {
           source: 'website_freebie_form',
         }),
       });
-      
+
       const data = await response.json().catch(() => null);
       console.log('Webhook response:', response.status, data);
-      
+
       if (response.ok) {
         toast({
           title: "Success!",
           description: "Your free guides are ready below!",
         });
-        
+
         // Track the form submission event with Meta Pixel
         if (window.fbq) {
           window.fbq('track', 'Lead', {
@@ -49,13 +49,13 @@ const Freebie = () => {
             currency: 'INR'
           });
         }
-        
+
         // Save the user's name for the success page
         setUserName(name);
-        
+
         // Set submitted to true to show the success page
         setSubmitted(true);
-        
+
         // Reset the form fields
         setEmail('');
         setName('');
@@ -88,9 +88,9 @@ const Freebie = () => {
           {userName ? `Hi ${userName.split(' ')[0]}, thank` : 'Thank'} you for your interest! Here are your free guides.
         </p>
         <div className="mt-5 flex justify-center">
-          <img 
-            src="/freebie.webp" 
-            alt="Intimacy Guide" 
+          <img
+            src="/freebie.webp"
+            alt="Intimacy Guide"
             className="w-48 h-auto rounded-lg shadow-sm"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -100,7 +100,7 @@ const Freebie = () => {
           />
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Pleasure Map PDF */}
         <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow flex flex-col h-full">
@@ -108,7 +108,7 @@ const Freebie = () => {
           <p className="text-gray-700 text-sm mb-4 flex-grow">
             Discover your pleasure zones and enhance your intimate experiences.
           </p>
-          <a 
+          <a
             href="https://drive.google.com/file/d/1a7MS8Fr76ulCY5fk1VqtNq7UnG6MroEm/view?usp=drive_link"
             target="_blank"
             rel="noopener noreferrer"
@@ -118,14 +118,14 @@ const Freebie = () => {
             View PDF
           </a>
         </div>
-        
+
         {/* Female Sensitivity PDF */}
         <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow flex flex-col h-full">
           <h3 className="font-serif text-lg font-medium text-gray-800 mb-3">Female Sensitivity</h3>
           <p className="text-gray-700 text-sm mb-4 flex-grow">
             Understand female sensitivity patterns for more fulfilling intimate connections.
           </p>
-          <a 
+          <a
             href="https://drive.google.com/file/d/1kPbLfZwUuy3HcQaPnevbRODRa297XGiH/view?usp=drive_link"
             target="_blank"
             rel="noopener noreferrer"
@@ -135,14 +135,14 @@ const Freebie = () => {
             View PDF
           </a>
         </div>
-        
+
         {/* Consent is Sexy PDF */}
         <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow flex flex-col h-full">
           <h3 className="font-serif text-lg font-medium text-gray-800 mb-3">Consent is Sexy</h3>
           <p className="text-gray-700 text-sm mb-4 flex-grow">
             Learn how consent enhances intimacy and builds trust in relationships.
           </p>
-          <a 
+          <a
             href="https://drive.google.com/file/d/12fhOdUDIN-BXBSb6uwHvyocUyuzonLpw/view?usp=drive_link"
             target="_blank"
             rel="noopener noreferrer"
@@ -153,12 +153,12 @@ const Freebie = () => {
           </a>
         </div>
       </div>
-      
+
       <div className="mt-8 text-center">
         <p className="text-gray-700 mb-4">
           We've also sent these links to your email for future reference.
         </p>
-        <button 
+        <button
           onClick={() => setSubmitted(false)}
           className="inline-block py-2 px-6 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full text-center font-medium transition-colors"
         >
@@ -177,16 +177,16 @@ const Freebie = () => {
           ) : (
             <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* Image and Form - Appears first on mobile */}
-                <div className="order-first md:order-last p-6 md:p-8 bg-[#FAFAFA]">
+                {/* Image and Form - Appears first */}
+                <div className="order-first p-6 md:p-8 bg-[#FAFAFA]">
                   <div className="w-full max-w-sm mx-auto mb-6">
                     <div className="relative">
                       <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center">
                         <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">FREE RESOURCE</p>
                       </div>
-                      <img 
-                        src="/freebie.webp" 
-                        alt="Intimacy Guide" 
+                      <img
+                        src="/freebie.webp"
+                        alt="Intimacy Guide"
                         className="w-full h-auto rounded-2xl shadow-sm"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -209,7 +209,7 @@ const Freebie = () => {
                         Instant access • No credit card required • Valuable insights
                       </p>
                     </div>
-                    
+
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -225,7 +225,7 @@ const Freebie = () => {
                           required
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                           Your Email
@@ -240,7 +240,7 @@ const Freebie = () => {
                           required
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                           Your Phone Number
@@ -257,9 +257,9 @@ const Freebie = () => {
                           Optional, but recommended for better communication
                         </p>
                       </div>
-                      
+
                       <div className="pt-4">
-                        <button 
+                        <button
                           type="submit"
                           className="w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
                           disabled={loading}
@@ -267,7 +267,7 @@ const Freebie = () => {
                           {loading ? "Sending..." : "Send Me The Free Guide"}
                         </button>
                       </div>
-                      
+
                       <p className="text-xs text-center text-gray-500 mt-2">
                         By submitting this form, you'll receive your free Intimacy Guide via email.
                         You'll also be subscribed to our newsletter with relationship tips and resources.
@@ -276,7 +276,7 @@ const Freebie = () => {
                     </form>
                   </div>
                 </div>
-                
+
                 {/* Content - Appears second on mobile */}
                 <div className="order-last md:order-first p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
                   {/* Title and Intro */}
@@ -341,7 +341,7 @@ const Freebie = () => {
               <h2 className="text-2xl font-serif font-medium text-gray-800 mb-6 text-center">
                 What Others Are Saying
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="bg-[#F9F9FB] p-5 rounded-xl">
                   <p className="italic text-gray-700 mb-3">
@@ -350,7 +350,7 @@ const Freebie = () => {
                   </p>
                   <p className="text-right text-sm font-medium text-gray-800">— Rahul, 29</p>
                 </div>
-                
+
                 <div className="bg-[#F9F9FB] p-5 rounded-xl">
                   <p className="italic text-gray-700 mb-3">
                     "This guide helped me understand my own needs better and express them to my partner.
@@ -358,7 +358,7 @@ const Freebie = () => {
                   </p>
                   <p className="text-right text-sm font-medium text-gray-800">— Priya, 31</p>
                 </div>
-                
+
                 <div className="bg-[#F9F9FB] p-5 rounded-xl">
                   <p className="italic text-gray-700 mb-3">
                     "I was struggling with setting boundaries in my relationship. This guide gave me
@@ -367,7 +367,7 @@ const Freebie = () => {
                   <p className="text-right text-sm font-medium text-gray-800">— Amit, 27</p>
                 </div>
               </div>
-              
+
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <a href="/guide" className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors">
                   69 Position Playbooks for couples

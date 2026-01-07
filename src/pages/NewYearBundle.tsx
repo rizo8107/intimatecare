@@ -57,6 +57,27 @@ const NewYearBundle = () => {
 
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Right Image (Moved to first for image-first layout) */}
+            <div className="relative animate-fade-in mb-10 lg:mb-0">
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white bg-white">
+                <img
+                  src="/bundle.jpg"
+                  alt="New Year Bundle"
+                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000"
+                />
+
+                {/* Floating Badge */}
+                <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-[180px]">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Includes</p>
+                  <p className="font-serif font-bold text-slate-900 leading-tight">3 Bestselling Products + Bonuses</p>
+                </div>
+              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute top-1/2 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+            </div>
+
             {/* Left Content */}
             <div className="text-center lg:text-left animate-fade-in-up">
               <span className="badge-premium mb-6">Holiday Exclusive Bundle</span>
@@ -86,27 +107,6 @@ const NewYearBundle = () => {
                 <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-primary" /> Lifetime Access</span>
                 <span className="flex items-center gap-2"><Shield className="w-3.5 h-3.5 text-primary" /> 100% Confidential</span>
               </div>
-            </div>
-
-            {/* Right Image */}
-            <div className="relative animate-fade-in order-first lg:order-last mb-10 lg:mb-0">
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white bg-white">
-                <img
-                  src="/bundle.jpg"
-                  alt="New Year Bundle"
-                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000"
-                />
-
-                {/* Floating Badge */}
-                <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-[180px]">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Includes</p>
-                  <p className="font-serif font-bold text-slate-900 leading-tight">3 Bestselling Products + Bonuses</p>
-                </div>
-              </div>
-
-              {/* Decorative elements */}
-              <div className="absolute top-1/2 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
             </div>
           </div>
         </div>

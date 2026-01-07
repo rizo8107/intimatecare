@@ -3,7 +3,7 @@ import { ArrowRight, Star, Users, Award, ShieldCheck, CheckCircle2 } from "lucid
 
 export default function HeroModern() {
   return (
-    <section className="relative min-h-[95vh] flex items-center overflow-hidden bg-white pt-20">
+    <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-white">
       {/* Premium Background Elements */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/30 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />

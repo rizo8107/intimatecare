@@ -96,6 +96,40 @@ const ThirtyDayChallengeModern = () => {
 
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
+            {/* Right - Image (Moved to first for image-first layout) */}
+            <div className="relative group animate-fade-in order-first">
+              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
+                <img
+                  src="/images/32 days v2.jpg"
+                  alt="30+ Ways to Explore Pleasure"
+                  className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
+                />
+              </div>
+
+              {/* Floating Badge */}
+              <div className="absolute -top-6 -right-6 lg:-right-10 bg-orange-500 text-white font-black px-8 py-4 rounded-3xl shadow-2xl transform rotate-12 border border-white/10 animate-pulse">
+                HOT ITEM 🔥
+              </div>
+
+              {/* Stats Card Overlay */}
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-6 border border-white/40 flex gap-8 items-center min-w-[300px]">
+                <div className="text-center">
+                  <div className="text-3xl font-black text-orange-500 leading-none">30+</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Days</div>
+                </div>
+                <div className="w-px h-8 bg-slate-200" />
+                <div className="text-center">
+                  <div className="text-3xl font-black text-primary leading-none">5</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Bonuses</div>
+                </div>
+                <div className="w-px h-8 bg-slate-200" />
+                <div className="text-center">
+                  <div className="text-3xl font-black text-emerald-500 leading-none">∞</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Pleasure</div>
+                </div>
+              </div>
+            </div>
+
             {/* Left - Content */}
             <div className="animate-fade-in-up">
               <span className="badge-premium mb-6">30-Day Experience</span>
@@ -162,40 +196,6 @@ const ThirtyDayChallengeModern = () => {
                     <Shield className="w-4 h-4" />
                     <span className="text-[10px] font-black uppercase tracking-[0.15em]">Secure Payment</span>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Image */}
-            <div className="relative group animate-fade-in">
-              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
-                <img
-                  src="/images/32 days v2.jpg"
-                  alt="30+ Ways to Explore Pleasure"
-                  className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
-                />
-              </div>
-
-              {/* Floating Badge */}
-              <div className="absolute -top-6 -right-6 lg:-right-10 bg-orange-500 text-white font-black px-8 py-4 rounded-3xl shadow-2xl transform rotate-12 border border-white/10 animate-pulse">
-                HOT ITEM 🔥
-              </div>
-
-              {/* Stats Card Overlay */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-6 border border-white/40 flex gap-8 items-center min-w-[300px]">
-                <div className="text-center">
-                  <div className="text-3xl font-black text-orange-500 leading-none">30+</div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Days</div>
-                </div>
-                <div className="w-px h-8 bg-slate-200" />
-                <div className="text-center">
-                  <div className="text-3xl font-black text-primary leading-none">5</div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Bonuses</div>
-                </div>
-                <div className="w-px h-8 bg-slate-200" />
-                <div className="text-center">
-                  <div className="text-3xl font-black text-emerald-500 leading-none">∞</div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Pleasure</div>
                 </div>
               </div>
             </div>

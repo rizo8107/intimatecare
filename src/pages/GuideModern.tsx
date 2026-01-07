@@ -61,6 +61,38 @@ const GuideModern = () => {
 
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
+            {/* Right - Image (Moved to first for image-first layout) */}
+            <div className="relative group animate-fade-in order-first">
+              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
+                <img
+                  src="/69.jpg"
+                  alt="69 Position Playbook"
+                  className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
+                />
+              </div>
+
+              {/* Floating Badge */}
+              <div className="absolute -top-6 -right-6 lg:-right-10 bg-slate-950 text-white font-black px-8 py-4 rounded-3xl shadow-2xl transform rotate-12 border border-white/10">
+                <div className="flex flex-col items-center">
+                  <span className="text-xs uppercase tracking-[0.2em] text-primary mb-1">Status</span>
+                  <span className="text-xl">BESTSELLER</span>
+                </div>
+              </div>
+
+              {/* Stats Card */}
+              <div className="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl p-6 border border-white/40 animate-float-delayed">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                    <Clock className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="font-black text-slate-900 leading-tight">Instant Delivery</p>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">To your inbox</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Left - Content */}
             <div className="animate-fade-in-up">
               <span className="badge-premium mb-6">Digital Playbook</span>
@@ -127,38 +159,6 @@ const GuideModern = () => {
                       <Shield className="w-4 h-4" />
                     </div>
                     <span className="text-xs font-bold uppercase tracking-widest">Secure Payment</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Image */}
-            <div className="relative group animate-fade-in">
-              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
-                <img
-                  src="/69.jpg"
-                  alt="69 Position Playbook"
-                  className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
-                />
-              </div>
-
-              {/* Floating Badge */}
-              <div className="absolute -top-6 -right-6 lg:-right-10 bg-slate-950 text-white font-black px-8 py-4 rounded-3xl shadow-2xl transform rotate-12 border border-white/10">
-                <div className="flex flex-col items-center">
-                  <span className="text-xs uppercase tracking-[0.2em] text-primary mb-1">Status</span>
-                  <span className="text-xl">BESTSELLER</span>
-                </div>
-              </div>
-
-              {/* Stats Card */}
-              <div className="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl p-6 border border-white/40 animate-float-delayed">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                    <Clock className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="font-black text-slate-900 leading-tight">Instant Delivery</p>
-                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">To your inbox</p>
                   </div>
                 </div>
               </div>

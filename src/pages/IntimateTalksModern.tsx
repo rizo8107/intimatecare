@@ -81,6 +81,36 @@ const IntimateTalksModern = () => {
 
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
+            {/* Right - Image & Video (Moved to first for image-first layout) */}
+            <div className="relative animate-fade-in order-first">
+              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float mb-8">
+                <img
+                  src="/telegram.png"
+                  alt="Intimate Talks Community"
+                  className="w-full h-auto"
+                />
+              </div>
+
+              {/* Video Card */}
+              <div className="bg-slate-950 rounded-[2.5rem] p-4 overflow-hidden shadow-2xl relative border border-white/10">
+                <div className="aspect-video relative rounded-2xl overflow-hidden bg-slate-900">
+                  <iframe
+                    src="https://app.tpstreams.com/embed/6u448b/7f2CDfh8sRJ/?access_token=2ba9a940-67be-4207-a0a6-73a130ac6228"
+                    className="absolute inset-0 w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <div className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-xs font-black text-white uppercase tracking-widest">Community Preview</span>
+                  </div>
+                  <Video className="w-4 h-4 text-slate-500" />
+                </div>
+              </div>
+            </div>
+
             {/* Left - Content */}
             <div className="animate-fade-in-up">
               <span className="badge-premium mb-6">Telegram Community</span>
@@ -138,36 +168,6 @@ const IntimateTalksModern = () => {
                     <Shield className="w-4 h-4" />
                     <span className="text-[10px] font-black uppercase tracking-[0.1em]">Anonymous OK</span>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Image & Video */}
-            <div className="relative animate-fade-in">
-              <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float mb-8">
-                <img
-                  src="/telegram.png"
-                  alt="Intimate Talks Community"
-                  className="w-full h-auto"
-                />
-              </div>
-
-              {/* Video Card */}
-              <div className="bg-slate-950 rounded-[2.5rem] p-4 overflow-hidden shadow-2xl relative border border-white/10">
-                <div className="aspect-video relative rounded-2xl overflow-hidden bg-slate-900">
-                  <iframe
-                    src="https://app.tpstreams.com/embed/6u448b/7f2CDfh8sRJ/?access_token=2ba9a940-67be-4207-a0a6-73a130ac6228"
-                    className="absolute inset-0 w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-                <div className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-xs font-black text-white uppercase tracking-widest">Community Preview</span>
-                  </div>
-                  <Video className="w-4 h-4 text-slate-500" />
                 </div>
               </div>
             </div>
