@@ -805,13 +805,13 @@ const DynamicInstructorBookingContent = () => {
       </section>
 
       {/* Mobile Floating CTA */}
-      <div className="lg:hidden fixed bottom-8 left-4 right-4 z-[100] animate-fade-in-up md:hidden">
+      <div className="lg:hidden fixed bottom-6 left-4 right-4 z-[100] animate-fade-in-up md:hidden">
         <button
           onClick={() => openBookingModal()}
-          className="w-full btn-premium-primary !py-5 shadow-2xl shadow-primary/40 flex items-center justify-center gap-3"
+          className="w-full btn-premium-primary !py-4 shadow-2xl shadow-primary/40 flex items-center justify-center gap-3"
         >
-          <Calendar size={20} />
-          <span className="uppercase tracking-widest font-black text-sm">Book & Resolve Now</span>
+          <Calendar size={18} />
+          <span className="uppercase tracking-widest font-black text-[11px]">Book & Resolve Now</span>
         </button>
       </div>
 
