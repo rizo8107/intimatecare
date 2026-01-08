@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X as XIcon, Zap as ZapIcon, ArrowRight as ArrowIcon, Sparkles as SparklesIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { appendUtmsToUrl } from '@/utils/utm';
 
 const SalesPopup = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -170,7 +171,7 @@ const SalesPopup = () => {
                                 <div className="flex flex-col gap-3">
                                     {content.isExternal ? (
                                         <a
-                                            href={content.link}
+                                            href={appendUtmsToUrl(content.link)}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             onClick={closePopup}

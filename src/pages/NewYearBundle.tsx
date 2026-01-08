@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, ArrowRight, Star, Zap, Shield, Clock, Gift, Lock, Sparkles, MessageCircle, Heart, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { trackPaymentInitiated } from '@/utils/analytics';
+import { appendUtmsToUrl } from '@/utils/utm';
+import { useContent } from '@/utils/cms';
 import AboutPreviewModern from '../components/AboutPreviewModern';
 
 const NewYearBundle = () => {
+  const headline = useContent('newyear-bundle', 'hero_title', 'New Year, New Connections');
+  const subheadline = useContent('newyear-bundle', 'hero_subtitle', 'The ultimate pleasure toolkit for 2026. Get all our bestsellers in one complete package for deeper intimacy.');
+  const price = useContent('newyear-bundle', 'price', '1,599');
+  const rawPurchaseUrl = useContent('newyear-bundle', 'purchase_url', 'https://payments.cashfree.com/forms/newyear');
+  const purchaseUrl = appendUtmsToUrl(rawPurchaseUrl);
+
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 59,
@@ -22,7 +31,7 @@ const NewYearBundle = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const purchaseUrl = "https://payments.cashfree.com/forms/newyear";
+
 
   const products = [
     {
@@ -61,11 +70,16 @@ const NewYearBundle = () => {
             <div className="text-center lg:text-left animate-fade-in-up order-first">
               <span className="badge-premium mb-6">Holiday Exclusive Bundle</span>
               <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-6 leading-[1.05] tracking-tighter">
-                New Year,<br />
-                <span className="text-gradient">New Connections</span>
+                {headline.includes('Connection') ? (
+                  <>
+                    {headline.split('Connection')[0]}<br />
+                    <span className="text-gradient">Connection</span>
+                    {headline.split('Connection')[1]}
+                  </>
+                ) : headline}
               </h1>
               <p className="text-xl text-slate-500 font-medium mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                The ultimate pleasure toolkit for 2026. Get all our bestsellers in one complete package for deeper intimacy.
+                {subheadline}
               </p>
 
               {/* Mobile Image - Shown below subheadline on mobile only */}
@@ -90,9 +104,12 @@ const NewYearBundle = () => {
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8">
                 <a
                   href={purchaseUrl}
+                  onClick={() => trackPaymentInitiated(Number(price.replace(/,/g, '')), 'INR')}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="btn-premium-primary text-lg w-full sm:w-auto px-10 py-4 shadow-xl shadow-primary/20 hover:shadow-primary/30"
                 >
-                  Get The Bundle - ₹1,599
+                  Get The Bundle - ₹{price}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
                 <div className="flex flex-col items-center lg:items-start bg-slate-100 px-4 py-2 rounded-xl">
@@ -230,7 +247,7 @@ const NewYearBundle = () => {
             <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
               <div className="flex items-center gap-4">
                 <span className="text-2xl text-slate-600 line-through font-bold">₹2,297</span>
-                <span className="text-5xl font-black text-white">₹1,599</span>
+                <span className="text-5xl font-black text-white">₹{price}</span>
               </div>
               <a
                 href={purchaseUrl}

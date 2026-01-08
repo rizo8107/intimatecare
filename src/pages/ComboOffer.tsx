@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, Download, BookOpen, Package, Gift, ArrowRight } from 'lucide-react';
 import AboutPreview from '../components/AboutPreview';
+import { trackPaymentInitiated } from '@/utils/analytics';
+import { appendUtmsToUrl } from '@/utils/utm';
+import { useContent } from '@/utils/cms';
 
 // Facebook Pixel type
 declare global {
@@ -10,6 +13,12 @@ declare global {
 }
 
 const ComboOffer = () => {
+  const headline = useContent('combo-offer', 'hero_title', 'Ultimate Intimacy Bundle');
+  const subheadline = useContent('combo-offer', 'hero_subtitle', 'Get both of our bestselling guides at a special discounted price and transform your intimate life completely!');
+  const price = useContent('combo-offer', 'price', '999');
+  const rawPurchaseUrl = useContent('combo-offer', 'purchase_url', 'https://payments.cashfree.com/forms?code=combo-ebook');
+  const purchaseUrl = appendUtmsToUrl(rawPurchaseUrl);
+
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 59,
@@ -35,18 +44,21 @@ const ComboOffer = () => {
   const handleBuyNow = () => {
     setIsLoading(true);
 
+    // Track with Google Analytics
+    trackPaymentInitiated(Number(price.replace(/,/g, '')), 'INR');
+
     // Track click with Facebook Pixel if available
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
         content_name: 'Combo Offer - 69 Positions + 30+ Ways to Explore Pleasure',
         content_category: 'Playbooks for couples Bundle',
-        value: 999.00,
+        value: Number(price.replace(/,/g, '')),
         currency: 'INR'
       });
     }
 
-    // Redirect to payment page - replace with actual payment URL
-    window.location.href = 'https://payments.cashfree.com/forms?code=combo-ebook';
+    // Redirect to payment page
+    window.location.href = purchaseUrl;
   };
 
   return (
@@ -62,7 +74,7 @@ const ComboOffer = () => {
               <div className="p-8 md:p-12">
                 <div className="text-[#FF7A9A] text-sm font-bold uppercase tracking-wider mb-2 text-center">SPECIAL COMBO DEAL</div>
                 <h2 className="font-serif text-3xl md:text-5xl font-black text-slate-900 mb-6 text-center tracking-tighter">
-                  Ultimate Intimacy Bundle
+                  {headline}
                 </h2>
 
                 {/* Urgency Timer */}
@@ -175,7 +187,7 @@ const ComboOffer = () => {
                     </div>
                     <div>
                       <span className="text-lg line-through opacity-70">₹1999</span>
-                      <span className="text-2xl font-bold ml-2">₹999</span>
+                      <span className="text-2xl font-bold ml-2">₹{price}</span>
                     </div>
                   </div>
                   <p className="mb-4">
@@ -370,7 +382,7 @@ const ComboOffer = () => {
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex items-center justify-center gap-4">
                 <span className="text-2xl font-bold line-through opacity-70">₹1999</span>
-                <span className="text-4xl font-bold">₹999 Only!</span>
+                <span className="text-4xl font-bold">₹{price} Only!</span>
               </div>
               <button
                 onClick={handleBuyNow}

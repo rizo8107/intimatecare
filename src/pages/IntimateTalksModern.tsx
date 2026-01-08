@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Users, Sparkles, MessageCircle, CheckCircle, Star, Shield, Heart, ArrowRight, Zap, Gift, Lock, Video, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { trackPaymentInitiated } from '@/utils/analytics';
+import { appendUtmsToUrl } from '@/utils/utm';
 
 const IntimateTalksModern = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -150,7 +152,8 @@ const IntimateTalksModern = () => {
                 </div>
 
                 <a
-                  href="https://payments.cashfree.com/forms/intimatetalks"
+                  href={appendUtmsToUrl("https://payments.cashfree.com/forms/intimatetalks")}
+                  onClick={() => trackPaymentInitiated(999, 'INR')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"

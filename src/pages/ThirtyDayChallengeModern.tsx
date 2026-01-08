@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle, Sparkles, Heart, Calendar, ArrowRight, Star, Shield, Clock, Zap, Gift, Users, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { trackPaymentInitiated } from '@/utils/analytics';
+import { appendUtmsToUrl } from '@/utils/utm';
 
 declare global {
   interface Window {
@@ -13,6 +15,9 @@ const ThirtyDayChallengeModern = () => {
 
   const handleBuyNow = () => {
     setIsLoading(true);
+    // Track with Google Analytics
+    trackPaymentInitiated(599.00, 'INR');
+
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
         content_name: '30+ Ways to Explore Pleasure',
@@ -21,7 +26,7 @@ const ThirtyDayChallengeModern = () => {
         currency: 'INR'
       });
     }
-    window.location.href = 'https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine';
+    window.location.href = appendUtmsToUrl('https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine');
   };
 
   const benefits = [

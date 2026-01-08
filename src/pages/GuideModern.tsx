@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Download, BookOpen, Star, Shield, Clock, ArrowRight, Gift, Zap, Heart, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { trackPaymentInitiated } from '@/utils/analytics';
+import { appendUtmsToUrl } from '@/utils/utm';
 
 const GuideModern = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -138,7 +140,8 @@ const GuideModern = () => {
                 </div>
 
                 <a
-                  href="https://payments.cashfree.com/forms/69positionsebbok"
+                  href={appendUtmsToUrl("https://payments.cashfree.com/forms/69positionsebbok")}
+                  onClick={() => trackPaymentInitiated(699, 'INR')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
@@ -279,7 +282,8 @@ const GuideModern = () => {
                 <div className="text-4xl font-black text-white">₹699</div>
               </div>
               <a
-                href="https://payments.cashfree.com/forms/69positionsebbok"
+                href={appendUtmsToUrl("https://payments.cashfree.com/forms/69positionsebbok")}
+                onClick={() => trackPaymentInitiated(699, 'INR')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-premium-primary !bg-white !text-primary transform hover:scale-105"

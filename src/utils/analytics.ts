@@ -27,16 +27,28 @@ export const trackEvent = (
   additionalParams: Record<string, any> = {}
 ) => {
   if (typeof window.gtag !== 'undefined') {
-    window.gtag('event', eventName, {
+    // Get stored UTMs to attach to every event
+    const storedUtms = sessionStorage.getItem('ic_utm_params');
+    let utmParams = {};
+    if (storedUtms) {
+      try {
+        utmParams = JSON.parse(storedUtms);
+      } catch (e) { }
+    }
+
+    const eventParams = {
       event_category: category,
       event_label: label,
       value: value,
+      ...utmParams,
       ...additionalParams
-    });
-    
+    };
+
+    window.gtag('event', eventName, eventParams);
+
     // For development debugging
     if (process.env.NODE_ENV !== 'production') {
-      console.log('📊 Analytics: Event tracked:', { eventName, category, label, value, ...additionalParams });
+      console.log('📊 Analytics: Event tracked:', { eventName, ...eventParams });
     }
   }
 };
@@ -48,8 +60,8 @@ export const trackFormStart = (formName: string) => {
 
 export const trackFormSubmit = (formName: string, success: boolean = true) => {
   trackEvent(
-    success ? 'form_submit_success' : 'form_submit_failure', 
-    EventCategory.FORM, 
+    success ? 'form_submit_success' : 'form_submit_failure',
+    EventCategory.FORM,
     formName
   );
 };
@@ -80,7 +92,7 @@ export const trackPaymentCompleted = (amount: number, currency: string = 'INR', 
 
 export const trackTelegramConnect = (success: boolean = true) => {
   trackEvent(
-    success ? 'telegram_connect_success' : 'telegram_connect_failure', 
+    success ? 'telegram_connect_success' : 'telegram_connect_failure',
     EventCategory.CONVERSION
   );
 };

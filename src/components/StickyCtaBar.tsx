@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X, ArrowRight, Gift, Zap, Sparkles, MessageCircle, Heart, Phone, ShoppingBag } from 'lucide-react';
+import { appendUtmsToUrl } from '@/utils/utm';
 
 const StickyCtaBar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -110,7 +111,7 @@ const StickyCtaBar = () => {
                 </Link>
               ) : (
                 <a
-                  href={(content as any).link}
+                  href={appendUtmsToUrl((content as any).link)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"

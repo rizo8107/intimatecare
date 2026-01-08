@@ -1,7 +1,28 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Users, Award, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { useContent } from "@/utils/cms";
 
 export default function HeroModern() {
+  const headline = useContent('index', 'hero_title', 'Reignite Your Connection');
+  const subheadline = useContent('index', 'hero_subtitle', 'Expert-guided playbooks, sessions, and community support to help you experience deeper pleasure and lasting intimacy.');
+
+  // Split headline for styling if it contains 'Connection'
+  const renderHeadline = () => {
+    if (headline.includes('Connection')) {
+      const parts = headline.split('Connection');
+      return (
+        <>
+          {parts[0]} <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-primary bg-300% animate-gradient">
+            Connection
+          </span>
+          {parts[1]}
+        </>
+      );
+    }
+    return headline;
+  };
+
   return (
     <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden bg-white">
       {/* Premium Background Elements */}
@@ -22,15 +43,12 @@ export default function HeroModern() {
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.05] mb-6 tracking-tighter text-slate-950 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-              Reignite Your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-primary bg-300% animate-gradient">
-                Connection
-              </span>
+              {renderHeadline()}
             </h1>
 
             {/* Subheadline */}
             <p className="text-lg text-slate-500 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-              Expert-guided playbooks, sessions, and community support to help you experience deeper pleasure and lasting intimacy.
+              {subheadline}
             </p>
 
             {/* CTA Buttons */}

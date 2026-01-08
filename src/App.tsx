@@ -41,6 +41,8 @@ import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import StickyCtaBar from "./components/StickyCtaBar";
 import SalesPopup from "./components/SalesPopup";
+import UtmTracker from "./components/UtmTracker";
+import AdminCMS from "./pages/AdminCMS";
 import { initClarity } from "./utils/clarity";
 
 const queryClient = new QueryClient();
@@ -98,9 +100,11 @@ const App = () => (
               <Route path="/webinars" element={<Webinars />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/admin/waiting-list" element={<WaitingListAdmin />} />
+              <Route path="/admin/cms" element={<AdminCMS />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
+          <UtmTracker />
           <SalesPopup />
           <StickyCtaBar />
           <Footer />
