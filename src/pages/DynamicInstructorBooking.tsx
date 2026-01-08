@@ -1,6 +1,6 @@
 import React, { useState, useRef, Suspense, lazy, useCallback, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Star, Heart, MessageCircle, Award, CheckCircle, BookOpen } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Star, Heart, MessageCircle, Award, CheckCircle, BookOpen, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BookingModal from '@/components/BookingModal';
 import { createClient } from '@supabase/supabase-js';
@@ -110,7 +110,7 @@ interface AvailableSlot {
 // Dynamic Icon component
 const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | null, size?: number, className?: string }) => {
   if (!name) return <LucideIcons.HelpCircle size={size} className={className} />;
-  
+
   // Handle dynamic icon rendering in a type-safe way
   switch (name) {
     case 'Star': return <LucideIcons.Star size={size} className={className} />;
@@ -147,7 +147,7 @@ const DynamicInstructorBookingWrapper = () => {
 // The actual content component
 const DynamicInstructorBookingContent = () => {
   const { instructorName: instructorNameFromUrl } = useParams<{ instructorName: string }>();
-  
+
   // Modal and payment state
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedSlot, setSelectedSlot] = useState<AvailableSlot | null>(null);
@@ -155,7 +155,7 @@ const DynamicInstructorBookingContent = () => {
   const [paymentOutcome, setPaymentOutcome] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [isPollingStatus, setIsPollingStatus] = useState<boolean>(false);
-  
+
   // Refs for polling control
   const pollingActiveRef = useRef<boolean>(false);
   const pollingTimeoutIdRef = useRef<number | null>(null);
@@ -199,7 +199,7 @@ const DynamicInstructorBookingContent = () => {
             .select('*')
             .eq('instructor_id', instructorId)
             .order('is_first_session', { ascending: false });
-          
+
           if (error) throw error;
           return data as SessionType[];
         },
@@ -215,7 +215,7 @@ const DynamicInstructorBookingContent = () => {
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-          
+
           if (error) throw error;
           return data as InstructorHighlight[];
         },
@@ -231,7 +231,7 @@ const DynamicInstructorBookingContent = () => {
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-          
+
           if (error) throw error;
           return data as InstructorSupportArea[];
         },
@@ -247,7 +247,7 @@ const DynamicInstructorBookingContent = () => {
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-          
+
           if (error) throw error;
           return data as InstructorOffering[];
         },
@@ -263,7 +263,7 @@ const DynamicInstructorBookingContent = () => {
             .select('*')
             .eq('instructor_id', instructorId)
             .order('display_order');
-          
+
           if (error) throw error;
           return data as InstructorPageSection[];
         },
@@ -278,7 +278,7 @@ const DynamicInstructorBookingContent = () => {
             .from('instructor_testimonials')
             .select('*')
             .eq('instructor_id', instructorId);
-          
+
           if (error) throw error;
           return data as InstructorTestimonial[];
         },
@@ -286,7 +286,7 @@ const DynamicInstructorBookingContent = () => {
       },
     ],
   });
-  
+
   // Extract data from queries using useMemo to prevent dependency issues
   const sessionTypes = useMemo(() => queries[0].data as SessionType[] || [], [queries[0].data]);
   const highlights = useMemo(() => queries[1].data as InstructorHighlight[] || [], [queries[1].data]);
@@ -294,13 +294,13 @@ const DynamicInstructorBookingContent = () => {
   const offerings = useMemo(() => queries[3].data as InstructorOffering[] || [], [queries[3].data]);
   const pageSections = useMemo(() => queries[4].data as InstructorPageSection[] || [], [queries[4].data]);
   const testimonials = useMemo(() => queries[5].data as InstructorTestimonial[] || [], [queries[5].data]);
-  
+
   // Fetch available slots only after session types are loaded
   const { data: availableSlots = [], isLoading: isLoadingSlots } = useQuery({
     queryKey: ['availableSlots', sessionTypes.map(st => st.id)],
     queryFn: async () => {
       if (!sessionTypes.length) return [];
-      
+
       const { data, error } = await supabase
         .from('available_slots')
         .select('*')
@@ -308,14 +308,14 @@ const DynamicInstructorBookingContent = () => {
         .eq('booking_status', false)
         .gte('slot_date', new Date().toISOString().split('T')[0])
         .order('slot_date').order('start_time');
-      
+
       if (error) throw error;
       return data as AvailableSlot[];
     },
     enabled: sessionTypes.length > 0,
     staleTime: 60 * 1000, // Cache for 1 minute (shorter time as availability changes frequently)
   });
-  
+
   // Determine loading state
   const isLoading = isLoadingInstructor || queries.some(query => query.isLoading) || isLoadingSlots;
 
@@ -327,7 +327,7 @@ const DynamicInstructorBookingContent = () => {
   // Helper function to filter support areas by category - memoized for performance
   const supportAreasByCategory = useMemo(() => {
     const categories: Record<string, InstructorSupportArea[]> = {};
-    
+
     supportAreas.forEach(area => {
       const category = area.category || 'Other';
       if (!categories[category]) {
@@ -335,26 +335,26 @@ const DynamicInstructorBookingContent = () => {
       }
       categories[category].push(area);
     });
-    
+
     return categories;
   }, [supportAreas]);
-  
+
   // Get first session and follow-up session - memoized
-  const firstSession = useMemo(() => 
+  const firstSession = useMemo(() =>
     sessionTypes.find(session => session.is_first_session),
-  [sessionTypes]);
-  
-  const followUpSession = useMemo(() => 
+    [sessionTypes]);
+
+  const followUpSession = useMemo(() =>
     sessionTypes.find(session => !session.is_first_session),
-  [sessionTypes]);
-  
+    [sessionTypes]);
+
   // Set the default selected session type to firstSession when it loads
   useEffect(() => {
     if (firstSession) {
       setSelectedSessionType(firstSession);
     }
   }, [firstSession]);
-  
+
   // Function to handle booking button clicks
   const handleBookNowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -369,15 +369,15 @@ const DynamicInstructorBookingContent = () => {
 
     openBookingModal();
   };
-  
+
   // Theme colors - memoized
-  const highlightColor = useMemo(() => 
+  const highlightColor = useMemo(() =>
     instructor?.highlight_color || '#FF5A84',
-  [instructor]);
-  
-  const secondaryColor = useMemo(() => 
+    [instructor]);
+
+  const secondaryColor = useMemo(() =>
     instructor?.secondary_color || '#853f92',
-  [instructor]);
+    [instructor]);
 
   // Function to format date - memoized for better performance
   const formatDate = useCallback((dateStr: string) => {
@@ -447,7 +447,7 @@ const DynamicInstructorBookingContent = () => {
         }
         setIsPollingStatus(false);
         pollingActiveRef.current = false;
-        
+
         // If payment is successful:
         if (data.payment_status === 'SUCCESS') {
           // 1. Update UI by removing the booked slot
@@ -458,7 +458,7 @@ const DynamicInstructorBookingContent = () => {
           // This is NOT done in the frontend for security reasons.
         }
       } else {
-        pollingTimeoutIdRef.current = setTimeout(() => pollForPaymentStatus(orderId, attempt + 1), POLLING_INTERVAL);
+        pollingTimeoutIdRef.current = window.setTimeout(() => pollForPaymentStatus(orderId, attempt + 1), POLLING_INTERVAL);
       }
     } catch (error) {
       console.error('Polling error:', error);
@@ -477,7 +477,7 @@ const DynamicInstructorBookingContent = () => {
 
   const handleBookNow = async () => {
     if (!selectedSlot || !selectedSessionType) return;
-    
+
     // Check if this is an external session type
     if (selectedSessionType.is_external && selectedSessionType.external_url) {
       window.open(selectedSessionType.external_url, '_blank', 'noopener,noreferrer');
@@ -521,29 +521,27 @@ const DynamicInstructorBookingContent = () => {
 
   // Function to open booking modal with improved performance
   const openBookingModal = useCallback((slot?: AvailableSlot) => {
-    if (!slot) {
-      if (availableSlots.length > 0) {
-        const firstSlot = availableSlots[0];
-        const firstSessionType = sessionTypes.find(st => st.id === firstSlot.session_type_id);
-        if (firstSessionType) {
-          setSelectedSlot(firstSlot);
-          setSelectedSessionType(firstSessionType);
-          setPaymentOutcome(null);
-          setPaymentError(null);
-          setIsModalOpen(true);
-          return;
-        }
+    console.log('Opening booking modal...', { slot, availableSlotsCount: availableSlots.length });
+
+    // Always open the modal first to ensure responsiveness
+    setIsModalOpen(true);
+    setPaymentOutcome(null);
+    setPaymentError(null);
+
+    if (slot) {
+      const sessionType = sessionTypes.find(st => st.id === slot.session_type_id);
+      if (sessionType) {
+        setSelectedSlot(slot);
+        setSelectedSessionType(sessionType);
       }
-      setIsModalOpen(true);
-      return;
-    }
-    const sessionType = sessionTypes.find(st => st.id === slot.session_type_id);
-    if (sessionType) {
-      setSelectedSlot(slot);
-      setSelectedSessionType(sessionType);
-      setPaymentOutcome(null);
-      setPaymentError(null);
-      setIsModalOpen(true);
+    } else if (availableSlots.length > 0) {
+      // If no slot provided, try to pre-select the first available one
+      const firstSlot = availableSlots[0];
+      const firstSessionType = sessionTypes.find(st => st.id === firstSlot.session_type_id);
+      if (firstSessionType) {
+        setSelectedSlot(firstSlot);
+        setSelectedSessionType(firstSessionType);
+      }
     }
   }, [availableSlots, sessionTypes]);
 
@@ -554,7 +552,7 @@ const DynamicInstructorBookingContent = () => {
       clearTimeout(pollingTimeoutIdRef.current);
     }
   };
-  
+
   // Lock state is now controlled directly from the database via the button_lock column
 
 
@@ -576,7 +574,7 @@ const DynamicInstructorBookingContent = () => {
               <div className="w-40 h-10 bg-gray-200 rounded-full animate-pulse"></div>
             </div>
           </div>
-          
+
           {/* Content skeleton */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <div className="w-48 h-8 bg-gray-200 rounded animate-pulse mb-4"></div>
@@ -593,329 +591,236 @@ const DynamicInstructorBookingContent = () => {
   }
 
   return (
-    <div className="bg-[#FFF7EC] min-h-screen">
-      {/* Hero Section */}
-      <section className="py-12 md:py-16">
-        <div className="container-custom max-w-6xl">
-          <Link to="/instructors" className="inline-flex items-center text-[#e05286] hover:text-[#C61F60] mb-6 transition-colors font-medium">
-            <ArrowLeft size={18} className="mr-2" />
-            Back to All Coaches
-          </Link>
+    <div className="min-h-screen pt-12">
+      {/* Premium Background Elements */}
+      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-primary/3 rounded-full blur-[120px] -z-10" />
+      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/3 rounded-full blur-[100px] -z-10" />
 
-          <div className="grid lg:grid-cols-5 gap-8 items-start">
-            {/* Left: Profile Card */}
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-[#FFE5EC] lg:sticky lg:top-24">
-                {/* Profile Image */}
-                <div className="relative overflow-hidden aspect-[3/4] max-h-[520px] mx-auto">
-                  <img 
-                    src={instructor?.profile_image_url || `/images/${instructor?.name?.toLowerCase()}-profile.jpg`} 
-                    alt={instructor?.name} 
-                    className="w-full h-full object-cover"
+      {/* Navigation & Header */}
+      <div className="container-custom max-w-6xl relative z-20 mb-8">
+        <Link to="/instructors" className="inline-flex items-center gap-2 text-slate-500 hover:text-primary transition-all font-bold text-sm group">
+          <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+            <ArrowLeft size={16} />
+          </div>
+          Back to Expert Coaches
+        </Link>
+      </div>
+
+      <section className="pb-24">
+        <div className="container-custom max-w-6xl relative z-10">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+
+            {/* Left Box: Sticky Profile Section */}
+            <div className="lg:col-span-4 lg:sticky lg:top-32">
+              <div className="bg-white rounded-[2rem] p-5 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+                {/* Decorative glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-0" />
+
+                {/* Profile Image & Badges */}
+                <div className="relative rounded-[1.5rem] overflow-hidden aspect-[4/5] mb-6 bg-slate-50 shadow-inner z-10">
+                  <img
+                    src={instructor?.profile_image_url || `/images/${instructor?.name?.toLowerCase()}-profile.jpg`}
+                    alt={instructor?.name}
+                    className="w-full h-full object-cover transition-transform duration-1000"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = `https://placehold.co/400x400/FFE5EC/FF5A84?text=${instructor?.name?.charAt(0)}&font=playfair`;
+                      target.src = `https://placehold.co/500x625/F8FAFC/FF5A84?text=${instructor?.name?.charAt(0)}&font=playfair`;
                     }}
                   />
-                  <div className="absolute inset-0 bg-black/30"></div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h1 className="text-2xl font-bold text-white drop-shadow-sm">{instructor?.name}</h1>
-                    <p className="text-white/90 text-sm">{instructor?.specialization}</p>
+
+                  {/* Glass Header Info */}
+                  <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent backdrop-blur-[2px]">
+                    <h1 className="text-2xl font-black text-white tracking-tighter mb-0.5 leading-none">{instructor?.name}</h1>
+                    <p className="text-white/80 text-[10px] font-bold uppercase tracking-widest leading-none">{instructor?.specialization}</p>
+                  </div>
+
+                  {/* Rating Bubble */}
+                  <div className="absolute top-3 right-3 glass px-2.5 py-1 rounded-xl flex items-center gap-1.5 border border-white/40 shadow-xl">
+                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                    <span className="text-[9px] font-black text-slate-900">5.0 (480+)</span>
                   </div>
                 </div>
 
-                {/* Quick Info */}
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex gap-0.5">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500">5.0 Rating</span>
+                {/* Trust Signals Grid */}
+                <div className="grid grid-cols-2 gap-2.5 mb-6 relative z-10">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center text-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest leading-tight">100% Private</span>
                   </div>
-
-                  {/* Trust Badges */}
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <CheckCircle className="w-5 h-5 text-[#e05286]" />
-                      <span>100% Confidential</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <Award className="w-5 h-5 text-[#e05286]" />
-                      <span>{instructor?.experience || 'Certified Professional'}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <Heart className="w-5 h-5 text-[#e05286]" />
-                      <span>Judgment-Free Space</span>
-                    </div>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center text-center gap-1.5">
+                    <Award className="w-4 h-4 text-primary" />
+                    <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest leading-tight">{instructor?.experience || 'Certified'}</span>
                   </div>
+                </div>
 
-                  {/* Primary CTA */}
-                  {firstSession && (
-                    <div className="space-y-3">
-                      <div className="text-center p-4 bg-[#FFE0EC] rounded-xl border border-[#e05286]/40">
-                        <p className="text-sm text-gray-600 mb-1">{firstSession.name}</p>
-                        <p className="text-3xl font-bold text-[#e05286]">₹{firstSession.price}</p>
-                        <p className="text-xs text-gray-500">{firstSession.duration_minutes} minutes</p>
-                      </div>
-                      <button
-                        disabled={firstSession?.button_lock}
-                        onClick={handleBookNowClick}
-                        className={`w-full py-4 px-6 rounded-full font-semibold text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 shadow-lg ${
-                          firstSession?.button_lock 
-                            ? 'bg-gray-400 cursor-not-allowed' 
-                            : 'bg-[#e05286] hover:bg-[#C61F60] hover:shadow-xl hover:-translate-y-0.5 text-white'
+                {/* Primary Booking Feature */}
+                {firstSession && (
+                  <div className="space-y-4 relative z-10">
+                    <button
+                      disabled={firstSession?.button_lock}
+                      onClick={handleBookNowClick}
+                      className={`w-full inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all duration-300 shadow-xl shadow-primary/20 ${firstSession?.button_lock
+                        ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                        : 'bg-primary text-white hover:bg-primary/95 hover:shadow-primary/30 active:scale-[0.98]'
                         }`}
-                      >
-                        <Calendar className="w-5 h-5" />
-                        Book Session Now
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Book Private Session
+                    </button>
+                    <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      Session starts at ₹{firstSession.price} • {firstSession.duration_minutes} Minutes
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Right: Content */}
-            <div className="lg:col-span-3 space-y-8">
-              {/* About Section */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
-                <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">
+            {/* Right Box: Detailed Content Sections */}
+            <div className="lg:col-span-8 space-y-6">
+
+              {/* About & Philosophy */}
+              <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/2 rounded-full blur-3xl -z-0" />
+                <h2 className="text-2xl font-black text-slate-950 mb-4 tracking-tighter relative z-10">
                   About {instructor?.name}
                 </h2>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {getSection('intro')?.content || instructor?.bio || 'A safe, non-judgmental space where you can feel heard, witnessed, and truly understood.'}
+                <p className="text-base text-slate-500 font-medium leading-relaxed relative z-10">
+                  {getSection('intro')?.content || instructor?.bio || 'Dedicated to creating a safe, non-judgmental space for your journey.'}
                 </p>
 
                 {/* Highlights */}
                 {highlights.length > 0 && (
-                  <div className="flex flex-wrap gap-3 mt-6">
+                  <div className="flex flex-wrap gap-2.5 mt-8 relative z-10">
                     {highlights.map(highlight => (
-                      <div key={highlight.id} className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium">
-                        <CheckCircle className="w-4 h-4" />
-                        {highlight.title}
+                      <div key={highlight.id} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 border border-slate-100 text-slate-600 transition-colors hover:bg-primary/5 hover:text-primary group">
+                        <DynamicIcon name={highlight.icon_name} className="text-primary group-hover:scale-110 transition-transform" size={14} />
+                        <span className="text-xs font-bold tracking-tight">{highlight.title}</span>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Session Types */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
-                <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
-                  Available Sessions
-                </h2>
-                
-                <div className="space-y-4">
-                  {firstSession && (
-                    <div className="p-5 rounded-xl bg-[#FFE0EC] border-2 border-[#e05286]/50">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              {/* Sessions Grid */}
+              <div className="space-y-4">
+                <h2 className="text-2xl font-black text-slate-950 tracking-tighter px-4 leading-none">Choose Your Session</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {sessionTypes.map((session) => (
+                    <div
+                      key={session.id}
+                      className={`relative bg-white rounded-3xl p-6 border hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 flex flex-col group ${session.is_first_session ? 'border-primary/20 shadow-lg shadow-primary/5' : 'border-slate-100 shadow-sm'
+                        }`}
+                    >
+                      {session.is_first_session && (
+                        <div className="absolute top-0 right-0 bg-primary/95 text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl backdrop-blur-sm">
+                          Highly Recommended
+                        </div>
+                      )}
+
+                      <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all shadow-inner">
+                        {session.is_first_session ? <Star size={20} /> : <BookOpen size={20} />}
+                      </div>
+
+                      <h3 className="text-xl font-black text-slate-950 mb-1.5 tracking-tight leading-none">{session.name}</h3>
+                      <p className="text-slate-500 font-medium text-xs leading-relaxed mb-6 flex-grow">
+                        {session.description || `${session.duration_minutes} minutes of dedicated personalized guidance and support.`}
+                      </p>
+
+                      <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-100">
                         <div>
-                          <div className="inline-block bg-[#e05286] text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
-                            RECOMMENDED
-                          </div>
-                          <h3 className="font-bold text-gray-800 text-lg">{firstSession.name}</h3>
-                          <p className="text-gray-600 text-sm mt-1">{firstSession.description || `${firstSession.duration_minutes} minutes of dedicated space`}</p>
-                          <div className="flex items-center gap-4 mt-2">
-                            <span className="text-2xl font-bold text-[#e05286]">₹{firstSession.price}</span>
-                            <span className="text-sm text-gray-500 flex items-center gap-1">
-                              <Clock className="w-4 h-4" /> {firstSession.duration_minutes} min
-                            </span>
+                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">Investment</p>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-2xl font-black text-slate-950 leading-none tracking-tighter">₹{session.price}</span>
+                            <span className="text-[10px] font-bold text-slate-400">/ {session.duration_minutes}m</span>
                           </div>
                         </div>
                         <button
-                          disabled={firstSession?.button_lock}
-                          onClick={handleBookNowClick}
-                          className={`px-6 py-3 rounded-full font-semibold transition-all inline-flex items-center gap-2 ${
-                            firstSession?.button_lock 
-                              ? 'bg-gray-400 cursor-not-allowed text-white' 
-                              : 'bg-[#e05286] hover:bg-[#C61F60] text-white shadow-md hover:shadow-lg'
-                          }`}
+                          disabled={session?.button_lock}
+                          onClick={() => {
+                            if (!session?.button_lock) {
+                              if (session.is_external && session.external_url) {
+                                window.open(session.external_url, '_blank');
+                              } else {
+                                setSelectedSessionType(session);
+                                openBookingModal();
+                              }
+                            }
+                          }}
+                          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${session?.button_lock
+                            ? 'bg-slate-50 text-slate-300 cursor-not-allowed border border-slate-200'
+                            : 'bg-slate-950 text-white hover:bg-primary hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-1'
+                            }`}
                         >
-                          <Calendar className="w-4 h-4" />
-                          Book Now
+                          {session.button_lock ? <LucideIcons.Lock size={18} /> : <Calendar size={18} />}
                         </button>
                       </div>
                     </div>
-                  )}
-
-                  {followUpSession && (
-                    <div className="p-5 rounded-xl bg-gray-50 border border-gray-200">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                          <h3 className="font-bold text-gray-800">{followUpSession.name}</h3>
-                          <p className="text-gray-600 text-sm mt-1">{followUpSession.description || `${followUpSession.duration_minutes} minutes of continued support`}</p>
-                          <div className="flex items-center gap-4 mt-2">
-                            <span className="text-xl font-bold text-gray-800">₹{followUpSession.price}</span>
-                            <span className="text-sm text-gray-500 flex items-center gap-1">
-                              <Clock className="w-4 h-4" /> {followUpSession.duration_minutes} min
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <button
-                            disabled={followUpSession?.button_lock}
-                            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                              e.preventDefault();
-                              if (!followUpSession?.button_lock) {
-                                if (followUpSession.is_external && followUpSession.external_url) {
-                                  window.open(followUpSession.external_url, '_blank');
-                                } else {
-                                  setSelectedSessionType(followUpSession);
-                                  openBookingModal();
-                                }
-                              }
-                            }}
-                            className={`px-6 py-3 rounded-full font-semibold transition-all inline-flex items-center gap-2 ${
-                              followUpSession?.button_lock 
-                                ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
-                                : 'bg-gray-800 hover:bg-gray-900 text-white'
-                            }`}
-                          >
-                            <Calendar className="w-4 h-4" />
-                            Book Follow-Up
-                          </button>
-                          {followUpSession?.button_lock && (
-                            <span className="text-xs text-gray-500 mt-2 italic">Available after first session</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
               </div>
 
-              {/* Support Areas */}
-              {(supportAreasByCategory['Sexual Wellness'] || supportAreasByCategory['Holistic Support']) && (
-                <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
-                  <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
-                    How I Can Help You
-                  </h2>
-                  
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {supportAreasByCategory['Sexual Wellness']?.map(area => (
-                      <div key={area.id} className="flex items-start gap-3 p-4 rounded-xl bg-pink-50 border border-pink-100">
-                        <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center flex-shrink-0">
-                          <DynamicIcon name={area.icon_name} className="text-white" size={18} />
+              {/* Support Areas - Dark Mode Contrast */}
+              <div className="bg-slate-950 rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px]" />
+
+                <div className="relative z-10 mb-8 text-center">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-widest mb-3">
+                    What We Will Resolve Together
+                  </div>
+                  <h2 className="text-3xl md:text-3xl font-black text-white mb-3 tracking-tighter leading-tight">My Promise: Resolving Your Concerns</h2>
+                  <p className="text-slate-400 font-medium max-w-xl mx-auto text-base leading-relaxed">Dedicated to helping you navigate and resolve the most intimate challenges with compassion and expertise.</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4 relative z-10 mb-8">
+                  {supportAreas.map(area => (
+                    <div key={area.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm group hover:bg-white/10 transition-all duration-300 hover:border-white/20">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-colors hover:scale-110 transition-transform">
+                          <DynamicIcon name={area.icon_name} className="text-white" size={20} />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-800">{area.title}</h3>
-                          <p className="text-gray-600 text-sm mt-1">{area.description}</p>
+                          <h4 className="text-lg font-black text-white tracking-tight mb-1.5 leading-none">{area.title}</h4>
+                          <p className="text-slate-400 text-xs font-medium leading-relaxed">{area.description}</p>
                         </div>
                       </div>
-                    ))}
-                    {supportAreasByCategory['Holistic Support']?.map(area => (
-                      <div key={area.id} className="flex items-start gap-3 p-4 rounded-xl bg-purple-50 border border-purple-100">
-                        <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0">
-                          <DynamicIcon name={area.icon_name} className="text-white" size={18} />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-gray-800">{area.title}</h3>
-                          <p className="text-gray-600 text-sm mt-1">{area.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              )}
 
-              {/* What You'll Receive */}
-              {offerings.length > 0 && (
-                <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
-                  <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
-                    What You'll Receive
-                  </h2>
-                  
-                  <div className="grid sm:grid-cols-3 gap-4">
-                    {offerings.map(offering => (
-                      <div key={offering.id} className="text-center p-5 rounded-xl bg-[#FFF7EC] border border-[#FFE5EC]">
-                        <div className="w-14 h-14 rounded-full bg-[#FFE0EC] flex items-center justify-center mx-auto mb-4">
-                          <DynamicIcon name={offering.icon_name} className="text-[#e05286]" size={24} />
-                        </div>
-                        <h3 className="font-semibold text-gray-800 mb-2">{offering.title}</h3>
-                        <p className="text-gray-600 text-sm">{offering.description}</p>
-                      </div>
-                    ))}
-                  </div>
+                <div className="relative z-10 text-center">
+                  <button
+                    onClick={() => openBookingModal()}
+                    className="btn-premium-primary !bg-white !text-slate-950 hover:!bg-primary hover:!text-white shadow-2xl shadow-white/5 !py-3 !px-8 text-sm"
+                  >
+                    Resolve My Concerns Now
+                    <ArrowRight size={18} />
+                  </button>
                 </div>
-              )}
+              </div>
 
-              {/* Testimonials */}
-              {testimonials.length > 0 && (
-                <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#FFE5EC]">
-                  <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">
-                    Client Stories
-                  </h2>
-                  
-                  <div className="space-y-4">
-                    {testimonials.slice(0, 3).map(testimonial => (
-                      <div key={testimonial.id} className="p-5 rounded-xl bg-gray-50 border border-gray-100">
-                        <div className="flex gap-1 mb-3">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          ))}
-                        </div>
-                        <p className="text-gray-700 italic mb-4">"{testimonial.content}"</p>
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold">
-                            {testimonial.client_name.charAt(0)}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-gray-800">{testimonial.client_name}</p>
-                            <p className="text-sm text-gray-500">{testimonial.client_description}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section className="py-12 bg-[#FFE0EC] border-t border-[#e05286]/40">
-        <div className="container-custom max-w-4xl text-center">
-          <h2 className="text-3xl font-serif font-bold text-gray-800 mb-4">
-            Ready to Begin Your Journey?
-          </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            {getSection('closing')?.content || `Take the first step toward healing and self-discovery. Book a session with ${instructor?.name} today.`}
-          </p>
-          <button
-            onClick={handleBookNowClick}
-            className="inline-flex items-center gap-2 bg-[#e05286] hover:bg-[#C61F60] text-white font-bold py-4 px-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-lg"
-          >
-            <Calendar className="w-5 h-5" />
-            Book Your Session Now
-          </button>
-          
-          <div className="flex flex-wrap justify-center gap-6 mt-8 text-gray-500 text-sm">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#e05286]" />
-              <span>100% Confidential</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#e05286]" />
-              <span>Secure Payment</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-[#e05286]" />
-              <span>Flexible Scheduling</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      
+      {/* Mobile Floating CTA */}
+      <div className="lg:hidden fixed bottom-8 left-4 right-4 z-[100] animate-fade-in-up md:hidden">
+        <button
+          onClick={() => openBookingModal()}
+          className="w-full btn-premium-primary !py-5 shadow-2xl shadow-primary/40 flex items-center justify-center gap-3"
+        >
+          <Calendar size={20} />
+          <span className="uppercase tracking-widest font-black text-sm">Book & Resolve Now</span>
+        </button>
+      </div>
+
       {/* Modal for booking */}
-      <BookingModal 
-        isOpen={isModalOpen} 
-        onClose={closeBookingModal} 
-        instructorId={1} 
-        instructorName={instructor?.name} 
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={closeBookingModal}
+        instructorId={instructor?.id || 1}
+        instructorName={instructor?.name}
       />
     </div>
   );

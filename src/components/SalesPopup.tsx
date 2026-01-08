@@ -103,8 +103,8 @@ const SalesPopup = () => {
         // Close current popup on navigation
         setIsVisible(false);
 
-        // Don't show on the destination pages for the products themselves
-        if (pathname === '/newyear-bundle') {
+        // Don't show on the destination pages for the products themselves or instructor pages
+        if (pathname === '/newyear-bundle' || pathname.startsWith('/instructor/')) {
             return;
         }
 

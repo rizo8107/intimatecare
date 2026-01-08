@@ -79,13 +79,13 @@ interface FormData {
   selectedSlotId: number | null;
   preferredDate: string;
   preferredTime: string;
-  instructor: number;
+  instructor: string | number;
   isPackage: boolean;
   packageId: number | null;
   amount: number;
 }
 
-const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi" }) => {
+const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi" }: { instructorId?: string | number, instructorName?: string }) => {
   // State variables
   const [sessionTypes, setSessionTypes] = useState<SessionType[]>([]);
   const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
@@ -102,7 +102,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
     packageId: null,
     amount: 0
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [availableTimes, setAvailableTimes] = useState<AvailableSlot[]>([]);
@@ -114,7 +114,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
     name: string;
     email: string;
     phone: string;
-    instructor_id: number;
+    instructor_id: string | number;
     session_type_id: number;
     session_type: string;
     preferred_date: string;
@@ -136,7 +136,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
     fetchSessionTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   // Fetch session types from Supabase
   const fetchSessionTypes = async () => {
     try {
@@ -146,55 +146,55 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
         .from('session_types')
         .select('*')
         .eq('id', 3);
-        
+
       if (!fallbackError && fallbackData && fallbackData.length > 0) {
         // Use the fallback data if available
         setSessionTypes(fallbackData);
         const firstType = fallbackData[0];
-        setFormData(prev => ({ 
-          ...prev, 
+        setFormData(prev => ({
+          ...prev,
           selectedSessionType: firstType.id,
           amount: firstType.price
         }));
-        
+
         // Fetch packages for the first session type
         fetchSessionPackages(firstType.id);
         return;
       }
-      
+
       // If the first approach failed, try to fetch all session types
       // This is useful if there's no specific filtering needed
       const { data, error } = await supabase
         .from('session_types')
         .select('*');
-        
+
       if (error) throw error;
-        
+
       if (data && data.length > 0) {
         // Filter for Mansi's session types (IDs 3, 4, 5) if available
         // This is a temporary solution until the database schema is updated
         const mansiSessionTypes = data.filter(type => [3, 4, 5].includes(type.id));
-        
+
         if (mansiSessionTypes.length > 0) {
           setSessionTypes(mansiSessionTypes);
           const firstType = mansiSessionTypes[0];
-          setFormData(prev => ({ 
-            ...prev, 
+          setFormData(prev => ({
+            ...prev,
             selectedSessionType: firstType.id,
             amount: firstType.price
           }));
-          
+
           // Fetch packages for the first session type
           fetchSessionPackages(firstType.id);
         } else {
           // If no specific Mansi session types found, use the first available one
           setSessionTypes([data[0]]);
-          setFormData(prev => ({ 
-            ...prev, 
+          setFormData(prev => ({
+            ...prev,
             selectedSessionType: data[0].id,
             amount: data[0].price
           }));
-          
+
           // Fetch packages for this session type
           fetchSessionPackages(data[0].id);
         }
@@ -219,14 +219,14 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
   // Fetch session packages
   const [sessionPackages, setSessionPackages] = useState<SessionPackage[]>([]);
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
-  
+
   const fetchSessionPackages = async (sessionTypeId: number) => {
     try {
       const { data, error } = await supabase
         .from('session_packages')
         .select('*')
         .eq('session_type_id', sessionTypeId);
-        
+
       if (error) {
         // Check if the error is because the table doesn't exist
         if (error.message && error.message.includes('relation "session_packages" does not exist')) {
@@ -263,19 +263,19 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
       } else {
         setSessionPackages(data || []);
       }
-      
+
       setSelectedPackage(null); // Reset package selection when session type changes
     } catch (error) {
       console.error('Error fetching session packages:', error);
       setSessionPackages([]);
     }
   };
-  
+
   // Handle session type change
   const handleSessionTypeChange = (sessionTypeId: number) => {
     const selectedType = sessionTypes.find(type => type.id === sessionTypeId);
     if (!selectedType) return;
-    
+
     setFormData(prev => ({
       ...prev,
       selectedSessionType: sessionTypeId,
@@ -283,22 +283,22 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
       isPackage: false,
       packageId: null
     }));
-    
+
     // Reset selected package
     setSelectedPackage(null);
-    
+
     // Fetch packages for the selected session type
     fetchSessionPackages(sessionTypeId);
-    
+
     // Reset selected date and time
     setSelectedDate('');
     setAvailableTimes([]);
   };
-  
+
   // Handle package selection
   const handlePackageSelection = (packageId: number | null) => {
     setSelectedPackage(packageId);
-    
+
     if (packageId === null) {
       // If no package selected, use the base session price
       const selectedType = sessionTypes.find(type => type.id === formData.selectedSessionType);
@@ -333,9 +333,9 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           .from('session_types')
           .select('*')
           .eq('id', 3);
-        
+
         if (error) throw error;
-        
+
         if (data && data.length > 0) {
           setSessionTypes(data);
           setFormData(prev => ({ ...prev, selectedSessionType: 3 }));
@@ -345,9 +345,9 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             .from('session_types')
             .select('*')
             .eq('instructor_id', instructorId);
-          
+
           if (fallbackError) throw fallbackError;
-          
+
           if (fallbackData && fallbackData.length > 0) {
             setSessionTypes(fallbackData);
             setFormData(prev => ({ ...prev, selectedSessionType: fallbackData[0].id }));
@@ -370,11 +370,11 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
   useEffect(() => {
     const fetchAvailableSlots = async () => {
       if (!formData.selectedSessionType) return;
-      
+
       try {
         // For debugging
         console.log('Fetching slots with session_type_id:', formData.selectedSessionType);
-        
+
         // First try to fetch slots specifically for this session type
         const { data, error } = await supabase
           .from('available_slots')
@@ -383,17 +383,17 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           .eq('booking_status', false)
           .eq('status', 'available')
           .gte('slot_date', new Date().toISOString().split('T')[0]);
-        
+
         if (error) throw error;
-        
+
         if (data && data.length > 0) {
           console.log('Found slots:', data.length);
           setAvailableSlots(data);
-          
+
           // Extract unique dates
           const uniqueDates = [...new Set(data.map(slot => slot.slot_date))].sort();
           setAvailableDates(uniqueDates);
-          
+
           if (uniqueDates.length > 0) {
             setSelectedDate(uniqueDates[0]);
           }
@@ -406,17 +406,17 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             .eq('booking_status', false)
             .eq('status', 'available')
             .gte('slot_date', new Date().toISOString().split('T')[0]);
-          
+
           if (allError) throw allError;
-          
+
           if (allData && allData.length > 0) {
             console.log('Found general slots:', allData.length);
             setAvailableSlots(allData);
-            
+
             // Extract unique dates
             const uniqueDates = [...new Set(allData.map(slot => slot.slot_date))].sort();
             setAvailableDates(uniqueDates);
-            
+
             if (uniqueDates.length > 0) {
               setSelectedDate(uniqueDates[0]);
             }
@@ -425,13 +425,13 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             console.log('Creating dummy slots for testing');
             const today = new Date();
             const dummySlots = [];
-            
+
             // Create 5 days of slots
             for (let i = 0; i < 5; i++) {
               const slotDate = new Date(today);
               slotDate.setDate(today.getDate() + i);
               const dateStr = slotDate.toISOString().split('T')[0];
-              
+
               // Create 3 slots per day
               dummySlots.push({
                 id: 1000 + i * 3 + 1,
@@ -443,7 +443,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
                 status: 'ACTIVE',
                 booking_status: false
               });
-              
+
               dummySlots.push({
                 id: 1000 + i * 3 + 2,
                 slot_date: dateStr,
@@ -454,7 +454,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
                 status: 'ACTIVE',
                 booking_status: false
               });
-              
+
               dummySlots.push({
                 id: 1000 + i * 3 + 3,
                 slot_date: dateStr,
@@ -466,13 +466,13 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
                 booking_status: false
               });
             }
-            
+
             setAvailableSlots(dummySlots);
-            
+
             // Extract unique dates
             const uniqueDates = [...new Set(dummySlots.map(slot => slot.slot_date))].sort();
             setAvailableDates(uniqueDates);
-            
+
             if (uniqueDates.length > 0) {
               setSelectedDate(uniqueDates[0]);
             }
@@ -494,18 +494,18 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
   // Update available times when selected date changes
   useEffect(() => {
     if (!selectedDate) return;
-    
+
     // Filter slots for the selected date
     const slotsForDate = availableSlots.filter(slot => slot.slot_date === selectedDate);
-    
+
     // Store the actual slot objects instead of just formatted strings
     setAvailableTimes(slotsForDate);
-    
+
     // Reset selected time
     if (slotsForDate.length > 0) {
       const firstSlot = slotsForDate[0];
       const formattedTime = formatTimeSlot(firstSlot.start_time, firstSlot.end_time);
-      
+
       setFormData(prev => ({
         ...prev,
         preferredDate: selectedDate,
@@ -521,21 +521,21 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
       }));
     }
   }, [selectedDate, availableSlots]);
-  
+
   // Helper function to format time slots
   const formatTimeSlot = (startTime: string, endTime: string) => {
     if (!startTime || !endTime) return '';
-    
+
     const [startHour, startMinute] = startTime.split(':');
     const [endHour, endMinute] = endTime.split(':');
-    
+
     if (!startHour || !startMinute || !endHour || !endMinute) return '';
-    
+
     const startHours12 = parseInt(startHour) % 12 || 12;
     const endHours12 = parseInt(endHour) % 12 || 12;
     const startPeriod = parseInt(startHour) >= 12 ? 'PM' : 'AM';
     const endPeriod = parseInt(endHour) >= 12 ? 'PM' : 'AM';
-    
+
     return `${startHours12}:${startMinute.padStart(2, '0')} ${startPeriod} - ${endHours12}:${endMinute.padStart(2, '0')} ${endPeriod}`;
   };
 
@@ -544,7 +544,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
     try {
       const date = parseISO(dateString);
       const today = new Date();
-      
+
       if (isToday(date)) {
         return 'Today';
       } else if (isTomorrow(date)) {
@@ -609,7 +609,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
 
         if (response.ok) {
           const data = await response.json();
-          
+
           if (data && data.payment_status === 'PAID') {
             // Update slot status to booked ONLY after successful payment
             try {
@@ -623,7 +623,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             } catch (error) {
               console.error('Error updating slot booking status:', error);
             }
-            
+
             await handleSuccessfulPayment(data);
             setIsLoading(false);
             setShowConfirmation(true);
@@ -638,7 +638,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             return;
           }
         }
-        
+
         // If we're here, we need to check again
         setTimeout(checkPaymentStatus, pollingInterval);
       } catch (error) {
@@ -663,14 +663,14 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
     try {
       // Get the selected session type details
       const sessionType = sessionTypes.find(type => type.id === formData.selectedSessionType);
-      
+
       if (!sessionType) {
         throw new Error('Selected session type not found');
       }
 
       // Get the selected slot details
       const selectedSlot = availableSlots.find(slot => slot.id === formData.selectedSlotId);
-      
+
       if (!selectedSlot) {
         throw new Error('Selected slot not found');
       }
@@ -693,24 +693,24 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             instructor_id: instructorId,
             is_package: formData.isPackage,
             package_id: formData.packageId,
-            sessions_remaining: formData.isPackage ? 
+            sessions_remaining: formData.isPackage ?
               sessionPackages.find(pkg => pkg.id === formData.packageId)?.sessions_count || 1 : 1,
             status: 'BOOKED'
           }
         ])
         .select();
-      
+
       if (error) {
         console.error('Error inserting booking:', error);
         throw new Error(`Database error: ${error.message}`);
       }
 
       // Note: Slot booking status is already updated after successful payment
-      
+
       // Set booking details for confirmation page
-      setBookingDetails(data?.[0] || bookingData);
+      setBookingDetails(data?.[0] || null);
       setShowConfirmation(true);
-      
+
       // Track successful booking with Facebook Pixel
       if (window.fbq) {
         window.fbq('track', 'CompleteRegistration', {
@@ -720,13 +720,13 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           currency: 'INR'
         });
       }
-      
+
       // Show success toast
       toast({
         title: "Booking confirmed successfully!",
         description: "Payment received. We'll contact you soon to confirm your session.",
       });
-      
+
       setIsLoading(false);
     } catch (error) {
       console.error('Error handling successful payment:', error);
@@ -759,7 +759,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
 
     // Get the selected session type for price
     const sessionType = sessionTypes.find(type => type.id === formData.selectedSessionType);
-    
+
     if (!sessionType) {
       toast({
         title: 'Error',
@@ -907,7 +907,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
   // Handle time selection
   const handleTimeSelection = (slot: AvailableSlot) => {
     const formattedTime = formatTimeSlot(slot.start_time, slot.end_time);
-    
+
     setFormData(prev => ({
       ...prev,
       preferredTime: formattedTime,
@@ -918,7 +918,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
   // Render confirmation screen
   if (showConfirmation && bookingDetails) {
     const sessionType = sessionTypes.find(type => type.id === formData.selectedSessionType);
-    
+
     return (
       <div className="text-center p-6 bg-[#FFF5F8] rounded-lg">
         <div className="mb-6">
@@ -930,7 +930,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           <h2 className="text-2xl font-medium text-gray-800 mb-2">Booking Confirmed!</h2>
           <p className="text-gray-600">Your session has been successfully booked.</p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
           <h3 className="font-medium text-gray-800 mb-2">Booking Details</h3>
           <div className="text-left space-y-2 text-sm">
@@ -940,12 +940,12 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             <p><span className="font-medium">Price:</span> ₹{sessionType?.price}</p>
           </div>
         </div>
-        
+
         <p className="text-sm text-gray-600 mb-4">
           We've sent a confirmation email to {formData.email} with all the details.
           Our team will contact you shortly to confirm your session.
         </p>
-        
+
         <button
           onClick={() => window.location.href = '/sessions'}
           className="bg-[#FF5A84] text-white py-2 px-6 rounded-full hover:bg-[#FF7A9A] transition-colors"
@@ -966,7 +966,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           <h3 className="text-lg font-medium text-gray-800 mb-3">Select Session Type</h3>
           <div className="space-y-4">
             {sessionTypes.map(sessionType => (
-              <div 
+              <div
                 key={sessionType.id}
                 className={`p-4 border rounded-lg cursor-pointer transition-all ${formData.selectedSessionType === sessionType.id ? 'border-[#FF5A84] bg-[#FFF5F8]' : 'border-gray-200 hover:border-pink-300'}`}
                 onClick={() => handleSessionTypeChange(sessionType.id)}
@@ -984,14 +984,14 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           </div>
         </div>
       )}
-      
+
       {/* Package Selection */}
       {sessionPackages.length > 0 && (
         <div className="mb-6">
           <h3 className="text-lg font-medium text-gray-800 mb-3">Select Package (Optional)</h3>
           <div className="space-y-4">
             {/* Single session option */}
-            <div 
+            <div
               className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedPackage === null ? 'border-[#FF5A84] bg-[#FFF5F8]' : 'border-gray-200 hover:border-pink-300'}`}
               onClick={() => handlePackageSelection(null)}
             >
@@ -1001,10 +1001,10 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
               </div>
               <p className="text-sm text-gray-600">Book a single session</p>
             </div>
-            
+
             {/* Package options */}
             {sessionPackages.map(pkg => (
-              <div 
+              <div
                 key={pkg.id}
                 className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedPackage === pkg.id ? 'border-[#FF5A84] bg-[#FFF5F8]' : 'border-gray-200 hover:border-pink-300'}`}
                 onClick={() => handlePackageSelection(pkg.id)}
@@ -1040,11 +1040,10 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
                 key={date}
                 type="button"
                 onClick={() => handleDateSelection(date)}
-                className={`flex-shrink-0 px-4 py-2 border rounded-md ${
-                  selectedDate === date
-                    ? 'bg-[#FF5A84] text-white border-[#FF5A84]'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                }`}
+                className={`flex-shrink-0 px-4 py-2 border rounded-md ${selectedDate === date
+                  ? 'bg-[#FF5A84] text-white border-[#FF5A84]'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
               >
                 <div className="text-center">
                   <div className="font-medium">{formatDateForDisplay(date)}</div>
@@ -1066,17 +1065,16 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
           {availableTimes.length > 0 ? (
             availableTimes.map(slot => {
               const formattedTime = formatTimeSlot(slot.start_time, slot.end_time);
-              
+
               return (
                 <button
                   key={slot.id}
                   type="button"
                   onClick={() => handleTimeSelection(slot)}
-                  className={`px-3 py-2 border rounded-md text-center ${
-                    formData.selectedSlotId === slot.id
-                      ? 'bg-[#FF5A84] text-white border-[#FF5A84]'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className={`px-3 py-2 border rounded-md text-center ${formData.selectedSlotId === slot.id
+                    ? 'bg-[#FF5A84] text-white border-[#FF5A84]'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
                 >
                   {formattedTime}
                 </button>
@@ -1091,7 +1089,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
       {/* Customer Information */}
       <div className="space-y-4">
         <h3 className="font-medium text-gray-800">Your Information</h3>
-        
+
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
             Full Name *
@@ -1106,7 +1104,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Email Address *
@@ -1121,7 +1119,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
             Phone Number *

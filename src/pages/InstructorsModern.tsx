@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Link } from 'react-router-dom';
-import { Loader2, Star, Shield, Heart, Award, Users, ArrowRight, CheckCircle, MessageCircle, Sparkles, Brain, Leaf, Flower2 } from 'lucide-react';
+import DynamicInstructorCard from '../components/DynamicInstructorCard';
+import { Loader2, ArrowRight, Sparkles, Brain, Leaf, Flower2, Shield, Award, Heart, Users } from 'lucide-react';
 
 interface Instructor {
   id: string;
@@ -124,45 +125,9 @@ const InstructorsModern = () => {
               <button onClick={() => window.location.reload()} className="btn-premium-primary">Try Again</button>
             </div>
           ) : instructors.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {instructors.map((instructor, index) => (
-                <div key={instructor.id} className="group flex flex-col animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
-                  <div className="relative rounded-[3rem] overflow-hidden aspect-[4/5] mb-8 shadow-2xl shadow-slate-200/50">
-                    <img
-                      src={instructor.profile_image_url || '/placeholder-avatar.jpg'}
-                      alt={instructor.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60" />
-                    <div className="absolute bottom-8 left-8 right-8">
-                      <div className="badge-premium mb-3 !bg-white/20 !text-white !border-white/20 backdrop-blur-md">
-                        {instructor.specialization}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col flex-grow">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-3xl font-black text-slate-950 tracking-tight">{instructor.name}</h3>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-black text-slate-950">5.0</span>
-                      </div>
-                    </div>
-
-                    <p className="text-slate-500 font-medium mb-8 line-clamp-3 leading-relaxed">
-                      {instructor.bio}
-                    </p>
-
-                    <Link
-                      to={`/instructor/${instructor.name}`}
-                      className="mt-auto w-full btn-premium-primary !bg-slate-950 !shadow-slate-950/20 py-5"
-                    >
-                      Book A Session
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
-                  </div>
-                </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+              {instructors.map((instructor) => (
+                <DynamicInstructorCard key={instructor.id} instructor={instructor} />
               ))}
             </div>
           ) : (
