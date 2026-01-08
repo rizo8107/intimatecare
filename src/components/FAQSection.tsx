@@ -69,8 +69,8 @@ const FAQSection = () => {
               <div
                 key={index}
                 className={`group rounded-[2rem] border transition-all duration-500 overflow-hidden ${openIndex === index
-                    ? 'bg-slate-900 border-slate-900 shadow-2xl'
-                    : 'bg-slate-50/50 border-slate-100 hover:border-primary/20 hover:bg-white'
+                  ? 'bg-slate-900 border-slate-900 shadow-2xl'
+                  : 'bg-slate-50/50 border-slate-100 hover:border-primary/20 hover:bg-white'
                   }`}
               >
                 <button
