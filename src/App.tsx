@@ -42,6 +42,7 @@ import ClarityEvents from "./components/ClarityEvents";
 import StickyCtaBar from "./components/StickyCtaBar";
 import SalesPopup from "./components/SalesPopup";
 import UtmTracker from "./components/UtmTracker";
+import Posters from "./pages/Posters";
 import AdminCMS from "./pages/AdminCMS";
 import { initClarity } from "./utils/clarity";
 
@@ -58,6 +59,62 @@ const ScrollToTop = () => {
   return null;
 };
 
+const AppContent = () => {
+  const { pathname } = useLocation();
+  const isPosterPage = pathname === '/posters';
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {!isPosterPage && <Navbar />}
+      <ScrollToTop />
+      <GoogleAnalytics />
+      <ClarityEvents />
+      <main className={!isPosterPage ? "flex-grow pt-[88px] md:pt-[112px]" : "flex-grow"}>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/posters" element={<Posters />} />
+          <Route path="/instructors" element={<InstructorsModern />} />
+          <Route path="/about" element={<AboutModern />} />
+          <Route path="/issues" element={<Issues />} />
+          <Route path="/student-booking" element={<StudentBooking />} />
+          <Route path="/instructor-booking" element={<InstructorBooking />} />
+          <Route path="/instructor/:instructorName" element={<DynamicInstructorBooking />} />
+          <Route path="/join-group" element={<JoinGroup />} />
+          <Route path="/telegram-test" element={<TelegramTest />} />
+          <Route path="/guide" element={<GuideModern />} />
+          <Route path="/freebie" element={<Freebie />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/intimate-success" element={<IntimateSuccess />} />
+          <Route path="/issues" element={<Issues />} />
+          <Route path="/sessions" element={<SessionsModern />} />
+          <Route path="/intimatetalks" element={<IntimateTalksModern />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
+          <Route path="/cancellation-refund" element={<CancellationRefund />} />
+          <Route path="/payment-test" element={<PaymentTestPage />} />
+          <Route path="/30-day-challenge" element={<ThirtyDayChallengeModern />} />
+          <Route path="/combo-offer" element={<ComboOffer />} />
+          <Route path="/newyear-bundle" element={<NewYearBundle />} />
+          <Route path="/webinars" element={<Webinars />} />
+          <Route path="/coming-soon" element={<ComingSoon />} />
+          <Route path="/admin/waiting-list" element={<WaitingListAdmin />} />
+          <Route path="/admin/cms" element={<AdminCMS />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      {!isPosterPage && (
+        <>
+          <UtmTracker />
+          <SalesPopup />
+          <StickyCtaBar />
+          <Footer />
+        </>
+      )}
+    </div>
+  );
+};
+
 initClarity();
 
 const App = () => (
@@ -66,49 +123,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <ScrollToTop />
-          <GoogleAnalytics />
-          <ClarityEvents />
-          <main className="flex-grow pt-[88px] md:pt-[112px]">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/programs" element={<Programs />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/instructors" element={<InstructorsModern />} />
-              <Route path="/about" element={<AboutModern />} />
-              <Route path="/issues" element={<Issues />} />
-              <Route path="/student-booking" element={<StudentBooking />} />
-              <Route path="/instructor-booking" element={<InstructorBooking />} />
-              <Route path="/instructor/:instructorName" element={<DynamicInstructorBooking />} />
-              <Route path="/join-group" element={<JoinGroup />} />
-              <Route path="/telegram-test" element={<TelegramTest />} />
-              <Route path="/guide" element={<GuideModern />} />
-              <Route path="/freebie" element={<Freebie />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/intimate-success" element={<IntimateSuccess />} />
-              <Route path="/issues" element={<Issues />} />
-              <Route path="/sessions" element={<SessionsModern />} />
-              <Route path="/intimatetalks" element={<IntimateTalksModern />} />
-              <Route path="/terms-conditions" element={<TermsConditions />} />
-              <Route path="/cancellation-refund" element={<CancellationRefund />} />
-              <Route path="/payment-test" element={<PaymentTestPage />} />
-              <Route path="/30-day-challenge" element={<ThirtyDayChallengeModern />} />
-              <Route path="/combo-offer" element={<ComboOffer />} />
-              <Route path="/newyear-bundle" element={<NewYearBundle />} />
-              <Route path="/webinars" element={<Webinars />} />
-              <Route path="/coming-soon" element={<ComingSoon />} />
-              <Route path="/admin/waiting-list" element={<WaitingListAdmin />} />
-              <Route path="/admin/cms" element={<AdminCMS />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <UtmTracker />
-          <SalesPopup />
-          <StickyCtaBar />
-          <Footer />
-        </div>
+        <AppContent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

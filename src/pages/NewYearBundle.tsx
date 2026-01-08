@@ -203,7 +203,6 @@ const NewYearBundle = () => {
               Get Instant Access
               <ArrowRight className="w-5 h-5" />
             </a>
-            <p className="mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest">30-Day Money Back Guarantee</p>
           </div>
         </div>
       </section>
