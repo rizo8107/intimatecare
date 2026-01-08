@@ -40,6 +40,7 @@ import Products from './pages/Products';
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import ClarityEvents from "./components/ClarityEvents";
 import StickyCtaBar from "./components/StickyCtaBar";
+import SalesPopup from "./components/SalesPopup";
 import { initClarity } from "./utils/clarity";
 
 const queryClient = new QueryClient();
@@ -100,6 +101,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
+          <SalesPopup />
           <StickyCtaBar />
           <Footer />
         </div>

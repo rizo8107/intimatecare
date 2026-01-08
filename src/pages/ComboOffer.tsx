@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle, Download, BookOpen, Package, Gift, ArrowRight } from 'lucide-react';
 import AboutPreview from '../components/AboutPreview';
 
@@ -10,13 +10,31 @@ declare global {
 }
 
 const ComboOffer = () => {
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 0,
+    minutes: 59,
+    seconds: 59
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Simple state for UI
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle buy now button click - redirect to payment page
   const handleBuyNow = () => {
     setIsLoading(true);
-    
+
     // Track click with Facebook Pixel if available
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
@@ -26,7 +44,7 @@ const ComboOffer = () => {
         currency: 'INR'
       });
     }
-    
+
     // Redirect to payment page - replace with actual payment URL
     window.location.href = 'https://payments.cashfree.com/forms?code=combo-ebook';
   };
@@ -43,24 +61,45 @@ const ComboOffer = () => {
               </div>
               <div className="p-8 md:p-12">
                 <div className="text-[#FF7A9A] text-sm font-bold uppercase tracking-wider mb-2 text-center">SPECIAL COMBO DEAL</div>
-                <h2 className="font-serif text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
+                <h2 className="font-serif text-3xl md:text-5xl font-black text-slate-900 mb-6 text-center tracking-tighter">
                   Ultimate Intimacy Bundle
                 </h2>
-                <p className="text-center text-gray-700 max-w-3xl mx-auto">
+
+                {/* Urgency Timer */}
+                <div className="flex justify-center mb-8">
+                  <div className="bg-slate-950 text-white rounded-2xl p-4 md:p-6 shadow-2xl flex items-center gap-4 md:gap-8 min-w-[300px] justify-center">
+                    <div className="text-center">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Offer Ends In</p>
+                      <div className="flex gap-4">
+                        <div className="flex flex-col items-center">
+                          <span className="text-2xl md:text-3xl font-black">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                          <span className="text-[8px] font-bold uppercase tracking-widest text-slate-500">Mins</span>
+                        </div>
+                        <span className="text-2xl font-black animate-pulse">:</span>
+                        <div className="flex flex-col items-center">
+                          <span className="text-2xl md:text-3xl font-black">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                          <span className="text-[8px] font-bold uppercase tracking-widest text-slate-500">Secs</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-center text-slate-600 max-w-2xl mx-auto mb-10 text-lg font-medium leading-relaxed">
                   Get both of our bestselling guides at a special discounted price and transform your intimate life completely!
                 </p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-8 pb-12">
               {/* Bundle Image & Info */}
               <div className="flex flex-col">
                 <div className="relative overflow-hidden rounded-xl shadow-lg mb-6">
                   <div className="flex items-center justify-center">
                     <div className="relative w-1/2">
-                      <img 
-                        src="/69.jpg" 
-                        alt="69 Position Playbooks for couples" 
+                      <img
+                        src="/69.jpg"
+                        alt="69 Position Playbooks for couples"
                         className="w-full h-auto rounded-l-xl"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -73,9 +112,9 @@ const ComboOffer = () => {
                       </div>
                     </div>
                     <div className="relative w-1/2">
-                      <img 
-                        src="/images/32 days v2.jpg" 
-                        alt="30+ Ways to Explore Pleasure" 
+                      <img
+                        src="/images/32 days v2.jpg"
+                        alt="30+ Ways to Explore Pleasure"
                         className="w-full h-auto rounded-r-xl"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -94,7 +133,7 @@ const ComboOffer = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-[#FAFAFA] rounded-xl p-6 mb-6">
                   <div className="flex items-center mb-4">
                     <Package size={24} className="text-[#FF7A9A] mr-3" />
@@ -127,7 +166,7 @@ const ComboOffer = () => {
                     </li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-gradient-to-r from-[#FF7A9A] to-[#FF5A84] rounded-xl p-6 text-white">
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center">
@@ -142,7 +181,7 @@ const ComboOffer = () => {
                   <p className="mb-4">
                     Save ₹1000 when you purchase both guides together!
                   </p>
-                  <button 
+                  <button
                     onClick={handleBuyNow}
                     disabled={isLoading}
                     className="bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-3 px-6 rounded-full font-bold text-lg transition-colors w-full disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
@@ -152,7 +191,7 @@ const ComboOffer = () => {
                   </button>
                 </div>
               </div>
-              
+
               {/* Content Column */}
               <div className="flex flex-col space-y-6">
                 <div>
@@ -183,7 +222,7 @@ const ComboOffer = () => {
                     </li>
                   </ul>
                 </div>
-                
+
                 <div className="border-t border-gray-200 pt-6">
                   <h3 className="font-serif text-2xl font-bold text-gray-800 mb-4">
                     Book 2: Break the Same-Sex Routine
@@ -212,7 +251,7 @@ const ComboOffer = () => {
                     </li>
                   </ul>
                 </div>
-                
+
                 <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                   <h3 className="font-medium text-lg text-gray-800 mb-3">Why Get Both?</h3>
                   <p className="text-gray-700 mb-4">
@@ -225,13 +264,13 @@ const ComboOffer = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Testimonials */}
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 mb-12">
             <h2 className="font-serif text-3xl font-bold text-gray-800 mb-8 text-center">
               What Our Readers Say
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
@@ -242,7 +281,7 @@ const ComboOffer = () => {
                   <span className="text-sm font-medium text-gray-800">Couple, 7 years together</span>
                 </div>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
                   "The 30+ ways to explore pleasure completely transformed our relationship. We're communicating better and the intimacy is on another level now."
@@ -252,7 +291,7 @@ const ComboOffer = () => {
                   <span className="text-sm font-medium text-gray-800">Same-sex couple, 3 years</span>
                 </div>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
                   "Getting both guides was the best decision. We use the positions book for spontaneous nights and the challenge for a more structured approach."
@@ -264,7 +303,7 @@ const ComboOffer = () => {
               </div>
             </div>
           </div>
-          
+
           {/* FAQ Section */}
           {/* About then Featured */}
           <AboutPreview />
@@ -272,7 +311,7 @@ const ComboOffer = () => {
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 mb-12">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Featured In</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
-              {['BBC.jpg','Deccan.jpg','Huf.jpg','INDIA (1).jpg','INDIA (2).jpg','INDIA (3).jpg','Indian ex.jpg','Mint.jpg','Vogue.jpg'].map(img => (
+              {['BBC.jpg', 'Deccan.jpg', 'Huf.jpg', 'INDIA (1).jpg', 'INDIA (2).jpg', 'INDIA (3).jpg', 'Indian ex.jpg', 'Mint.jpg', 'Vogue.jpg'].map(img => (
                 <div key={img} className="w-28 md:w-32 lg:w-36 opacity-80 hover:opacity-100 transition-opacity">
                   <img
                     src={`/Featured/${img}`}
@@ -290,7 +329,7 @@ const ComboOffer = () => {
             <h2 className="font-serif text-3xl font-bold text-gray-800 mb-8 text-center">
               Frequently Asked Questions
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <h3 className="font-medium text-lg text-gray-800 mb-2">How will I receive my guides?</h3>
@@ -298,21 +337,21 @@ const ComboOffer = () => {
                   After purchase, you'll receive an email with download links for both guides. You can access them on any device with a PDF reader.
                 </p>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <h3 className="font-medium text-lg text-gray-800 mb-2">Is my payment secure?</h3>
                 <p className="text-gray-700">
                   Yes, we use Cashfree for all transactions, which provides bank-grade security for your payment information.
                 </p>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <h3 className="font-medium text-lg text-gray-800 mb-2">Can I get a refund?</h3>
                 <p className="text-gray-700">
                   Due to the digital nature of these products, we don't offer refunds. However, we're happy to help with any issues you might have.
                 </p>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <h3 className="font-medium text-lg text-gray-800 mb-2">How long will I have access?</h3>
                 <p className="text-gray-700">
@@ -325,7 +364,7 @@ const ComboOffer = () => {
           {/* Final CTA */}
           <div className="bg-gradient-to-r from-[#FF7A9A] to-[#FF5A84] rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 text-white text-center">
             <h2 className="font-serif text-3xl font-bold mb-4">Ready to Transform Your Intimate Life?</h2>
-            <p className="mb-8 max-w-3xl mx-auto">  
+            <p className="mb-8 max-w-3xl mx-auto">
               Get both guides today at our special bundle price and start your journey to a more passionate, connected relationship.
             </p>
             <div className="flex flex-col items-center justify-center gap-4">
@@ -333,7 +372,7 @@ const ComboOffer = () => {
                 <span className="text-2xl font-bold line-through opacity-70">₹1999</span>
                 <span className="text-4xl font-bold">₹999 Only!</span>
               </div>
-              <button 
+              <button
                 onClick={handleBuyNow}
                 disabled={isLoading}
                 className="bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-4 px-10 rounded-full font-bold text-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed max-w-md"

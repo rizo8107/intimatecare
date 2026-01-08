@@ -74,7 +74,7 @@ export default function HeroModern() {
               {/* Main Image */}
               <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200 border-4 border-white">
                 <img
-                  src="/hero_banner/single-hero.png"
+                  src="/hero_banner/Large.webp"
                   alt="Intimacy Coaching"
                   className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-1000"
                 />

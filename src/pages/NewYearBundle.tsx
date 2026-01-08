@@ -5,7 +5,7 @@ import AboutPreviewModern from '../components/AboutPreviewModern';
 
 const NewYearBundle = () => {
   const [timeLeft, setTimeLeft] = useState({
-    hours: 23,
+    hours: 0,
     minutes: 59,
     seconds: 59
   });
@@ -51,35 +51,14 @@ const NewYearBundle = () => {
   return (
     <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-24 overflow-hidden bg-slate-50/50">
+      <section className="relative pt-12 pb-12 md:pb-16 lg:pt-20 lg:pb-20 overflow-hidden bg-slate-50/50">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2" />
 
         <div className="container-custom relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Right Image (Moved to first for image-first layout) */}
-            <div className="relative animate-fade-in mb-10 lg:mb-0">
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white bg-white">
-                <img
-                  src="/bundle.jpg"
-                  alt="New Year Bundle"
-                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000"
-                />
-
-                {/* Floating Badge */}
-                <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 max-w-[180px]">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Includes</p>
-                  <p className="font-serif font-bold text-slate-900 leading-tight">3 Bestselling Products + Bonuses</p>
-                </div>
-              </div>
-
-              {/* Decorative elements */}
-              <div className="absolute top-1/2 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
-            </div>
-
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left animate-fade-in-up">
+            <div className="text-center lg:text-left animate-fade-in-up order-first">
               <span className="badge-premium mb-6">Holiday Exclusive Bundle</span>
               <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-6 leading-[1.05] tracking-tighter">
                 New Year,<br />
@@ -89,6 +68,25 @@ const NewYearBundle = () => {
                 The ultimate pleasure toolkit for 2026. Get all our bestsellers in one complete package for deeper intimacy.
               </p>
 
+              {/* Mobile Image - Shown below subheadline on mobile only */}
+              <div className="lg:hidden mb-10">
+                <div className="relative rounded-[2rem] overflow-hidden shadow-xl border-4 border-white bg-white">
+                  <img
+                    src="/bundle.jpg"
+                    alt="New Year Bundle"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                {/* Includes Section Compact for Mobile */}
+                <div className="mt-4 bg-white/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 text-left">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Included</p>
+                  </div>
+                  <p className="font-serif text-sm font-bold text-slate-900">3 Bestselling Products + Exclusive Bonuses</p>
+                </div>
+              </div>
+
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8">
                 <a
                   href={purchaseUrl}
@@ -97,7 +95,7 @@ const NewYearBundle = () => {
                   Get The Bundle - ₹1,599
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
-                <div className="flex flex-col items-start bg-slate-100 px-4 py-2 rounded-xl">
+                <div className="flex flex-col items-center lg:items-start bg-slate-100 px-4 py-2 rounded-xl">
                   <span className="text-xs font-bold text-slate-500 line-through">Total Value ₹2,297</span>
                   <span className="text-xs font-black text-emerald-600 uppercase tracking-wider">Save ₹698 Today</span>
                 </div>
@@ -108,12 +106,34 @@ const NewYearBundle = () => {
                 <span className="flex items-center gap-2"><Shield className="w-3.5 h-3.5 text-primary" /> 100% Confidential</span>
               </div>
             </div>
+
+            {/* Right Image - Desktop Only */}
+            <div className="hidden lg:block relative animate-fade-in lg:order-last">
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white bg-white">
+                <img
+                  src="/bundle.jpg"
+                  alt="New Year Bundle"
+                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000"
+                />
+              </div>
+
+              <div className="mt-8 bg-white/50 backdrop-blur-sm p-6 rounded-[2rem] border border-slate-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Bundle Includes</p>
+                </div>
+                <p className="font-serif text-xl font-bold text-slate-900 leading-tight">3 Bestselling Products + Exclusive Bonuses</p>
+              </div>
+
+              <div className="absolute top-1/2 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* What's Inside - Compact Grid */}
-      <section className="section-padding py-16 bg-white">
+      <section className="section-padding !pt-8 bg-white">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="section-title">Everything You Get</h2>
