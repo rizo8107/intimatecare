@@ -106,7 +106,7 @@ const AppContent = () => {
       {!isPosterPage && (
         <>
           <UtmTracker />
-          <SalesPopup />
+          {pathname !== '/intimate-success' && <SalesPopup />}
           <StickyCtaBar />
           <Footer />
         </>

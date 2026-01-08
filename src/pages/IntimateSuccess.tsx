@@ -44,6 +44,20 @@ interface FormData {
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const SERVICE_ROLE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
 
+// Country codes list
+const COUNTRY_CODES = [
+  { code: '91', country: 'IN', flag: '🇮🇳' },
+  { code: '1', country: 'US', flag: '🇺🇸' },
+  { code: '44', country: 'UK', flag: '🇬🇧' },
+  { code: '61', country: 'AU', flag: '🇦🇺' },
+  { code: '971', country: 'AE', flag: '🇦🇪' },
+  { code: '1', country: 'CA', flag: '🇨🇦' },
+  { code: '65', country: 'SG', flag: '🇸🇬' },
+  { code: '60', country: 'MY', flag: '🇲🇾' },
+  { code: '974', country: 'QA', flag: '🇶🇦' },
+  { code: '966', country: 'SA', flag: '🇸🇦' },
+];
+
 const IntimateSuccess = () => {
   const location = useLocation();
   const [queryParams, setQueryParams] = useState<URLSearchParams | null>(null);
@@ -54,10 +68,21 @@ const IntimateSuccess = () => {
   const telegramLoginContainerRef = useRef<HTMLDivElement>(null);
   const [matchedPayment, setMatchedPayment] = useState<any>(null);
 
+  // NEW State for split phone handling
+  const [countryCode, setCountryCode] = useState('91');
+  const [localPhone, setLocalPhone] = useState('');
+
+
+
+  // Wait, I need to view where formData is defined first.
+
+
   // Extract payment details from query params
   const paymentId = queryParams?.get('payment_id') || '';
   const status = queryParams?.get('status') || '';
   const amount = queryParams?.get('amount') || '';
+
+  // International Number Verification State - REMOVED toggled, using permanent selector
 
   // Form state
   const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for phone verification
@@ -100,6 +125,33 @@ const IntimateSuccess = () => {
       setFormData(JSON.parse(storedFormData));
     }
   }, []);
+
+  // Initialize/Sync split state with formData.mobileNumber on mount
+  useEffect(() => {
+    if (formData.mobileNumber && formData.mobileNumber !== (countryCode + localPhone)) {
+      const found = COUNTRY_CODES.find(c => formData.mobileNumber.startsWith(c.code));
+      if (found) {
+        setCountryCode(found.code);
+        setLocalPhone(formData.mobileNumber.slice(found.code.length));
+      } else if (formData.mobileNumber.length > 2) {
+        setLocalPhone(formData.mobileNumber);
+      }
+    }
+  }, [formData.mobileNumber]); // Sync when mobileNumber changes (e.g. from localStorage load)
+
+  // Helper to update full mobile number
+  const updateFullNumber = (code: string, number: string) => {
+    const full = code + number;
+    setFormData(prev => ({ ...prev, mobileNumber: full }));
+
+    // Also update localStorage immediately for persistence (mirrors existing handleInputChange)
+    const stored = localStorage.getItem('membershipFormData');
+    if (stored) {
+      const data = JSON.parse(stored);
+      data.mobileNumber = full;
+      localStorage.setItem('membershipFormData', JSON.stringify(data));
+    }
+  };
 
   // Initialize Telegram login widget
   useEffect(() => {
@@ -1108,25 +1160,47 @@ const IntimateSuccess = () => {
           <label htmlFor="mobileNumber" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
             Mobile Number <span className="text-primary italic">*</span>
           </label>
-          <div className="relative group">
-            <input
-              type="tel"
-              id="mobileNumber"
-              name="mobileNumber"
-              value={formData.mobileNumber}
-              onChange={handlePhoneNumberChange}
-              className="w-full h-16 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 text-center font-black text-2xl tracking-[0.1em] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all group-hover:border-slate-300"
-              placeholder="9876543210"
-              maxLength={10}
-              required
-            />
-            <div className="absolute inset-x-0 -bottom-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
+
+          <div className="flex gap-3">
+            <div className="relative">
+              <select
+                value={countryCode}
+                onChange={(e) => {
+                  const newCode = e.target.value;
+                  setCountryCode(newCode);
+                  updateFullNumber(newCode, localPhone);
+                }}
+                className="h-16 px-4 pr-8 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold appearance-none focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-lg cursor-pointer"
+              >
+                {COUNTRY_CODES.map(c => (
+                  <option key={c.code + c.country} value={c.code}>
+                    {c.flag} +{c.code}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            </div>
+
+            <div className="relative group flex-1">
+              <input
+                type="tel"
+                id="mobileNumber"
+                value={localPhone}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  setLocalPhone(val);
+                  updateFullNumber(countryCode, val);
+                }}
+                className="w-full h-16 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-black text-2xl tracking-[0.1em] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all group-hover:border-slate-300"
+                placeholder="9876543210"
+              />
+              <div className="absolute inset-x-0 -bottom-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
+            </div>
           </div>
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4 text-center">
             Encrypted • Confidential • Instant
           </p>
         </div>
-
         <button
           className="btn-premium-primary w-full h-16 text-lg shadow-2xl shadow-primary/20"
           onClick={verifyPhoneInitial}
@@ -1145,7 +1219,7 @@ const IntimateSuccess = () => {
           )}
         </button>
       </div>
-    </div>
+    </div >
   );
 
   // Form Step 3: Additional Contact Information (Email & Referral)
