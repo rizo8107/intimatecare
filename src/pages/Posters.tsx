@@ -28,6 +28,9 @@ import {
 import { Link } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 
+// Helper to determine mobile state - simplistic check for initial render
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
 const PRODUCTS = [
     {
         id: 2,
@@ -145,18 +148,18 @@ const Posters = () => {
 
     // NEW Typography & Layout state
     const [fontFamily, setFontFamily] = useState(FONTS[0]);
-    const [headlineSize, setHeadlineSize] = useState(64);
+    const [headlineSize, setHeadlineSize] = useState(56);
     const [subheadlineSize, setSubheadlineSize] = useState(20);
     const [isBold, setIsBold] = useState(true);
     const [isItalic, setIsItalic] = useState(true);
     const [isUppercase, setIsUppercase] = useState(true);
     const [posterPadding, setPosterPadding] = useState(8); // % padding
-    const [contentGap, setContentGap] = useState(40); // px gap between images and text
+    const [contentGap, setContentGap] = useState(32); // px gap between images and text
     const [priceSize, setPriceSize] = useState(36); // px for main price
     const [imageGap, setImageGap] = useState(24); // px between images
 
     // NEW Image Editor state
-    const [imageSize, setImageSize] = useState(80); // % of container
+    const [imageSize, setImageSize] = useState(60); // % of container
     const [imageRounding, setImageRounding] = useState(2.5); // rem
     const [imageBrightness, setImageBrightness] = useState(100);
     const [imageContrast, setImageContrast] = useState(100);
@@ -173,8 +176,58 @@ const Posters = () => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [customImage, setCustomImage] = useState<string | null>(null);
     const posterRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
+
+    // Auto-scale canvas
+    useMemo(() => {
+        const calculateScale = () => {
+            if (!containerRef.current) return;
+            const container = containerRef.current.getBoundingClientRect();
+            const padding = 40; // px
+            const availableWidth = container.width - padding;
+            const availableHeight = container.height - padding;
+
+            const scaleX = availableWidth / selectedLayout.width;
+            const scaleY = availableHeight / selectedLayout.height;
+            const newScale = Math.min(scaleX, scaleY, 0.9); // Cap at 0.9 to ensure margins
+            console.log("Calculated Scale:", newScale);
+            setScale(newScale);
+        };
+
+        // Initial calc
+        // We use setTimeout to wait for layout
+        setTimeout(calculateScale, 100);
+
+        window.addEventListener('resize', calculateScale);
+        return () => window.removeEventListener('resize', calculateScale);
+    }, [selectedLayout]);
 
     const toggleProduct = (product: typeof PRODUCTS[0]) => {
+
+        // Auto-scale canvas
+        useMemo(() => {
+            const calculateScale = () => {
+                if (!containerRef.current) return;
+                const container = containerRef.current.getBoundingClientRect();
+                const padding = 40; // px
+                const availableWidth = container.width - padding;
+                const availableHeight = container.height - padding;
+
+                const scaleX = availableWidth / selectedLayout.width;
+                const scaleY = availableHeight / selectedLayout.height;
+                const newScale = Math.min(scaleX, scaleY, 0.9); // Cap at 0.9 to ensure margins
+                console.log("Calculated Scale:", newScale);
+                setScale(newScale);
+            };
+
+            // Initial calc
+            // We use setTimeout to wait for layout
+            setTimeout(calculateScale, 100);
+
+            window.addEventListener('resize', calculateScale);
+            return () => window.removeEventListener('resize', calculateScale);
+        }, [selectedLayout]);
         setSelectedProducts(prev => {
             const exists = prev.find(p => p.id === product.id);
             if (exists) {
@@ -204,6 +257,19 @@ const Posters = () => {
         const canvas = await html2canvas(posterRef.current, { useCORS: true, scale: 2 });
         const link = document.createElement('a');
         link.download = `poster-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    };
+
+    const handleQuickSnap = async () => {
+        if (!posterRef.current) return;
+        const canvas = await html2canvas(posterRef.current, {
+            useCORS: true,
+            scale: 1, // 1:1 scale for exact capture
+            backgroundColor: null
+        });
+        const link = document.createElement('a');
+        link.download = `snapshot-${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
     };
@@ -859,7 +925,14 @@ const Posters = () => {
                         className="w-full flex items-center justify-center gap-3 py-4 rounded-[1.5rem] bg-white text-black font-black uppercase tracking-widest hover:scale-[1.02] shadow-2xl transition-all border border-white"
                     >
                         <Download className="w-4 h-4" />
-                        Download Poster
+                        Download Poster (High-Res)
+                    </button>
+                    <button
+                        onClick={handleQuickSnap}
+                        className="w-full flex items-center justify-center gap-3 py-4 rounded-[1.5rem] bg-white/10 text-white font-black uppercase tracking-widest hover:bg-white/20 transition-all border border-white/10"
+                    >
+                        <ImageIcon className="w-4 h-4 text-primary" />
+                        Quick Snap (Preview)
                     </button>
                 </div>
             </div>
@@ -875,35 +948,26 @@ const Posters = () => {
                 </div>
 
                 <div
-                    className="shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] bg-slate-950 origin-center relative border border-white/5 flex-shrink-0"
+                    ref={containerRef}
+                    className="shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] bg-slate-950 origin-center relative border border-white/5 flex-shrink-0 shadow-2xl shadow-black/50 transition-transform duration-300 ease-out will-change-transform"
                     style={{
                         width: `${selectedLayout.width}px`,
                         height: `${selectedLayout.height}px`,
-                        transform: `scale(${Math.min(
-                            0.7,
-                            (window.innerWidth - (window.innerWidth < 768 ? 40 : 400)) / selectedLayout.width,
-                            (window.innerHeight - 150) / selectedLayout.height
-                        )})`,
-                        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'center center'
                     }}
                 >
                     <div
                         ref={posterRef}
-                        className={`w-full h-full relative overflow-hidden flex flex-col transition-colors duration-700 ${selectedStyle.bg}`}
+                        className="relative bg-white overflow-hidden transition-all duration-500 ease-in-out group select-none w-full h-full"
+                        style={{
+                            // Dimensions are now handled by the wrapper's transform
+                        }}
                     >
                         {/* Background Layer */}
-                        <div className="absolute inset-0 z-0 opacity-40">
-                            {selectedStyle.theme === 'dark' && (
-                                <>
-                                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-slate-950/80 to-black" />
-                                    {selectedProducts[0] && (
-                                        <img src={selectedProducts[0].image} alt="" className="w-full h-full object-cover opacity-20 blur-2xl" />
-                                    )}
-                                    <div className="absolute top-0 left-0 w-full h-[30%] bg-gradient-to-b from-primary/10 to-transparent" />
-                                </>
-                            )}
-                            {selectedStyle.id === 'glass' && (
-                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.2),transparent_70%)]" />
+                        <div className={`absolute inset-0 transition-colors duration-500 ${selectedStyle.bg}`}>
+                            {selectedStyle.id === 'modern' && (
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,70,114,0.2),transparent_50%)]" />
                             )}
                         </div>
 
@@ -933,7 +997,7 @@ const Posters = () => {
                             )}
 
                             {/* Main Content Area Wrapper */}
-                            <div className={`w-full h-full flex ${imageArrangement.id === 'two-column' ? 'flex-row items-center gap-10 text-left' : 'flex-col items-center justify-center text-center'} transition-all`}>
+                            <div className={`w-full h-full flex ${imageArrangement.id === 'two-column' ? 'flex-row items-center gap-16 text-left px-8' : 'flex-col items-center justify-center text-center'} transition-all`}>
 
                                 {/* Dynamic Image Arrangement */}
                                 {!hiddenElements.images && (
@@ -942,10 +1006,16 @@ const Posters = () => {
                                         dragConstraints={posterRef}
                                         dragMomentum={false}
                                         onClick={(e) => { e.stopPropagation(); setActiveElement('images'); }}
-                                        style={{ marginBottom: imageArrangement.id === 'two-column' ? 0 : `${contentGap}px` }}
+                                        style={{
+                                            marginBottom: imageArrangement.id === 'two-column' ? 0 : `${contentGap}px`,
+                                            maxHeight: imageArrangement.id === 'two-column' ? 'none' : '55%'
+                                        }}
                                         className={`
                                         transition-shadow ${isDraggable ? 'hover:ring-2 ring-primary ring-offset-4 ring-offset-transparent rounded-3xl cursor-grab active:cursor-grabbing' : 'cursor-pointer'}
-                                        ${imageArrangement.id === 'two-column' ? 'w-[45%] flex-shrink-0' : 'w-full flex-grow flex items-center justify-center'}
+                                        ${imageArrangement.id === 'two-column'
+                                                ? 'w-[45%] flex-shrink-0'
+                                                : 'w-full flex justify-center items-center'
+                                            }
                                     `}
                                     >
                                         <motion.div
@@ -1014,9 +1084,9 @@ const Posters = () => {
                                     dragMomentum={false}
                                     onClick={(e) => { e.stopPropagation(); setActiveElement('text'); }}
                                     className={`
-                                    space-y-6 transition-shadow p-4 
+                                    space-y-6 transition-shadow p-4
                                     ${isDraggable ? 'hover:ring-2 ring-primary ring-offset-4 ring-offset-transparent rounded-3xl cursor-grab active:cursor-grabbing bg-black/20 backdrop-blur-sm' : 'cursor-pointer hover:bg-white/5 rounded-3xl'}
-                                    ${imageArrangement.id === 'two-column' ? 'flex-1 flex flex-col items-start min-w-0' : 'w-full mt-auto flex flex-col items-center'}
+                                    ${imageArrangement.id === 'two-column' ? 'flex-1 flex flex-col items-start min-w-0' : 'w-full flex flex-col items-center'}
                                 `}
                                 >
                                     {!hiddenElements.headline && (
@@ -1024,7 +1094,7 @@ const Posters = () => {
                                             key={headline}
                                             initial={{ y: 30, opacity: 0 }}
                                             animate={{ y: 0, opacity: 1 }}
-                                            className="leading-[0.85] tracking-tighter"
+                                            className="leading-tight tracking-tight mb-4"
                                             style={{
                                                 color: headlineColor,
                                                 fontFamily: fontFamily.value,
@@ -1117,12 +1187,7 @@ const Posters = () => {
 
 
                         {/* Texture Overlay */}
-                        <div
-                            className="absolute inset-0 z-40 opacity-[0.2] pointer-events-none mix-blend-overlay"
-                            style={{
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                            }}
-                        />
+
                     </div>
                 </div>
 
@@ -1136,6 +1201,11 @@ const Posters = () => {
                     <div className="flex flex-col items-center gap-1">
                         <span className="text-[10px] text-white/40 font-black tracking-widest uppercase">DPI</span>
                         <span className="text-xs font-bold text-white/80 drop-shadow-md">300 (High-Res)</span>
+                    </div>
+                    <div className="w-[1px] h-4 bg-white/20" />
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-[10px] text-white/40 font-black tracking-widest uppercase">Scale</span>
+                        <span className="text-xs font-bold text-white/80 drop-shadow-md">{Math.round(scale * 100)}%</span>
                     </div>
                 </div>
             </div>
