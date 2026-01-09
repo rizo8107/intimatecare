@@ -69,7 +69,7 @@ const NewYearBundle = () => {
             {/* Left Content */}
             <div className="text-center lg:text-left animate-fade-in-up order-first">
               <span className="badge-premium mb-6">Holiday Exclusive Bundle</span>
-              <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-6 leading-[1.05] tracking-tighter">
+              <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-slate-950 mb-6 leading-[1.05] tracking-tighter">
                 {headline.includes('Connection') ? (
                   <>
                     {headline.split('Connection')[0]}<br />
@@ -78,7 +78,7 @@ const NewYearBundle = () => {
                   </>
                 ) : headline}
               </h1>
-              <p className="text-xl text-slate-500 font-medium mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+              <p className="text-base sm:text-lg lg:text-xl text-slate-500 font-medium mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
                 {subheadline}
               </p>
 
@@ -107,10 +107,10 @@ const NewYearBundle = () => {
                   onClick={() => trackPaymentInitiated(Number(price.replace(/,/g, '')), 'INR')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-premium-primary text-lg w-full sm:w-auto px-10 py-4 shadow-xl shadow-primary/20 hover:shadow-primary/30"
+                  className="btn-premium-primary text-sm sm:text-lg w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 shadow-xl shadow-primary/20 hover:shadow-primary/30"
                 >
                   Get The Bundle - ₹{price}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
                 <div className="flex flex-col items-center lg:items-start bg-slate-100 px-4 py-2 rounded-xl">
                   <span className="text-xs font-bold text-slate-500 line-through">Total Value ₹2,297</span>
@@ -239,9 +239,9 @@ const NewYearBundle = () => {
       <section className="py-24 bg-slate-950 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="container-custom relative z-10 text-center">
-          <div className="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-[4rem] p-12 md:p-20 backdrop-blur-xl">
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter">Your Transformation Starts Now</h2>
-            <p className="text-xl text-slate-400 font-medium mb-12">Don't wait for the spark. Create it with our complete bundle.</p>
+          <div className="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-[2.5rem] sm:rounded-[4rem] p-8 md:p-20 backdrop-blur-xl">
+            <h2 className="text-3xl md:text-6xl font-black text-white mb-6 tracking-tighter">Your Transformation Starts Now</h2>
+            <p className="text-lg text-slate-400 font-medium mb-12">Don't wait for the spark. Create it with our complete bundle.</p>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
               <div className="flex items-center gap-4">

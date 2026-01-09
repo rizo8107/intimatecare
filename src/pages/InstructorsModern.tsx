@@ -90,11 +90,11 @@ const InstructorsModern = () => {
         <div className="container-custom relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in-up">
             <span className="badge-premium mb-6">THE EXPERTS</span>
-            <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-8 tracking-tighter leading-[1.05]">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-slate-950 mb-8 tracking-tighter leading-[1.05]">
               Meet Our <br />
               <span className="text-gradient">Expert Coaches</span>
             </h1>
-            <p className="text-xl md:text-2xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed mb-12">
+            <p className="text-base sm:text-xl md:text-2xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed mb-12">
               Compassionate professionals dedicated to your holistic well-being. Find the guide who resonates with your personal journey.
             </p>
 

@@ -43,7 +43,7 @@ const FAQSection = () => {
               Common Questions <br />
               <span className="text-gradient">Fully Answered</span>
             </h2>
-            <p className="text-xl text-slate-500 font-medium mb-10 max-w-lg leading-relaxed">
+            <p className="text-base sm:text-xl text-slate-500 font-medium mb-10 max-w-lg leading-relaxed">
               We understand you might have questions about starting your journey. Here are answers to the most common inquiries.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -77,7 +77,7 @@ const FAQSection = () => {
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                   className="w-full flex items-center justify-between p-8 text-left outline-none"
                 >
-                  <span className={`text-lg font-black tracking-tight transition-colors duration-500 ${openIndex === index ? 'text-white' : 'text-slate-900 group-hover:text-primary'
+                  <span className={`text-base sm:text-lg font-black tracking-tight transition-colors duration-500 ${openIndex === index ? 'text-white' : 'text-slate-900 group-hover:text-primary'
                     }`}>
                     {index + 1}. {faq.question}
                   </span>
@@ -91,7 +91,7 @@ const FAQSection = () => {
                     }`}
                 >
                   <div className="px-8 pb-10 border-t border-white/10 pt-4">
-                    <p className={`text-lg font-medium leading-relaxed transition-colors duration-500 ${openIndex === index ? 'text-slate-300' : 'text-slate-500'
+                    <p className={`text-base sm:text-lg font-medium leading-relaxed transition-colors duration-500 ${openIndex === index ? 'text-slate-300' : 'text-slate-500'
                       }`}>
                       {faq.answer}
                     </p>

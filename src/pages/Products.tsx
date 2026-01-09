@@ -59,7 +59,7 @@ const PRODUCTS = [
         price: "Free",
         category: "Community",
         issue: ["Communication", "Pleasure Skills"],
-        image: "/students.webp",
+        image: "/telegram.png",
         icon: Zap,
         rating: "4.7",
         reviews: "2.5k+",
@@ -236,15 +236,15 @@ const Products = () => {
             {/* Trust Quote Section */}
             <section className="py-20 border-t border-slate-100">
                 <div className="container-custom">
-                    <div className="bg-slate-950 rounded-[3rem] p-10 md:p-20 relative overflow-hidden">
+                    <div className="bg-slate-950 rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 md:p-20 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
                         <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
                             <div>
-                                <h2 className="text-3xl md:text-5xl font-black text-white mb-8 tracking-tighter leading-[1.1]">
+                                <h2 className="text-2xl md:text-5xl font-black text-white mb-8 tracking-tighter leading-[1.1]">
                                     Need Help Choosing <br />
                                     <span className="text-primary">The Right Path?</span>
                                 </h2>
-                                <p className="text-lg text-white/60 font-medium leading-relaxed mb-10">
+                                <p className="text-base sm:text-lg text-white/60 font-medium leading-relaxed mb-10">
                                     Every journey is unique. If you're unsure which guide or bundle is best for your current situation, schedule a brief discovery call with our team.
                                 </p>
                                 <div className="flex flex-wrap gap-4">

@@ -139,16 +139,16 @@ const ThirtyDayChallengeModern = () => {
             <div className="animate-fade-in-up">
               <span className="badge-premium mb-6">30-Day Experience</span>
 
-              <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
+              <h1 className="text-4xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
                 Break Your <br />
                 <span className="text-gradient">Routine</span>
               </h1>
 
-              <p className="text-xl text-slate-500 font-medium mb-4 leading-relaxed max-w-xl">
+              <p className="text-base sm:text-lg text-slate-500 font-medium mb-4 leading-relaxed max-w-xl">
                 Daily prompts and activities designed to reignite passion and deepen your connection.
               </p>
 
-              <p className="text-lg text-primary font-black uppercase tracking-widest mb-10">
+              <p className="text-sm sm:text-base text-primary font-black uppercase tracking-widest mb-10">
                 Crave, Connect & Come Again
               </p>
 
@@ -214,7 +214,7 @@ const ThirtyDayChallengeModern = () => {
           <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in-up">
             <span className="badge-premium mb-6">The Science</span>
             <h2 className="section-title">Why It Works</h2>
-            <p className="text-xl text-slate-500 font-medium">Based on relationship psychology and sexual wellness research.</p>
+            <p className="text-base sm:text-lg text-slate-500 font-medium">Based on relationship psychology and sexual wellness research.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -237,7 +237,7 @@ const ThirtyDayChallengeModern = () => {
 
         <div className="container-custom relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-20 animate-fade-in-up">
-            <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tight">What's Included</h2>
+            <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">What's Included</h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -266,9 +266,9 @@ const ThirtyDayChallengeModern = () => {
                 <div className="flex gap-1 mb-6 text-[#FFB800]">
                   {[...Array(t.rating)].map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
                 </div>
-                <p className="text-lg text-slate-700 italic font-medium mb-8 leading-relaxed">"{t.text}"</p>
+                <p className="text-base sm:text-lg text-slate-700 italic font-medium mb-8 leading-relaxed">"{t.text}"</p>
                 <div className="flex items-center gap-3 pt-6 border-t border-slate-200">
-                  <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 font-black">
+                  <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 font-black">
                     {t.author.charAt(0)}
                   </div>
                   <span className="font-black text-slate-950 uppercase tracking-widest text-xs">{t.author}</span>
@@ -296,7 +296,7 @@ const ThirtyDayChallengeModern = () => {
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   className="w-full flex items-center justify-between p-8 text-left outline-none"
                 >
-                  <span className={`text-lg font-black tracking-tight transition-colors duration-500 ${openFaq === index ? 'text-white' : 'text-slate-900'
+                  <span className={`text-base sm:text-lg font-black tracking-tight transition-colors duration-500 ${openFaq === index ? 'text-white' : 'text-slate-900'
                     }`}>{faq.question}</span>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openFaq === index ? 'bg-orange-500 text-white rotate-180' : 'bg-slate-100 text-slate-400'
                     }`}>
@@ -306,7 +306,7 @@ const ThirtyDayChallengeModern = () => {
                 <div className={`transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
                   }`}>
                   <div className="px-8 pb-10 border-t border-white/10 pt-4">
-                    <p className={`text-lg font-medium leading-relaxed ${openFaq === index ? 'text-slate-300' : 'text-slate-500'
+                    <p className={`text-base sm:text-lg font-medium leading-relaxed ${openFaq === index ? 'text-slate-300' : 'text-slate-500'
                       }`}>{faq.answer}</p>
                   </div>
                 </div>
@@ -322,8 +322,8 @@ const ThirtyDayChallengeModern = () => {
         <div className="container-custom relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-16 backdrop-blur-xl">
             <div className="text-center lg:text-left">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">Ready to Begin?</h2>
-              <p className="text-xl text-slate-400 font-medium">Join 1,500+ couples today.</p>
+              <h2 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tighter">Ready to Begin?</h2>
+              <p className="text-lg text-slate-400 font-medium">Join 1,500+ couples today.</p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="text-center sm:text-right">

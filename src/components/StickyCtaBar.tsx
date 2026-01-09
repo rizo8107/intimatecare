@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { X, ArrowRight, Gift, Zap, Sparkles, MessageCircle, Heart, Phone, ShoppingBag } from 'lucide-react';
 import { appendUtmsToUrl } from '@/utils/utm';
 
+// CONFIGURATION: Set to false to disable this sticky bar site-wide
+const ENABLE_STICKY_BAR = false;
+
 const StickyCtaBar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -12,6 +15,9 @@ const StickyCtaBar = () => {
     // Show immediately
     setIsVisible(true);
   }, [isDismissed]);
+
+  // Early return if bar is disabled
+  if (!ENABLE_STICKY_BAR) return null;
 
   // Don't show on contact page, booking confirmation, or products page
   if (pathname === '/contact' || pathname === '/intimate-success' || pathname === '/products') return null;
@@ -80,11 +86,11 @@ const StickyCtaBar = () => {
       <div className={`${content.color} rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10 overflow-hidden relative backdrop-blur-md`}>
         <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent pointer-events-none" />
 
-        <div className="px-5 py-3 md:px-6 md:py-4">
+        <div className="px-4 py-3 md:px-6 md:py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Left - Icon & Text */}
             <div className="flex items-center gap-3 md:gap-4 text-white overflow-hidden">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-white/10 shrink-0 overflow-hidden border border-white/10">
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl bg-white/10 shrink-0 overflow-hidden border border-white/10">
                 <img src={(content as any).image} alt={(content as any).text} className="w-full h-full object-cover" />
               </div>
 
@@ -103,7 +109,7 @@ const StickyCtaBar = () => {
               {(content as any).to ? (
                 <Link
                   to={(content as any).to}
-                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"
+                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-3 py-1.5 md:px-6 md:py-3 rounded-lg md:rounded-2xl text-[10px] md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"
                 >
                   <span className="hidden sm:inline">Get Started</span>
                   <span className="sm:hidden">View</span>
@@ -114,7 +120,7 @@ const StickyCtaBar = () => {
                   href={appendUtmsToUrl((content as any).link)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"
+                  className="group inline-flex items-center gap-2 bg-white text-slate-950 font-black px-3 py-1.5 md:px-6 md:py-3 rounded-lg md:rounded-2xl text-[10px] md:text-sm transition-all duration-300 hover:scale-105 shadow-xl whitespace-nowrap"
                 >
                   <span className="hidden sm:inline">Buy Now</span>
                   <span className="sm:hidden">Buy</span>

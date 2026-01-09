@@ -67,7 +67,7 @@ const AboutPreviewModern = () => {
               <span className="text-gradient"> Khushboo Bist!</span>
             </h2>
 
-            <p className="text-lg sm:text-xl text-slate-500 font-medium mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            <p className="text-base sm:text-xl text-slate-500 font-medium mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
               I am a certified sex educator and intimacy coach, helping individuals and couples
               navigate the complex world of pleasure, connection, and self-discovery without
               judgment or shame.

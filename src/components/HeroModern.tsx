@@ -33,7 +33,7 @@ export default function HeroModern() {
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
           {/* Left Content */}
-          <div className="lg:w-1/2 text-center lg:text-left pt-10 lg:pt-0">
+          <div className="lg:w-1/2 text-center lg:text-left lg:pt-0 order-2 lg:order-1">
             {/* Minimalist Badge */}
             <div className="inline-block mb-6 animate-fade-in-up">
               <span className="py-2 px-4 rounded-full bg-slate-100/80 border border-slate-200 text-xs font-bold tracking-widest uppercase text-slate-600">
@@ -42,12 +42,12 @@ export default function HeroModern() {
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.05] mb-6 tracking-tighter text-slate-950 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black leading-[1.05] mb-6 tracking-tighter text-slate-950 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
               {renderHeadline()}
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg text-slate-500 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <p className="text-base lg:text-lg text-slate-500 mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium animate-fade-in-up" style={{ animationDelay: '200ms' }}>
               {subheadline}
             </p>
 
@@ -55,13 +55,13 @@ export default function HeroModern() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
               <Link
                 to="/products"
-                className="btn-premium-primary text-base px-10 py-4 h-auto shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transform hover:-translate-y-1 transition-all duration-300"
+                className="btn-premium-primary text-sm sm:text-base px-8 sm:px-10 py-3 sm:py-4 h-auto shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transform hover:-translate-y-1 transition-all duration-300"
               >
                 View Products
               </Link>
               <Link
                 to="/about"
-                className="inline-flex items-center justify-center px-10 py-4 text-base font-bold text-slate-700 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+                className="inline-flex items-center justify-center px-8 sm:px-10 py-3 sm:py-4 text-sm sm:text-base font-bold text-slate-700 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
               >
                 Learn More
               </Link>
@@ -87,7 +87,7 @@ export default function HeroModern() {
           </div>
 
           {/* Right Content - Hero Image */}
-          <div className="lg:w-1/2 relative lg:h-[600px] flex items-center justify-center animate-fade-in">
+          <div className="lg:w-1/2 relative lg:h-[600px] flex items-center justify-center animate-fade-in order-1 lg:order-2">
             <div className="relative w-full max-w-[500px] lg:max-w-full">
               {/* Main Image */}
               <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200 border-4 border-white">

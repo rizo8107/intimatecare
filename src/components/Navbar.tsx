@@ -92,7 +92,7 @@ const Navbar = () => {
       <nav
         className={`w-full transition-all duration-500 ${scrolled
           ? 'py-3 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)]'
-          : 'py-5 bg-white border-b border-slate-50'
+          : 'py-3 lg:py-5 bg-white border-b border-slate-50'
           }`}
       >
         <div className="container-custom">

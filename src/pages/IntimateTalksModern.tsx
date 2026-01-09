@@ -117,12 +117,12 @@ const IntimateTalksModern = () => {
             <div className="animate-fade-in-up">
               <span className="badge-premium mb-6">Telegram Community</span>
 
-              <h1 className="text-5xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
+              <h1 className="text-4xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
                 Intimate <br />
                 <span className="text-gradient">Talks</span>
               </h1>
 
-              <p className="text-xl text-slate-500 font-medium mb-10 leading-relaxed max-w-xl">
+              <p className="text-base sm:text-xl text-slate-500 font-medium mb-10 leading-relaxed max-w-xl">
                 A safe and bold community where you can explore everything you've ever wondered about sex, intimacy, and pleasure.
               </p>
 
@@ -184,7 +184,7 @@ const IntimateTalksModern = () => {
           <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-in-up">
             <span className="badge-premium mb-6">The Value</span>
             <h2 className="section-title">Where Real Ed Happens</h2>
-            <p className="text-xl text-slate-500 font-medium">Without judgment, with honesty, fun, and a little spice.</p>
+            <p className="text-base sm:text-xl text-slate-500 font-medium">Without judgment, with honesty, fun, and a little spice.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -208,7 +208,7 @@ const IntimateTalksModern = () => {
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div className="animate-fade-in-up">
-              <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-tight">Inside the Community</h2>
+              <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">Inside the Community</h2>
               <div className="space-y-4">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center gap-4 bg-white/5 border border-white/10 p-5 rounded-2xl group hover:bg-white/10 transition-all">
@@ -223,8 +223,8 @@ const IntimateTalksModern = () => {
 
             <div className="bg-white rounded-[3rem] p-12 text-slate-950 text-center shadow-2xl relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '200ms' }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
-              <h3 className="text-3xl font-black mb-6">Ready to Get Confident?</h3>
-              <p className="text-slate-500 font-medium mb-10 text-lg leading-relaxed">
+              <h3 className="text-2xl sm:text-3xl font-black mb-6">Ready to Get Confident?</h3>
+              <p className="text-slate-500 font-medium mb-10 text-base sm:text-lg leading-relaxed">
                 If you're eager to learn, explore, or simply feel seen, this is your space. Get confident in bed and beyond.
               </p>
               <a
@@ -254,7 +254,7 @@ const IntimateTalksModern = () => {
                 <div className="flex gap-1 mb-6 text-[#FFB800]">
                   {[...Array(t.rating)].map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
                 </div>
-                <p className="text-lg text-slate-700 italic font-medium mb-8 leading-relaxed">"{t.text}"</p>
+                <p className="text-base sm:text-lg text-slate-700 italic font-medium mb-8 leading-relaxed">"{t.text}"</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black">
                     {t.author.charAt(0)}
@@ -284,7 +284,7 @@ const IntimateTalksModern = () => {
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   className="w-full flex items-center justify-between p-8 text-left outline-none"
                 >
-                  <span className={`text-lg font-black tracking-tight transition-colors duration-500 ${openFaq === index ? 'text-white' : 'text-slate-900'
+                  <span className={`text-base sm:text-lg font-black tracking-tight transition-colors duration-500 ${openFaq === index ? 'text-white' : 'text-slate-900'
                     }`}>{faq.question}</span>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 ${openFaq === index ? 'bg-primary text-white rotate-180' : 'bg-slate-100 text-slate-400'
                     }`}>
@@ -294,7 +294,7 @@ const IntimateTalksModern = () => {
                 <div className={`transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
                   }`}>
                   <div className="px-8 pb-10 border-t border-white/10 pt-4">
-                    <p className={`text-lg font-medium leading-relaxed ${openFaq === index ? 'text-slate-300' : 'text-slate-500'
+                    <p className={`text-base sm:text-lg font-medium leading-relaxed ${openFaq === index ? 'text-slate-300' : 'text-slate-500'
                       }`}>{faq.answer}</p>
                   </div>
                 </div>
@@ -310,8 +310,8 @@ const IntimateTalksModern = () => {
         <div className="container-custom relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-16 backdrop-blur-xl">
             <div className="text-center lg:text-left">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">Join the Conversation</h2>
-              <p className="text-xl text-slate-400 font-medium">Safe, Bold, and Anonymous.</p>
+              <h2 className="text-2xl md:text-5xl font-black text-white mb-4 tracking-tighter">Join the Conversation</h2>
+              <p className="text-lg md:text-xl text-slate-400 font-medium">Safe, Bold, and Anonymous.</p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="text-center sm:text-right">

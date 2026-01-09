@@ -4,10 +4,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { appendUtmsToUrl } from '@/utils/utm';
 
+// CONFIGURATION: Set to false to disable this popup site-wide
+const ENABLE_SALES_POPUP = false;
+
 const SalesPopup = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [secondsLeft, setSecondsLeft] = useState(3599); // 1 hour
     const { pathname } = useLocation();
+
+    // Early return if popup is disabled
+    if (!ENABLE_SALES_POPUP) return null;
 
     // Track which pages the popup has already been shown on during this session
     // Using a state inside App (globally) would persist, but here it persists as long as component is mounted
