@@ -612,7 +612,7 @@ const DynamicInstructorBookingContent = () => {
 
             {/* Left Box: Sticky Profile Section */}
             <div className="lg:col-span-4 lg:sticky lg:top-32">
-              <div className="bg-white rounded-[2rem] p-5 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+              <div className="bg-white rounded-[2rem] p-4 md:p-5 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
                 {/* Decorative glow */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-0" />
 
@@ -679,7 +679,7 @@ const DynamicInstructorBookingContent = () => {
             <div className="lg:col-span-8 space-y-6">
 
               {/* About & Philosophy */}
-              <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+              <div className="bg-white rounded-[2rem] p-5 md:p-8 shadow-sm border border-slate-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/2 rounded-full blur-3xl -z-0" />
                 <h2 className="text-2xl font-black text-slate-950 mb-4 tracking-tighter relative z-10">
                   About {instructor?.name}
@@ -703,12 +703,12 @@ const DynamicInstructorBookingContent = () => {
 
               {/* Sessions Grid */}
               <div className="space-y-4">
-                <h2 className="text-2xl font-black text-slate-950 tracking-tighter px-4 leading-none">Choose Your Session</h2>
+                <h2 className="text-xl md:text-2xl font-black text-slate-950 tracking-tighter px-4 leading-none">Choose Your Session</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {sessionTypes.map((session) => (
                     <div
                       key={session.id}
-                      className={`relative bg-white rounded-3xl p-6 border hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 flex flex-col group ${session.is_first_session ? 'border-primary/20 shadow-lg shadow-primary/5' : 'border-slate-100 shadow-sm'
+                      className={`relative bg-white rounded-3xl p-5 md:p-6 border hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 flex flex-col group ${session.is_first_session ? 'border-primary/20 shadow-lg shadow-primary/5' : 'border-slate-100 shadow-sm'
                         }`}
                     >
                       {session.is_first_session && (
@@ -760,7 +760,7 @@ const DynamicInstructorBookingContent = () => {
               </div>
 
               {/* Support Areas - Dark Mode Contrast */}
-              <div className="bg-slate-950 rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden shadow-2xl">
+              <div className="bg-slate-950 rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden shadow-2xl">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px]" />
 

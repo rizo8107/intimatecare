@@ -159,7 +159,7 @@ const NewYearBundle = () => {
 
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {products.map((product, index) => (
-              <div key={index} className="group bg-slate-50 rounded-[2rem] p-6 border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
+              <div key={index} className="group bg-slate-50 rounded-[2rem] p-5 md:p-6 border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-300">
                 <div className="mb-6 relative aspect-[16/10] overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
                   <img
                     src={product.image}
@@ -220,7 +220,7 @@ const NewYearBundle = () => {
               { text: "Finally, content that is practical and respectful. We loved the variety in the playbook. Worth every rupee.", author: "Anjali S." },
               { text: "The Telegram group alone is worth the price. Such a safe space to ask real questions without judgment.", author: "Vikram" }
             ].map((t, i) => (
-              <div key={i} className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
+              <div key={i} className="bg-slate-50 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
                 <div className="flex gap-1 mb-6 text-[#FFB800]">
                   {[...Array(5)].map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
                 </div>

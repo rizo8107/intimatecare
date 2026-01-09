@@ -263,10 +263,10 @@ const Products = () => {
                                     { icon: Clock, title: "Instant Access", desc: "Start journey now" },
                                     { icon: Star, title: "Lifetime Use", desc: "Keep guides forever" }
                                 ].map((item, i) => (
-                                    <div key={i} className="p-6 rounded-[2rem] bg-white/5 border border-white/10">
+                                    <div key={i} className="p-4 md:p-6 rounded-[2rem] bg-white/5 border border-white/10">
                                         <item.icon className="w-8 h-8 text-primary mb-4" />
-                                        <h4 className="text-white font-bold mb-1">{item.title}</h4>
-                                        <p className="text-white/40 text-xs font-medium">{item.desc}</p>
+                                        <h4 className="text-white font-bold mb-1 tracking-tight">{item.title}</h4>
+                                        <p className="text-white/40 text-[10px] md:text-xs font-medium">{item.desc}</p>
                                     </div>
                                 ))}
                             </div>

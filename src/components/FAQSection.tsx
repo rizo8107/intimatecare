@@ -75,7 +75,7 @@ const FAQSection = () => {
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-8 text-left outline-none"
+                  className="w-full flex items-center justify-between p-6 md:p-8 text-left outline-none"
                 >
                   <span className={`text-base sm:text-lg font-black tracking-tight transition-colors duration-500 ${openIndex === index ? 'text-white' : 'text-slate-900 group-hover:text-primary'
                     }`}>
@@ -90,7 +90,7 @@ const FAQSection = () => {
                   className={`transition-all duration-500 ease-in-out ${openIndex === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
                     }`}
                 >
-                  <div className="px-8 pb-10 border-t border-white/10 pt-4">
+                  <div className="px-6 pb-8 md:px-8 md:pb-10 border-t border-white/10 pt-4">
                     <p className={`text-base sm:text-lg font-medium leading-relaxed transition-colors duration-500 ${openIndex === index ? 'text-slate-300' : 'text-slate-500'
                       }`}>
                       {faq.answer}

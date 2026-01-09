@@ -117,7 +117,7 @@ const IntimateTalksModern = () => {
             <div className="animate-fade-in-up">
               <span className="badge-premium mb-6">Telegram Community</span>
 
-              <h1 className="text-4xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
+              <h1 className="text-3xl sm:text-4xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
                 Intimate <br />
                 <span className="text-gradient">Talks</span>
               </h1>
@@ -140,7 +140,7 @@ const IntimateTalksModern = () => {
               </div>
 
               {/* Price & CTA */}
-              <div className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] border border-slate-100 mb-10 relative overflow-hidden">
+              <div className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] border border-slate-100 mb-10 relative overflow-hidden">
                 <div className="flex items-end gap-4 mb-8">
                   <div>
                     <span className="text-slate-400 line-through text-lg font-bold">₹1,999</span>
@@ -189,7 +189,7 @@ const IntimateTalksModern = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-slate-50 border border-slate-100 p-8 rounded-[2.5rem] hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+              <div key={index} className="bg-slate-50 border border-slate-100 p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
                 <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <feature.icon className="w-7 h-7" />
                 </div>
@@ -211,7 +211,7 @@ const IntimateTalksModern = () => {
               <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">Inside the Community</h2>
               <div className="space-y-4">
                 {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-4 bg-white/5 border border-white/10 p-5 rounded-2xl group hover:bg-white/10 transition-all">
+                  <div key={index} className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 md:p-5 rounded-2xl group hover:bg-white/10 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                       <CheckCircle2 className="w-5 h-5 text-white" />
                     </div>
@@ -221,7 +221,7 @@ const IntimateTalksModern = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-[3rem] p-12 text-slate-950 text-center shadow-2xl relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <div className="bg-white rounded-[3rem] p-8 md:p-12 text-slate-950 text-center shadow-2xl relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '200ms' }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
               <h3 className="text-2xl sm:text-3xl font-black mb-6">Ready to Get Confident?</h3>
               <p className="text-slate-500 font-medium mb-10 text-base sm:text-lg leading-relaxed">
@@ -250,7 +250,7 @@ const IntimateTalksModern = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((t, i) => (
-              <div key={i} className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
+              <div key={i} className="bg-slate-50 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all duration-500 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
                 <div className="flex gap-1 mb-6 text-[#FFB800]">
                   {[...Array(t.rating)].map((_, j) => <Star key={j} className="w-5 h-5 fill-current" />)}
                 </div>
@@ -308,7 +308,7 @@ const IntimateTalksModern = () => {
       <section className="py-20 bg-slate-950 relative overflow-hidden">
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
         <div className="container-custom relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[3rem] p-10 md:p-16 backdrop-blur-xl">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 bg-white/5 border border-white/10 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-16 backdrop-blur-xl">
             <div className="text-center lg:text-left">
               <h2 className="text-2xl md:text-5xl font-black text-white mb-4 tracking-tighter">Join the Conversation</h2>
               <p className="text-lg md:text-xl text-slate-400 font-medium">Safe, Bold, and Anonymous.</p>
