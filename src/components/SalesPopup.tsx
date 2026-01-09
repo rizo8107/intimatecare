@@ -113,7 +113,7 @@ const SalesPopup = () => {
             const timer = setTimeout(() => {
                 setIsVisible(true);
                 setShownPaths(prev => [...prev, pathname]);
-            }, 7000); // 7 seconds delay
+            }, 20000); // 20 seconds delay
             return () => clearTimeout(timer);
         }
     }, [pathname]);
