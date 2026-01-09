@@ -109,7 +109,7 @@ const NewYearBundle = () => {
                   rel="noopener noreferrer"
                   className="btn-premium-primary text-sm sm:text-lg w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 shadow-xl shadow-primary/20 hover:shadow-primary/30"
                 >
-                  Get The Bundle - ₹{price}
+                  Buy Now - ₹{price}
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
                 <div className="flex flex-col items-center lg:items-start bg-slate-100 px-4 py-2 rounded-xl">
@@ -200,7 +200,7 @@ const NewYearBundle = () => {
               href={purchaseUrl}
               className="inline-flex items-center gap-2 btn-premium-primary px-12 py-4"
             >
-              Get Instant Access
+              Buy Now
               <ArrowRight className="w-5 h-5" />
             </a>
           </div>
@@ -229,6 +229,15 @@ const NewYearBundle = () => {
               </div>
             ))}
           </div>
+          <div className="mt-12 text-center">
+            <a
+              href={purchaseUrl}
+              className="inline-flex items-center gap-2 btn-premium-primary px-12 py-4 shadow-xl shadow-primary/20"
+            >
+              Buy Now - ₹1,599
+              <ArrowRight className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -252,7 +261,7 @@ const NewYearBundle = () => {
                 href={purchaseUrl}
                 className="btn-premium-primary !bg-white !text-primary text-xl px-12 py-6 shadow-2xl transform hover:scale-105"
               >
-                Instant Access
+                Buy Now
               </a>
             </div>
 

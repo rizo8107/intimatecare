@@ -158,7 +158,7 @@ const IntimateTalksModern = () => {
                   rel="noopener noreferrer"
                   className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
                 >
-                  Join Community Now
+                  Join Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
 
@@ -198,6 +198,15 @@ const IntimateTalksModern = () => {
               </div>
             ))}
           </div>
+          <div className="mt-12 text-center">
+            <a
+              href={appendUtmsToUrl("https://payments.cashfree.com/forms/intimatetalks")}
+              className="inline-flex items-center gap-2 btn-premium-primary px-12 py-4"
+            >
+              Join Now - ₹999/mo
+              <ArrowRight className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -233,7 +242,7 @@ const IntimateTalksModern = () => {
                 rel="noopener noreferrer"
                 className="btn-premium-primary w-full py-5 text-lg"
               >
-                Yes, I'm Ready to Join!
+                Join Now
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>

@@ -188,7 +188,7 @@ const ThirtyDayChallengeModern = () => {
                   disabled={isLoading}
                   className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
                 >
-                  {isLoading ? 'Processing...' : 'Start Your Journey'}
+                  {isLoading ? 'Processing...' : 'Buy Now'}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
 
@@ -227,6 +227,15 @@ const ThirtyDayChallengeModern = () => {
                 <p className="text-slate-500 font-medium leading-relaxed">{benefit.description}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-12 text-center">
+            <button
+              onClick={handleBuyNow}
+              className="inline-flex items-center gap-2 btn-premium-primary px-12 py-4 shadow-xl shadow-primary/20"
+            >
+              Buy Now - ₹599
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </section>
@@ -334,7 +343,7 @@ const ThirtyDayChallengeModern = () => {
                 onClick={handleBuyNow}
                 className="btn-premium-primary !bg-white !text-primary transform hover:scale-105 shadow-2xl"
               >
-                Start Challenge
+                Buy Now
               </button>
             </div>
           </div>

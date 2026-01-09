@@ -201,8 +201,8 @@ const Products = () => {
                                                             <span className="text-slate-900 font-bold tracking-tight text-xs md:text-base">{product.price}</span>
                                                         </div>
                                                         <div className="flex items-center justify-center gap-2 px-4 py-2 md:px-6 md:py-2.5 bg-slate-900 rounded-full text-white font-medium group-hover:bg-primary transition-colors text-[10px] md:text-base">
-                                                            <span className="hidden md:inline">Buy Now</span>
-                                                            <span className="md:hidden">Buy</span>
+                                                            <span className="hidden md:inline">{product.category === 'Community' ? 'Join Now' : 'Buy Now'}</span>
+                                                            <span className="md:hidden">{product.category === 'Community' ? 'Join' : 'Buy'}</span>
                                                             <div className="bg-white/20 rounded-full p-0.5 hidden md:block">
                                                                 <ArrowRight className="w-3 h-3 text-white -rotate-45 group-hover:rotate-0 transition-transform" />
                                                             </div>
@@ -232,6 +232,46 @@ const Products = () => {
                     )}
                 </div>
             </section>
+
+            {/* Featured Bundle CTA */}
+            <section className="py-12 md:py-20 bg-slate-50">
+                <div className="container-custom">
+                    <div className="bg-white rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-16 border border-slate-100 shadow-2xl shadow-slate-200/50 flex flex-col lg:flex-row items-center gap-10 md:gap-16">
+                        <div className="lg:w-1/2 relative">
+                            <div className="aspect-square rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-8 border-slate-50">
+                                <img src="/bundle.jpg" alt="Ultimate Bundle" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="absolute -top-6 -right-6 bg-primary text-white font-black px-6 py-3 rounded-2xl shadow-xl transform rotate-12 uppercase tracking-widest text-[10px] md:text-xs">
+                                Best Value
+                            </div>
+                        </div>
+                        <div className="lg:w-1/2 text-center lg:text-left">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-6">
+                                <Sparkles className="w-3 h-3" />
+                                All Bestsellers Included
+                            </span>
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-6 tracking-tighter leading-tight">
+                                The Ultimate <br />
+                                <span className="text-gradient">Pleasure Bundle</span>
+                            </h2>
+                            <p className="text-base md:text-lg text-slate-500 font-medium mb-10 leading-relaxed md:max-w-md">
+                                Get 69 Positions Guide + 30-Day Challenge + Community Access for one unbeatable price. Start your complete transformation today.
+                            </p>
+                            <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
+                                <Link to="/newyear-bundle" className="btn-premium-primary text-base md:text-lg px-8 md:px-12 py-4 md:py-5 w-full sm:w-auto">
+                                    Buy Now - Save ₹698
+                                    <ArrowRight className="w-5 h-5" />
+                                </Link>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-slate-400 line-through font-bold">₹2,297</span>
+                                    <span className="text-3xl font-black text-slate-950">₹1,599</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
 
             {/* Trust Quote Section */}
             <section className="py-20 border-t border-slate-100">

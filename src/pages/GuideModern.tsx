@@ -146,7 +146,7 @@ const GuideModern = () => {
                   rel="noopener noreferrer"
                   className="btn-premium-primary w-full text-lg py-5 shadow-xl shadow-primary/20"
                 >
-                  Unlock Instant Access
+                  Buy Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
 
@@ -193,6 +193,15 @@ const GuideModern = () => {
               <p className="text-slate-400 font-medium mb-6">Get our exclusive "Communication Guide" worth ₹499 for free.</p>
               <Gift className="w-10 h-10 text-primary" />
             </div>
+          </div>
+          <div className="mt-12 text-center">
+            <a
+              href={appendUtmsToUrl("https://payments.cashfree.com/forms/69positionsebbok")}
+              className="inline-flex items-center gap-2 btn-premium-primary px-12 py-4"
+            >
+              Buy Now - ₹699
+              <ArrowRight className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </section>
@@ -288,7 +297,7 @@ const GuideModern = () => {
                 rel="noopener noreferrer"
                 className="btn-premium-primary !bg-white !text-primary transform hover:scale-105"
               >
-                Get My Copy
+                Buy Now
               </a>
             </div>
           </div>

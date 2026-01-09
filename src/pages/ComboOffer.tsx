@@ -198,7 +198,7 @@ const ComboOffer = () => {
                     disabled={isLoading}
                     className="bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-3 px-6 rounded-full font-bold text-lg transition-colors w-full disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    {isLoading ? 'Processing...' : 'Buy Bundle Now'}
+                    {isLoading ? 'Processing...' : 'Buy Now'}
                     {!isLoading && <ArrowRight size={18} className="ml-2" />}
                   </button>
                 </div>
@@ -275,6 +275,15 @@ const ComboOffer = () => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="flex justify-center mb-12">
+            <button
+              onClick={handleBuyNow}
+              className="bg-gradient-to-r from-[#FF7A9A] to-[#FF5A84] text-white py-4 px-12 rounded-full font-black text-xl shadow-xl shadow-pink-200/50 hover:scale-105 transition-transform flex items-center gap-2"
+            >
+              Buy Now - ₹{price}
+              <ArrowRight size={20} />
+            </button>
           </div>
 
           {/* Testimonials */}
@@ -389,7 +398,7 @@ const ComboOffer = () => {
                 disabled={isLoading}
                 className="bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-4 px-10 rounded-full font-bold text-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed max-w-md"
               >
-                {isLoading ? 'Processing...' : 'Get Your Bundle Now'}
+                {isLoading ? 'Processing...' : 'Buy Now'}
               </button>
               <p className="text-sm mt-2 opacity-90">
                 Instant digital delivery • Secure payment • Lifetime access
