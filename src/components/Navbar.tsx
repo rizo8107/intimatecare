@@ -146,9 +146,7 @@ const Navbar = () => {
                 isActive={isActive('/instructors')}
               />
 
-              <NavLink to="/webinars" active={isActive('/webinars')}>
-                Masterclasses
-              </NavLink>
+
             </div>
 
             <div className="hidden lg:flex items-center gap-3">
@@ -205,7 +203,7 @@ const Navbar = () => {
                   <>
                     <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Community</div>
                     {FEATURE_FLAGS.ENABLE_INTIMATE_TALKS && <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>Pleasure School</MobileNavLink>}
-                    <MobileNavLink to="/webinars" active={isActive('/webinars')} onClick={closeMenu}>Masterclasses</MobileNavLink>
+
                   </>
                 )}
                 <MobileNavLink to="/freebie" active={isActive('/freebie')} onClick={closeMenu}>Free Resources</MobileNavLink>

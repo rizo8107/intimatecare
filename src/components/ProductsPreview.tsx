@@ -31,32 +31,6 @@ const PRODUCTS_PREVIEW = [
         badge: "Top Rated"
     },
     {
-        id: 4,
-        title: "Intimate Talks",
-        subtitle: "Community Support",
-        description: "Ongoing support, expert Q&A, and community discussions for lasting transformation.",
-        price: "₹999",
-        image: "/telegram.png",
-        icon: Zap,
-        rating: "4.7",
-        reviews: "2.5k+",
-        link: "/intimatetalks",
-        badge: "Free Access"
-    },
-    {
-        id: 5,
-        title: "Pleasure Bundle",
-        subtitle: "Complete Ecosystem",
-        description: "Complete ecosystem including the playbook, challenge, and exclusive bonus content.",
-        price: "₹1,599",
-        image: "/bundle.jpg",
-        icon: Sparkles,
-        rating: "4.9",
-        reviews: "150+",
-        link: "/newyear-bundle",
-        badge: "Best Value"
-    },
-    {
         id: 1,
         title: "1:1 Coaching",
         subtitle: "Personalized Strategy",
