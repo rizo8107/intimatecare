@@ -1,0 +1,5 @@
+export const FEATURE_FLAGS = {
+    ENABLE_NEW_YEAR_BUNDLE: false,
+    ENABLE_INTIMATE_TALKS: false,
+    ENABLE_COMMUNITY_PAGES: false,
+};

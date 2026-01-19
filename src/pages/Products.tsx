@@ -44,42 +44,12 @@ const PRODUCTS = [
         price: "₹599",
         category: "Challenge",
         issue: ["Relationship Spark", "Communication"],
-        image: "/images/32 days v2.jpg", // Using a fallback image for challenge
+        image: "/images/32 days v2.jpg",
         icon: Target,
         rating: "5.0",
         reviews: "450+",
         link: "/30-day-challenge",
         badge: "Top Rated"
-    },
-    {
-        id: 4,
-        title: "Intimate Talks",
-        subtitle: "Community Support",
-        description: "Ongoing support, expert Q&A, and community discussions for lasting transformation.",
-        price: "₹999",
-        category: "Community",
-        issue: ["Communication", "Pleasure Skills"],
-        image: "/telegram.png",
-        icon: Zap,
-        rating: "4.7",
-        reviews: "2.5k+",
-        link: "/intimatetalks",
-        badge: "Free Access"
-    },
-    {
-        id: 5,
-        title: "Pleasure Bundle",
-        subtitle: "Complete Ecosystem",
-        description: "Complete ecosystem including the playbook, challenge, and exclusive bonus content.",
-        price: "₹1,599",
-        category: "Bundle",
-        issue: ["All Issues"],
-        image: "/bundle.jpg",
-        icon: Sparkles,
-        rating: "4.9",
-        reviews: "150+",
-        link: "/newyear-bundle",
-        badge: "Best Value"
     },
     {
         id: 1,
@@ -233,44 +203,7 @@ const Products = () => {
                 </div>
             </section>
 
-            {/* Featured Bundle CTA */}
-            <section className="py-12 md:py-20 bg-slate-50">
-                <div className="container-custom">
-                    <div className="bg-white rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-16 border border-slate-100 shadow-2xl shadow-slate-200/50 flex flex-col lg:flex-row items-center gap-10 md:gap-16">
-                        <div className="lg:w-1/2 relative">
-                            <div className="aspect-square rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-8 border-slate-50">
-                                <img src="/bundle.jpg" alt="Ultimate Bundle" className="w-full h-full object-cover" />
-                            </div>
-                            <div className="absolute -top-6 -right-6 bg-primary text-white font-black px-6 py-3 rounded-2xl shadow-xl transform rotate-12 uppercase tracking-widest text-[10px] md:text-xs">
-                                Best Value
-                            </div>
-                        </div>
-                        <div className="lg:w-1/2 text-center lg:text-left">
-                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-6">
-                                <Sparkles className="w-3 h-3" />
-                                All Bestsellers Included
-                            </span>
-                            <h2 className="text-3xl md:text-5xl font-black text-slate-950 mb-6 tracking-tighter leading-tight">
-                                The Ultimate <br />
-                                <span className="text-gradient">Pleasure Bundle</span>
-                            </h2>
-                            <p className="text-base md:text-lg text-slate-500 font-medium mb-10 leading-relaxed md:max-w-md">
-                                Get 69 Positions Guide + 30-Day Challenge + Community Access for one unbeatable price. Start your complete transformation today.
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
-                                <Link to="/newyear-bundle" className="btn-premium-primary text-base md:text-lg px-8 md:px-12 py-4 md:py-5 w-full sm:w-auto">
-                                    Buy Now - Save ₹698
-                                    <ArrowRight className="w-5 h-5" />
-                                </Link>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-slate-400 line-through font-bold">₹2,297</span>
-                                    <span className="text-3xl font-black text-slate-950">₹1,599</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+
 
 
             {/* Trust Quote Section */}

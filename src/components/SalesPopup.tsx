@@ -3,6 +3,7 @@ import { X as XIcon, Zap as ZapIcon, ArrowRight as ArrowIcon, Sparkles as Sparkl
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { appendUtmsToUrl } from '@/utils/utm';
+import { FEATURE_FLAGS } from '@/config/featureFlags';
 
 // CONFIGURATION: Set to false to disable this popup site-wide
 const ENABLE_SALES_POPUP = false;
@@ -22,16 +23,29 @@ const SalesPopup = () => {
 
     // Dynamic content configuration based on current route
     const getPopupContent = () => {
-        // Home Page -> Bundle
+        // Home Page -> Bundle (only if bundle is enabled)
         if (pathname === '/') {
+            if (FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE) {
+                return {
+                    title: "New Year, New Connections",
+                    subtitle: "EXCLUSIVE BUNDLE",
+                    description: "Get our 3 bestselling products + exclusive bonuses for one unbeatable price. Start 2026 with a spark!",
+                    image: "/bundle.jpg",
+                    link: "/newyear-bundle",
+                    buttonText: "Claim Bundle - ₹1,599",
+                    badge: "HOLIDAY SPECIAL"
+                };
+            }
+            // Fallback to guide if bundle is disabled
             return {
-                title: "New Year, New Connections",
-                subtitle: "EXCLUSIVE BUNDLE",
-                description: "Get our 3 bestselling products + exclusive bonuses for one unbeatable price. Start 2026 with a spark!",
-                image: "/bundle.jpg",
-                link: "/newyear-bundle",
-                buttonText: "Claim Bundle - ₹1,599",
-                badge: "HOLIDAY SPECIAL"
+                title: "Get The 69 Position Playbook",
+                subtitle: "LIMITED TIME OFFER",
+                description: "Join 10,000+ couples who have transformed their intimacy with our expert-crafted guide.",
+                image: "/69.jpg",
+                link: "/guide",
+                isExternal: false,
+                buttonText: "Claim 30% Discount",
+                badge: "BESTSELLER"
             };
         }
 
@@ -63,8 +77,8 @@ const SalesPopup = () => {
             };
         }
 
-        // Products Page or Combo Page -> Bundle Offer (Great value cross-sell)
-        if (pathname === '/products' || pathname === '/combo-offer') {
+        // Products Page or Combo Page -> Bundle Offer (only if bundle is enabled)
+        if ((pathname === '/products' || pathname === '/combo-offer') && FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE) {
             return {
                 title: "The Ultimate New Year Bundle",
                 subtitle: "BEST VALUE PACKAGE",

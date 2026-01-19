@@ -46,6 +46,7 @@ import Posters from "./pages/Posters";
 import AdminCMS from "./pages/AdminCMS";
 import { initClarity } from "./utils/clarity";
 
+import { FEATURE_FLAGS } from "@/config/featureFlags";
 const queryClient = new QueryClient();
 
 // ScrollToTop component to reset scroll position on page navigation
@@ -81,7 +82,7 @@ const AppContent = () => {
           <Route path="/student-booking" element={<StudentBooking />} />
           <Route path="/instructor-booking" element={<InstructorBooking />} />
           <Route path="/instructor/:instructorName" element={<DynamicInstructorBooking />} />
-          <Route path="/join-group" element={<JoinGroup />} />
+          {FEATURE_FLAGS.ENABLE_COMMUNITY_PAGES && <Route path="/join-group" element={<JoinGroup />} />}
           <Route path="/telegram-test" element={<TelegramTest />} />
           <Route path="/guide" element={<GuideModern />} />
           <Route path="/freebie" element={<Freebie />} />
@@ -89,13 +90,13 @@ const AppContent = () => {
           <Route path="/intimate-success" element={<IntimateSuccess />} />
           <Route path="/issues" element={<Issues />} />
           <Route path="/sessions" element={<SessionsModern />} />
-          <Route path="/intimatetalks" element={<IntimateTalksModern />} />
+          {FEATURE_FLAGS.ENABLE_INTIMATE_TALKS && <Route path="/intimatetalks" element={<IntimateTalksModern />} />}
           <Route path="/terms-conditions" element={<TermsConditions />} />
           <Route path="/cancellation-refund" element={<CancellationRefund />} />
           <Route path="/payment-test" element={<PaymentTestPage />} />
           <Route path="/30-day-challenge" element={<ThirtyDayChallengeModern />} />
           <Route path="/combo-offer" element={<ComboOffer />} />
-          <Route path="/newyear-bundle" element={<NewYearBundle />} />
+          {FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE && <Route path="/newyear-bundle" element={<NewYearBundle />} />}
           <Route path="/webinars" element={<Webinars />} />
           <Route path="/coming-soon" element={<ComingSoon />} />
           <Route path="/admin/waiting-list" element={<WaitingListAdmin />} />

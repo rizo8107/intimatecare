@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, Sparkles, BookOpen, Heart, Calendar, Zap, Heart as HeartSolid } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { FEATURE_FLAGS } from '@/config/featureFlags';
 
 const TopBanner = () => {
   const { pathname } = useLocation();
@@ -9,8 +10,8 @@ const TopBanner = () => {
   const proofs = [
     { text: "Sarah from Mumbai just booked a 1:1 session", time: "2 min ago" },
     { text: "Couple from Delhi downloaded the 69 Position Playbook", time: "5 min ago" },
-    { text: "Priya joined the Intimate Talks", time: "8 min ago" },
-  ];
+    FEATURE_FLAGS.ENABLE_INTIMATE_TALKS ? { text: "Priya joined the Intimate Talks", time: "8 min ago" } : null,
+  ].filter(Boolean) as { text: string; time: string }[];
 
   useEffect(() => {
     if (pathname !== '/') return;
@@ -34,8 +35,13 @@ const TopBanner = () => {
       );
     }
 
-    if (pathname === '/guide' || pathname === '/30-day-challenge' || pathname === '/newyear-bundle' || pathname === '/intimatetalks') {
-      const text = pathname === '/newyear-bundle'
+    if (
+      pathname === '/guide' ||
+      pathname === '/30-day-challenge' ||
+      (FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE && pathname === '/newyear-bundle') ||
+      (FEATURE_FLAGS.ENABLE_INTIMATE_TALKS && pathname === '/intimatetalks')
+    ) {
+      const text = (FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE && pathname === '/newyear-bundle')
         ? "NEW YEAR SPECIAL: 30% OFF ENDS SOON!"
         : "LIMITED OFFER: 30% OFF + FREE BONUS GUIDE! ⚡";
 
@@ -50,6 +56,7 @@ const TopBanner = () => {
 
     return null;
   };
+
 
   const content = getBannerContent();
   if (!content) return null;
@@ -191,12 +198,16 @@ const Navbar = () => {
                 <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Coaching & Guides</div>
                 <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>Playbooks</MobileNavLink>
                 <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>Challenges</MobileNavLink>
-                <MobileNavLink to="/newyear-bundle" active={isActive('/newyear-bundle')} onClick={closeMenu}>New Year Bundle</MobileNavLink>
+                {FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE && <MobileNavLink to="/newyear-bundle" active={isActive('/newyear-bundle')} onClick={closeMenu}>New Year Bundle</MobileNavLink>}
                 <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>1:1 Sessions</MobileNavLink>
 
-                <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Community</div>
-                <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>Pleasure School</MobileNavLink>
-                <MobileNavLink to="/webinars" active={isActive('/webinars')} onClick={closeMenu}>Masterclasses</MobileNavLink>
+                {FEATURE_FLAGS.ENABLE_COMMUNITY_PAGES && (
+                  <>
+                    <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Community</div>
+                    {FEATURE_FLAGS.ENABLE_INTIMATE_TALKS && <MobileNavLink to="/intimatetalks" active={isActive('/intimatetalks')} onClick={closeMenu}>Pleasure School</MobileNavLink>}
+                    <MobileNavLink to="/webinars" active={isActive('/webinars')} onClick={closeMenu}>Masterclasses</MobileNavLink>
+                  </>
+                )}
                 <MobileNavLink to="/freebie" active={isActive('/freebie')} onClick={closeMenu}>Free Resources</MobileNavLink>
               </div>
 

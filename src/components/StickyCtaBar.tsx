@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X, ArrowRight, Gift, Zap, Sparkles, MessageCircle, Heart, Phone, ShoppingBag } from 'lucide-react';
 import { appendUtmsToUrl } from '@/utils/utm';
+import { FEATURE_FLAGS } from '@/config/featureFlags';
 
 // CONFIGURATION: Set to false to disable this sticky bar site-wide
 const ENABLE_STICKY_BAR = false;
@@ -42,7 +43,8 @@ const StickyCtaBar = () => {
         color: "bg-primary"
       };
     }
-    if (pathname === '/newyear-bundle') {
+    // Only show New Year Bundle CTA if enabled
+    if (FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE && pathname === '/newyear-bundle') {
       return {
         text: "The New Year Bundle",
         sub: "Complete Pleasure Ecosystem - 30% OFF!",
@@ -51,7 +53,8 @@ const StickyCtaBar = () => {
         color: "bg-slate-950"
       };
     }
-    if (pathname === '/intimatetalks') {
+    // Only show Intimate Talks CTA if enabled
+    if (FEATURE_FLAGS.ENABLE_INTIMATE_TALKS && pathname === '/intimatetalks') {
       return {
         text: "Join Pleasure School",
         sub: "India's largest intimate wellness community.",
