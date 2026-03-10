@@ -31,7 +31,7 @@ const TelegramTest = () => {
     if (container) {
       // Clear any existing content
       container.innerHTML = '';
-      
+
       // Create the script element for Telegram login widget
       const script = document.createElement('script');
       script.async = true;
@@ -40,13 +40,13 @@ const TelegramTest = () => {
       script.setAttribute('data-size', 'large');
       script.setAttribute('data-request-access', 'write');
       script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
-      
+
       // Append the script to the container
       container.appendChild(script);
-      
+
       console.log('Telegram login widget initialized');
     }
-    
+
     return () => {
       // Clean up if needed
       if (container) {
@@ -59,7 +59,7 @@ const TelegramTest = () => {
   useEffect(() => {
     // Define the auth callback globally
     window.telegramLoginCallback = handleTelegramAuth;
-    
+
     return () => {
       // Clean up global callback
       delete window.telegramLoginCallback;
@@ -70,12 +70,12 @@ const TelegramTest = () => {
   const handleTelegramAuth = async (user: TelegramUser) => {
     console.log('Telegram auth data:', user);
     setTelegramData(user);
-    
+
     try {
       setLoading(true);
-      
+
       // Send data to the webhook
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook-test/telegram-success-user', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook-test/telegram-success-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -91,20 +91,20 @@ const TelegramTest = () => {
           test_mode: true
         })
       });
-      
+
       const responseData = await response.text();
       setWebhookResponse(responseData);
-      
+
       if (!response.ok) {
         throw new Error(`Webhook error: ${response.status}`);
       }
-      
+
       toast({
         title: 'Success!',
         description: 'Webhook called successfully!',
         variant: 'default'
       });
-      
+
     } catch (error) {
       console.error('Error in webhook call:', error);
       toast({
@@ -120,14 +120,14 @@ const TelegramTest = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-8 text-center">Telegram Webhook Test</h1>
-      
+
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Step 1: Login with Telegram</h2>
           <p className="text-gray-600 mb-4">
             Click the button below to authenticate with Telegram. This will trigger the webhook.
           </p>
-          
+
           <div className="flex justify-center mb-4">
             <div ref={telegramLoginContainerRef} className="telegram-login-container">
               {/* Telegram widget will be inserted here by useEffect */}
@@ -135,7 +135,7 @@ const TelegramTest = () => {
             </div>
           </div>
         </div>
-        
+
         {telegramData && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Step 2: Telegram Data</h2>
@@ -144,13 +144,13 @@ const TelegramTest = () => {
             </div>
           </div>
         )}
-        
+
         {loading && (
           <div className="flex justify-center my-6">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
           </div>
         )}
-        
+
         {webhookResponse && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Step 3: Webhook Response</h2>
@@ -159,7 +159,7 @@ const TelegramTest = () => {
             </div>
           </div>
         )}
-        
+
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
           <h3 className="font-medium text-blue-800 mb-2">Troubleshooting Tips:</h3>
           <ul className="list-disc pl-5 text-blue-700 text-sm">

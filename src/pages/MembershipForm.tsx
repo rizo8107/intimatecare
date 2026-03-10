@@ -41,8 +41,8 @@ interface FormData {
 }
 
 // Supabase API keys
-const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const SERVICE_ROLE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE';
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q';
 
 const MembershipForm = () => {
   const location = useLocation();
@@ -54,7 +54,7 @@ const MembershipForm = () => {
   const [verificationLoading, setVerificationLoading] = useState(false);
   const telegramLoginContainerRef = useRef<HTMLDivElement>(null);
   const [matchedPayment, setMatchedPayment] = useState<any>(null);
-  
+
   // Form state
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -96,20 +96,20 @@ const MembershipForm = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setQueryParams(params);
-    
+
     // Track form view/start
     trackFormStart('membership_form');
     trackFormEvent('membership_form', 'init', 'start');
-    
+
     // Define the auth callback globally
     window.telegramLoginCallback = handleTelegramAuth;
-    
+
     // Check if payment exists in Supabase
     const paymentId = params.get('payment_id');
     if (paymentId) {
       verifyPayment(paymentId);
     }
-    
+
     return () => {
       // Clean up global callback
       delete window.telegramLoginCallback;
@@ -122,7 +122,7 @@ const MembershipForm = () => {
       setVerificationLoading(true);
       // For now, auto-verify the payment to let development proceed
       setPaymentVerified(true);
-      
+
       // In production, uncomment this code to verify with Supabase:
       /*
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
@@ -138,7 +138,7 @@ const MembershipForm = () => {
       }
       
       const payments = await response.json();
-      console.log('Payment verification data received');
+      console.log('Payments data:', payments);
       
       const verified = payments.some((payment: any) => payment.payment_id === paymentId);
       setPaymentVerified(verified);
@@ -173,21 +173,21 @@ const MembershipForm = () => {
       });
       return false;
     }
-    
+
     try {
       setVerificationLoading(true);
-      
+
       // Store the phone number in local storage as a backup
       try {
         localStorage.setItem('verified_phone', formData.mobileNumber);
-        console.log('Phone information stored in localStorage');
+        console.log('Stored phone in localStorage:', formData.mobileNumber);
       } catch (e) {
-        console.error('Failed to store data in localStorage', e);
+        console.error('Failed to store phone in localStorage', e);
       }
-      
+
       // For development, auto-verify the phone number
       setPhoneVerified(true);
-      
+
       // In production, uncomment this code to verify with Supabase:
       /*
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
@@ -203,7 +203,7 @@ const MembershipForm = () => {
       }
       
       const payments = await response.json();
-      console.log('Payment verification data received');
+      console.log('Payments data for phone verification:', payments);
       
       // Find a payment that matches the phone number
       const matchedPayment = payments.find((payment: any) => 
@@ -212,7 +212,7 @@ const MembershipForm = () => {
         payment.customer_phone === formData.mobileNumber
       );
       
-      console.log('Payment verification completed');
+      console.log('Matched payment:', matchedPayment);
       
       if (matchedPayment) {
         setMatchedPayment(matchedPayment);
@@ -227,7 +227,7 @@ const MembershipForm = () => {
         return false;
       }
       */
-      
+
       return true;
     } catch (error) {
       console.error('Error verifying phone number:', error);
@@ -251,29 +251,29 @@ const MembershipForm = () => {
   const handleTelegramAuth = (user: any) => {
     console.log('Telegram auth success:', user);
     console.log('Current formData state:', formData);
-    
+
     // Track Telegram authentication attempt
     trackEvent('telegram_auth_attempt', EventCategory.CONVERSION, 'membership_form');
     trackTelegramEvent('login', true);
-    
+
     // Store the phone number in local storage as a backup
     try {
       localStorage.setItem('verified_phone', formData.mobileNumber);
-      console.log('Phone verification completed');
+      console.log('Stored phone in localStorage:', formData.mobileNumber);
     } catch (e) {
-      console.error('Failed to store verification data', e);
+      console.error('Failed to store phone in localStorage', e);
     }
-    
+
     // First store the Telegram data in state
     setTelegramData({
       ...user,
       phone_number: formData.mobileNumber,
       verified_phone: formData.mobileNumber
     });
-    
+
     // Create a deep copy of the matched payment to avoid reference issues
     const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
-    
+
     // Create combined user data with all necessary information
     const combinedUserData = {
       ...user,
@@ -289,7 +289,7 @@ const MembershipForm = () => {
       // Add form data
       form_data: formData
     };
-    
+
     // Send the combined data to the backend
     sendTelegramDataToBackend(combinedUserData);
   };
@@ -298,7 +298,7 @@ const MembershipForm = () => {
   const sendTelegramDataToBackend = async (userData: any) => {
     try {
       setLoading(true);
-      
+
       // Try to get phone from localStorage as a backup
       let backupPhone = '';
       try {
@@ -306,25 +306,28 @@ const MembershipForm = () => {
       } catch (e) {
         console.error('Failed to read from localStorage', e);
       }
-      
-      // Debug information - remove sensitive data
-      console.log('[DEBUG] Verification process started');
-      
-      // Get phone from various sources (without logging the actual numbers)
-      const reliablePhone = userData.phone_number || userData.verified_phone || formData.mobileNumber || backupPhone || '';
-      
-      console.log('[DEBUG] Verification state checked');
-      
-      // Get the most reliable phone number to use
-      console.log('Verification data prepared for submission');
-      
+
+      // Debug: Log all state variables to check consistency
+      console.log('[DEBUG] Phone number state:', formData.mobileNumber);
+      console.log('[DEBUG] Phone number from localStorage:', backupPhone);
+      console.log('[DEBUG] Phone number in userData:', userData.phone_number);
+      console.log('[DEBUG] Matched payment state:', matchedPayment);
+      console.log('[DEBUG] Phone verified state:', phoneVerified);
+      console.log('[DEBUG] Payment verified state:', paymentVerified);
+
+      // Get the most reliable phone number
+      const reliablePhone = userData.phone_number || formData.mobileNumber || backupPhone;
+      console.log('[DEBUG] Most reliable phone number:', reliablePhone);
+
       // Log important data before sending
-      console.log('Preparing Telegram verification data');
-      
+      console.log('Raw Telegram user data:', userData);
+      console.log('User ID from Telegram:', userData.id);
+      console.log('Final phone number being sent:', reliablePhone);
+
       // Deep clone matchedPayment to avoid any reference issues
-      const paymentDataToSend = userData.matched_payment || 
-                               (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
-      
+      const paymentDataToSend = userData.matched_payment ||
+        (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
+
       // Add payment details to the payload with the most reliable phone number
       const payloadData = {
         ...userData,
@@ -344,20 +347,20 @@ const MembershipForm = () => {
         customer_name: userData.customer_name || paymentDataToSend?.customer_name || paymentDataToSend?.name || '',
         form_data: formData
       };
-      
+
       console.log('Sending webhook payload:', JSON.stringify(payloadData));
-      
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
+
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/telegram-success-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payloadData),
       });
-      
+
       // Log response status
       console.log('Webhook response status:', response.status);
-      
+
       if (response.ok) {
         toast({
           title: 'Success!',
@@ -383,7 +386,7 @@ const MembershipForm = () => {
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as HTMLInputElement;
-    
+
     // For checkboxes, use checked property
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
@@ -392,7 +395,7 @@ const MembershipForm = () => {
         [name]: checked
       };
       setFormData(updatedFormData);
-      
+
       // Save to localStorage for persistence
       localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
     } else {
@@ -401,7 +404,7 @@ const MembershipForm = () => {
         [name]: value
       };
       setFormData(updatedFormData);
-      
+
       // Save to localStorage for persistence
       localStorage.setItem('membershipFormData', JSON.stringify(updatedFormData));
     }

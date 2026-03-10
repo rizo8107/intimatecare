@@ -56,7 +56,7 @@ const JoinGroup = () => {
 
     try {
       // Send verification data to webhook
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram_group_join', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/telegram_group_join', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const JoinGroup = () => {
             <h1 className="text-2xl font-serif font-medium">Join Intimate Talks Telegram Group</h1>
             <p className="mt-2">Complete Your Verification</p>
           </div>
-          
+
           <div className="p-8">
             <div className="space-y-6">
               <div className="flex items-center justify-center space-x-2 text-green-600 bg-green-50 p-3 rounded-md">
@@ -144,17 +144,17 @@ const JoinGroup = () => {
                 </svg>
                 <p className="font-medium text-sm">Payment Successfully Detected</p>
               </div>
-              
+
               <div>
                 <h2 className="text-lg font-medium mb-4">Step 1: Connect Your Telegram Account</h2>
                 <p className="text-muted-foreground mb-4 text-sm">
                   To add you to the private Telegram group, we need to verify your Telegram account.
                   Please click the button below to authenticate with Telegram.
                 </p>
-                
+
                 {!telegramUsername && (
                   <div className="flex justify-center my-4">
-                    <TelegramLoginButton 
+                    <TelegramLoginButton
                       botName="IntimateCareTelegramBot"
                       onAuth={handleTelegramAuth}
                       buttonSize="large"
@@ -163,7 +163,7 @@ const JoinGroup = () => {
                     />
                   </div>
                 )}
-                
+
                 {telegramUsername && (
                   <div className="bg-blue-50 p-4 rounded-md">
                     <p className="text-center">
@@ -173,14 +173,14 @@ const JoinGroup = () => {
                   </div>
                 )}
               </div>
-              
+
               <div>
                 <h2 className="text-lg font-medium mb-4">Step 2: Complete Verification</h2>
                 <p className="text-muted-foreground mb-4 text-sm">
                   Click the button below to complete your verification. Once verified,
                   you'll receive an invitation link to join the private Telegram group.
                 </p>
-                
+
                 <form onSubmit={handleSubmit}>
                   <button
                     type="submit"
@@ -191,10 +191,10 @@ const JoinGroup = () => {
                   </button>
                 </form>
               </div>
-              
+
               <div className="text-xs text-center text-muted-foreground mt-6">
                 <p>
-                  Having trouble? Please contact us at 
+                  Having trouble? Please contact us at
                   <a href="mailto:support@intimatecare.com" className="text-blush-600 hover:underline"> support@intimatecare.com</a>
                 </p>
               </div>

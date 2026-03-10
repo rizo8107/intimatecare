@@ -70,7 +70,7 @@ function PaymentTestPage() {
       customer_email: customerEmail,
     };
 
-    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/studentpay';
+    const webhookUrl = 'https://backend-n8n.lhs56u.easypanel.host/webhook/studentpay';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 
@@ -181,15 +181,15 @@ function PaymentTestPage() {
   const pollForPaymentStatus = async (currentCfOrderId: string, attempt: number) => {
     // Use the ref to check if polling should continue.
     if (!pollingActiveRef.current) {
-        console.log('Polling was stopped externally or component unmounted.');
-        if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
-        return;
+      console.log('Polling was stopped externally or component unmounted.');
+      if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
+      return;
     }
 
     console.log(`Polling for order ${currentCfOrderId}, attempt ${attempt + 1}`);
     setPaymentError(null); // Clear previous errors
 
-    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/verify';
+    const verifyWebhookUrl = 'https://backend-n8n.lhs56u.easypanel.host/webhook/verify';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 
@@ -213,7 +213,7 @@ function PaymentTestPage() {
           pollingActiveRef.current = false;
           setIsPollingStatus(false);
           if (pollingTimeoutIdRef.current) clearTimeout(pollingTimeoutIdRef.current);
-          
+
           toast({
             title: 'Payment Status Finalized',
             description: `Order ${statusData.order_id}: ${statusData.payment_status}. ${statusData.payment_message || ''}`,
@@ -221,7 +221,7 @@ function PaymentTestPage() {
           });
         } else {
           // Schedule next poll only if polling is still active
-          if(pollingActiveRef.current) {
+          if (pollingActiveRef.current) {
             pollingTimeoutIdRef.current = setTimeout(() => pollForPaymentStatus(currentCfOrderId, attempt + 1), POLLING_INTERVAL);
           }
         }
@@ -248,14 +248,14 @@ function PaymentTestPage() {
   const startPaymentStatusPolling = (cfOrderIdToPoll: string) => {
     if (pollingActiveRef.current) {
       console.log('Polling already in progress for:', cfOrderIdToPoll);
-      return; 
+      return;
     }
     console.log('Starting payment status polling for order:', cfOrderIdToPoll);
-    
+
     // Set ref and state to start polling
     pollingActiveRef.current = true;
     setIsPollingStatus(true);
-    
+
     if (pollingTimeoutIdRef.current) {
       clearTimeout(pollingTimeoutIdRef.current); // Clear any existing timeout just in case
     }
@@ -267,7 +267,7 @@ function PaymentTestPage() {
     if (storedCfOrderId) {
       startPaymentStatusPolling(storedCfOrderId);
     } else {
-      toast({ title: 'Error', description: 'Cashfree Order ID not found to check status.', variant: 'destructive'});
+      toast({ title: 'Error', description: 'Cashfree Order ID not found to check status.', variant: 'destructive' });
     }
   };
 
@@ -285,39 +285,39 @@ function PaymentTestPage() {
   return (
     <div className="container mx-auto p-4 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6 text-center">Payment Testing Page (Hidden)</h1>
-      
+
       <div className="space-y-4 mb-8 p-6 border rounded-lg shadow-sm">
         <p className="text-sm text-red-600 bg-red-100 p-3 rounded-md">
-          <strong>Security Warning:</strong> This page uses hardcoded credentials for testing purposes only. 
+          <strong>Security Warning:</strong> This page uses hardcoded credentials for testing purposes only.
           Do NOT use this approach in a production environment.
         </p>
         <div>
           <Label htmlFor="customerName">Customer Name</Label>
-          <Input 
-            id="customerName" 
-            type="text" 
-            value={customerName} 
-            onChange={(e) => setCustomerName(e.target.value)} 
+          <Input
+            id="customerName"
+            type="text"
+            value={customerName}
+            onChange={(e) => setCustomerName(e.target.value)}
             placeholder="Enter customer name"
           />
         </div>
         <div>
           <Label htmlFor="customerPhone">Customer Phone</Label>
-          <Input 
-            id="customerPhone" 
-            type="tel" 
-            value={customerPhone} 
-            onChange={(e) => setCustomerPhone(e.target.value)} 
+          <Input
+            id="customerPhone"
+            type="tel"
+            value={customerPhone}
+            onChange={(e) => setCustomerPhone(e.target.value)}
             placeholder="Enter customer phone"
           />
         </div>
         <div>
           <Label htmlFor="customerEmail">Customer Email</Label>
-          <Input 
-            id="customerEmail" 
-            type="email" 
-            value={customerEmail} 
-            onChange={(e) => setCustomerEmail(e.target.value)} 
+          <Input
+            id="customerEmail"
+            type="email"
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
             placeholder="Enter customer email"
           />
         </div>
@@ -347,13 +347,13 @@ function PaymentTestPage() {
             <p className="mt-4 text-sm text-blue-600 animate-pulse">Verifying payment status, please wait...</p>
           )}
           {/* Show manual check button if not polling AND status is still ambiguous and not final */}
-          {!isPollingStatus && paymentOutcome && 
-           (paymentOutcome.payment_message === 'Payment finished. Check status.' || (paymentOutcome.payment_status && paymentOutcome.payment_status === 'PENDING')) && 
-           (!paymentOutcome.payment_status || !FINAL_PAYMENT_STATUSES.includes(paymentOutcome.payment_status)) && (
-            <Button onClick={handleManualCheckStatus} disabled={isPollingStatus} className="mt-4">
-              {isPollingStatus ? 'Checking...' : 'Check Payment Status Manually'}
-            </Button>
-          )}
+          {!isPollingStatus && paymentOutcome &&
+            (paymentOutcome.payment_message === 'Payment finished. Check status.' || (paymentOutcome.payment_status && paymentOutcome.payment_status === 'PENDING')) &&
+            (!paymentOutcome.payment_status || !FINAL_PAYMENT_STATUSES.includes(paymentOutcome.payment_status)) && (
+              <Button onClick={handleManualCheckStatus} disabled={isPollingStatus} className="mt-4">
+                {isPollingStatus ? 'Checking...' : 'Check Payment Status Manually'}
+              </Button>
+            )}
         </div>
       )}
     </div>

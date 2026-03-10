@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
-import { Download, ExternalLink } from 'lucide-react';
 
 const Freebie = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [userName, setUserName] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +14,7 @@ const Freebie = () => {
     try {
       console.log('Submitting form data to webhook...');
 
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/freebie', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/freebie', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,26 +34,10 @@ const Freebie = () => {
       if (response.ok) {
         toast({
           title: "Success!",
-          description: "Your free guides are ready below!",
+          description: "Check your email for your free Pleasure Mapping guide.",
         });
 
-        // Track the form submission event with Meta Pixel
-        if (window.fbq) {
-          window.fbq('track', 'Lead', {
-            content_name: 'Intimacy Guide',
-            content_category: 'Freebie',
-            value: 1.00,
-            currency: 'INR'
-          });
-        }
-
-        // Save the user's name for the success page
-        setUserName(name);
-
-        // Set submitted to true to show the success page
-        setSubmitted(true);
-
-        // Reset the form fields
+        // Reset the form
         setEmail('');
         setName('');
         setPhone('');
@@ -76,309 +57,176 @@ const Freebie = () => {
     }
   };
 
-  // Success page component with links to PDF files
-  const SuccessPage = () => (
-    <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8 p-6 md:p-8">
-      <div className="text-center mb-8">
-        <div className="text-[#FF7A9A] text-sm font-medium mb-1">Thank You!</div>
-        <h1 className="text-2xl md:text-3xl font-serif font-medium text-gray-800 mb-3">
-          Your Free Resources Are Ready
-        </h1>
-        <p className="text-gray-700">
-          {userName ? `Hi ${userName.split(' ')[0]}, thank` : 'Thank'} you for your interest! Here are your free guides.
-        </p>
-        <div className="mt-5 flex justify-center">
-          <img
-            src="/freebie.webp"
-            alt="Intimacy Guide"
-            className="w-48 h-auto rounded-lg shadow-sm"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = "/freebie.webp/400x400";
-              target.onerror = null;
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Pleasure Map PDF */}
-        <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow flex flex-col h-full">
-          <h3 className="font-serif text-lg font-medium text-gray-800 mb-3">Pleasure Map</h3>
-          <p className="text-gray-700 text-sm mb-4 flex-grow">
-            Discover your pleasure zones and enhance your intimate experiences.
-          </p>
-          <a
-            href="https://drive.google.com/file/d/1a7MS8Fr76ulCY5fk1VqtNq7UnG6MroEm/view?usp=drive_link"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center py-2 px-4 bg-[#FF7A9A] hover:bg-[#FF5A84] text-white rounded-full text-center font-medium transition-colors text-sm"
-          >
-            <Download size={16} className="mr-2" />
-            View PDF
-          </a>
-        </div>
-
-        {/* Female Sensitivity PDF */}
-        <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow flex flex-col h-full">
-          <h3 className="font-serif text-lg font-medium text-gray-800 mb-3">Female Sensitivity</h3>
-          <p className="text-gray-700 text-sm mb-4 flex-grow">
-            Understand female sensitivity patterns for more fulfilling intimate connections.
-          </p>
-          <a
-            href="https://drive.google.com/file/d/1kPbLfZwUuy3HcQaPnevbRODRa297XGiH/view?usp=drive_link"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center py-2 px-4 bg-[#FF7A9A] hover:bg-[#FF5A84] text-white rounded-full text-center font-medium transition-colors text-sm"
-          >
-            <Download size={16} className="mr-2" />
-            View PDF
-          </a>
-        </div>
-
-        {/* Consent is Sexy PDF */}
-        <div className="bg-[#F9F9FB] rounded-xl p-6 border border-[#F0F0F5] hover:shadow-md transition-shadow flex flex-col h-full">
-          <h3 className="font-serif text-lg font-medium text-gray-800 mb-3">Consent is Sexy</h3>
-          <p className="text-gray-700 text-sm mb-4 flex-grow">
-            Learn how consent enhances intimacy and builds trust in relationships.
-          </p>
-          <a
-            href="https://drive.google.com/file/d/12fhOdUDIN-BXBSb6uwHvyocUyuzonLpw/view?usp=drive_link"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center py-2 px-4 bg-[#FF7A9A] hover:bg-[#FF5A84] text-white rounded-full text-center font-medium transition-colors text-sm"
-          >
-            <Download size={16} className="mr-2" />
-            View PDF
-          </a>
-        </div>
-      </div>
-
-      <div className="mt-8 text-center">
-        <p className="text-gray-700 mb-4">
-          We've also sent these links to your email for future reference.
-        </p>
-        <button
-          onClick={() => setSubmitted(false)}
-          className="inline-block py-2 px-6 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full text-center font-medium transition-colors"
-        >
-          Back to Form
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="bg-[#FFE5EC]">
       <section className="py-12 md:py-16 lg:py-20">
         <div className="container-custom max-w-5xl">
-          {submitted ? (
-            <SuccessPage />
-          ) : (
-            <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                {/* Image and Form - Appears first */}
-                <div className="order-first p-6 md:p-8 bg-[#FAFAFA]">
-                  <div className="w-full max-w-sm mx-auto mb-6">
-                    <div className="relative">
-                      <div className="bg-[#FFE5EC] rounded-xl p-4 mb-4 text-center">
-                        <p className="text-[#FF7A9A] font-medium uppercase text-sm tracking-wide">FREE RESOURCE</p>
+          <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
+            <div className="p-6 md:p-8">
+              <div className="text-center mb-8">
+                <div className="text-[#FF7A9A] text-sm font-medium mb-1">Exclusive Offer</div>
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium text-gray-800 mb-3">
+                  Your Free Gift
+                </h1>
+                <p className="text-gray-700 font-medium">
+                  Because your pleasure matters!
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {/* Left Column - Guide Info */}
+                <div className="bg-gradient-to-br from-[#FF7A9A] to-[#FF5A84] rounded-xl p-6 md:p-8 text-white flex flex-col">
+                  <h2 className="font-serif text-2xl md:text-3xl mb-4">Pleasure Mapping</h2>
+                  <p className="text-white/90 mb-6">
+                    Discover Your Pleasure Spots – Identify what truly excites you.
+                  </p>
+
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex items-start">
+                      <div className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                       </div>
-                      <img
-                        src="/freebie.webp"
-                        alt="Intimacy Guide"
-                        className="w-full h-auto rounded-2xl shadow-sm"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "/freebie.webp/400x400";
-                          target.onerror = null;
-                        }}
-                      />
+                      <span>Learn to identify your pleasure zones</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <span>Understand your unique sensitivity patterns</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <span>Communicate your desires effectively</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-white/20 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <span>Enhance self-pleasure and partner intimacy</span>
+                    </li>
+                  </ul>
+
+                  <div className="mt-auto">
+                    <div className="inline-block bg-white/20 rounded-full px-6 py-2 text-sm font-medium">
+                      Completely Free!
                     </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-sm p-6 border border-[#F0F0F5]">
-                    <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
-                      <h2 className="font-serif text-xl text-center mb-4">Get Your Free Guide</h2>
-                      <div className="flex justify-center my-4">
-                        <div className="bg-[#FFE5EC] px-6 py-3 rounded-full">
-                          <span className="text-2xl font-serif text-[#FF7A9A] font-medium">FREE</span>
-                        </div>
-                      </div>
-                      <p className="text-center text-gray-700 text-sm">
-                        Instant access • No credit card required • Valuable insights
-                      </p>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                          Your Name
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-                          placeholder="Enter your name"
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                          Your Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-                          placeholder="Enter your email"
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                          Your Phone Number
-                        </label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
-                          placeholder="Enter your phone number"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Optional, but recommended for better communication
-                        </p>
-                      </div>
-
-                      <div className="pt-4">
-                        <button
-                          type="submit"
-                          className="w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
-                          disabled={loading}
-                        >
-                          {loading ? "Sending..." : "Send Me The Free Guide"}
-                        </button>
-                      </div>
-
-                      <p className="text-xs text-center text-gray-500 mt-2">
-                        By submitting this form, you'll receive your free Intimacy Guide via email.
-                        You'll also be subscribed to our newsletter with relationship tips and resources.
-                        You can unsubscribe at any time.
-                      </p>
-                    </form>
                   </div>
                 </div>
 
-                {/* Content - Appears second on mobile */}
-                <div className="order-last md:order-first p-6 md:p-8 flex flex-col md:border-r border-[#F0F0F5]">
-                  {/* Title and Intro */}
-                  <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
-                    <div className="text-[#FF7A9A] text-sm font-medium mb-1">Exclusive Offer</div>
-                    <h1 className="text-2xl md:text-3xl font-serif font-medium text-gray-800 mb-3">
-                      Your Free Intimacy Guide
-                    </h1>
-                    <p className="text-gray-700">
-                      Essential knowledge for building healthy relationships and understanding intimacy.
-                    </p>
-                  </div>
+                {/* Right Column - Form */}
+                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm">
+                  <h3 className="font-serif text-xl font-medium text-gray-800 mb-6">Get Your Free Guide Now</h3>
 
-                  {/* Description */}
-                  <div className="mb-6 pb-6 border-b border-[#F0F0F5]">
-                    <h2 className="text-xl font-serif font-medium text-gray-800 mb-3">What's Inside?</h2>
-                    <p className="text-gray-700 mb-4">
-                      This comprehensive guide provides practical insights and advice to help you navigate
-                      the complexities of intimate relationships. Whether you're single, dating, or in a
-                      long-term partnership, you'll find valuable information to enhance your connection.
-                    </p>
-                    <p className="text-gray-700">
-                      Created with care and backed by research, this guide addresses common challenges
-                      and offers solutions for building stronger, more fulfilling relationships.
-                    </p>
-                  </div>
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                        Your Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+                        placeholder="Enter your name"
+                        required
+                      />
+                    </div>
 
-                  {/* Benefits Section */}
-                  <div>
-                    <h2 className="text-xl font-serif font-medium text-gray-800 mb-3">Why This Guide Matters</h2>
-                    <ul className="space-y-3 text-gray-700">
-                      <li className="flex items-start">
-                        <span className="text-[#FF7A9A] mr-2">✓</span>
-                        <span>Build deeper emotional connections</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-[#FF7A9A] mr-2">✓</span>
-                        <span>Improve communication about sensitive topics</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-[#FF7A9A] mr-2">✓</span>
-                        <span>Understand consent and boundaries</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-[#FF7A9A] mr-2">✓</span>
-                        <span>Create more fulfilling relationships</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-[#FF7A9A] mr-2">✓</span>
-                        <span>Learn practical strategies for relationship growth</span>
-                      </li>
-                    </ul>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Your Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+                        placeholder="Enter your email"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        Your Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+                        placeholder="Enter your phone number"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Optional, but recommended for better communication
+                      </p>
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        className="w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                        disabled={loading}
+                      >
+                        {loading ? "Sending..." : "Send Me The Free Guide"}
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-center text-gray-500 mt-2">
+                      By submitting this form, you'll receive your free Pleasure Mapping guide via email.
+                      You'll also be subscribed to our newsletter with intimacy tips and resources.
+                      You can unsubscribe at any time.
+                    </p>
+                  </form>
+
+                  <div className="mt-8 pt-6 border-t border-[#F0F0F5]">
+                    <h4 className="font-medium mb-3 text-center text-gray-800">What Others Found</h4>
+
+                    <div className="bg-white p-4 rounded-lg border border-[#F0F0F5] shadow-sm">
+                      <p className="italic text-gray-600 text-sm">
+                        "The Pleasure Mapping guide helped me discover sensations I never knew existed.
+                        It's changed how I view my own body and improved intimacy with my partner."
+                      </p>
+                      <div className="flex items-center mt-3">
+                        <div className="w-6 h-6 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-xs font-bold mr-2">S</div>
+                        <span className="text-xs font-medium text-gray-700">Sarah, 32</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Testimonials Section */}
-          <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-            <div className="p-6 md:p-8">
-              <h2 className="text-2xl font-serif font-medium text-gray-800 mb-6 text-center">
-                What Others Are Saying
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-[#F9F9FB] p-5 rounded-xl">
-                  <p className="italic text-gray-700 mb-3">
-                    "The Intimacy Guide provided valuable insights that transformed my relationship.
-                    I've learned how to communicate better and build a deeper connection with my partner."
-                  </p>
-                  <p className="text-right text-sm font-medium text-gray-800">— Rahul, 29</p>
-                </div>
-
-                <div className="bg-[#F9F9FB] p-5 rounded-xl">
-                  <p className="italic text-gray-700 mb-3">
-                    "This guide helped me understand my own needs better and express them to my partner.
-                    Our relationship has improved significantly since applying these principles."
-                  </p>
-                  <p className="text-right text-sm font-medium text-gray-800">— Priya, 31</p>
-                </div>
-
-                <div className="bg-[#F9F9FB] p-5 rounded-xl">
-                  <p className="italic text-gray-700 mb-3">
-                    "I was struggling with setting boundaries in my relationship. This guide gave me
-                    practical tools to address this issue in a healthy, constructive way."
-                  </p>
-                  <p className="text-right text-sm font-medium text-gray-800">— Amit, 27</p>
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <a href="/guide" className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors">
-                  69 Position Playbooks for couples
-                </a>
-                <a href="/sessions" className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors">
-                  Book a Session
-                </a>
-                <a href="/intimatetalks" className="bg-[#FFE5EC] hover:bg-[#FFD6E3] text-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors">
-                  Join Intimate Talks
-                </a>
-              </div>
+          <div className="bg-white rounded-3xl shadow-sm overflow-hidden p-6 md:p-8 text-center">
+            <h2 className="font-serif text-xl md:text-2xl font-medium text-gray-800 mb-4">Want More Resources?</h2>
+            <p className="text-gray-700 max-w-2xl mx-auto mb-6">
+              This is just the beginning of your journey to better intimacy and pleasure.
+              Explore our other offerings to deepen your understanding and enhance your experiences.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a href="/guide" className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors">
+                69 Position Guide
+              </a>
+              <a href="/sessions" className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors">
+                Book a Session
+              </a>
+              <a href="/intimatetalks" className="bg-[#FFE5EC] hover:bg-[#FFD6E3] text-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors">
+                Join Intimate Talks
+              </a>
             </div>
           </div>
         </div>

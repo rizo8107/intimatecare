@@ -12,7 +12,7 @@ const NewsletterModern = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/kb_newsletter', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/kb_newsletter', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

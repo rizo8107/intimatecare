@@ -314,7 +314,7 @@ const StudentBookingForm = () => {
     console.log(`Polling for order ${currentCfOrderId}, attempt ${attempt + 1}`);
     setPaymentError(null);
 
-    const verifyWebhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/verify';
+    const verifyWebhookUrl = 'https://backend-n8n.lhs56u.easypanel.host/webhook/verify';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 
@@ -493,7 +493,7 @@ const StudentBookingForm = () => {
         submissionData.append('cfOrderId', storedCfOrderId);
 
         // Send to webhook in background (don't await)
-        fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/studenform', {
+        fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/studenform', {
           method: 'POST',
           body: submissionData,
         });
@@ -634,7 +634,7 @@ const StudentBookingForm = () => {
       customer_email: formData.email,
     };
 
-    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/studentpay';
+    const webhookUrl = 'https://backend-n8n.lhs56u.easypanel.host/webhook/studentpay';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 

@@ -11,11 +11,11 @@ const NewsletterSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       console.log('Sending newsletter subscription data...');
-      
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/kb_newsletter', {
+
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/kb_newsletter', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,10 +28,10 @@ const NewsletterSection = () => {
           subscriptionDate: new Date().toISOString(),
         }),
       });
-      
+
       const data = await response.json().catch(() => null);
       console.log('Webhook response:', response.status, data);
-      
+
       if (response.ok) {
         setEmail('');
         setName('');
@@ -67,7 +67,7 @@ const NewsletterSection = () => {
             Stay updated with expert tips, exclusive content, and intimate care advice through your preferred channel.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {/* Newsletter Subscription */}
           <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm">
@@ -76,7 +76,7 @@ const NewsletterSection = () => {
                 <Mail size={28} className="text-[#FF7A9A]" />
               </div>
             </div>
-            
+
             <div className="text-center mb-6">
               <h3 className="text-2xl font-serif font-medium text-gray-800 mb-3">
                 Newsletter Subscription
@@ -85,7 +85,7 @@ const NewsletterSection = () => {
                 Get intimacy & pleasure hacks delivered straight to your inbox.
               </p>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
                 <div>
@@ -117,9 +117,9 @@ const NewsletterSection = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-center mt-6">
-                <button 
+                <button
                   type="submit"
                   className="flex items-center justify-center py-3 px-8 bg-[#FF7A9A] text-white rounded-full hover:bg-[#FF5A8A] transition-colors font-medium"
                   disabled={loading}
@@ -134,7 +134,7 @@ const NewsletterSection = () => {
                   )}
                 </button>
               </div>
-              
+
               <div className="flex items-center justify-center text-gray-600 text-sm mt-4">
                 <Lock size={14} className="mr-2" />
                 <p>
@@ -143,7 +143,7 @@ const NewsletterSection = () => {
               </div>
             </form>
           </div>
-          
+
           {/* WhatsApp Channel */}
           <WhatsAppChannel />
         </div>

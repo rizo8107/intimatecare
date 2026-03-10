@@ -598,7 +598,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
       attempts++;
 
       try {
-        const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/checkpayment';
+        const webhookUrl = 'https://backend-n8n.lhs56u.easypanel.host/webhook/checkpayment';
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: {
@@ -778,7 +778,7 @@ const SimpleInstructorBookingForm = ({ instructorId = 1, instructorName = "Mansi
       customer_email: formData.email,
     };
 
-    const webhookUrl = 'https://backend-n8n.7za6uc.easypanel.host/webhook/instructorpay';
+    const webhookUrl = 'https://backend-n8n.lhs56u.easypanel.host/webhook/instructorpay';
     const username = 'nirmal@lifedemy.in';
     const password = 'Life@123';
 

@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
-import { Check, CheckCircle, MessageCircle, Lock, ArrowRight, ArrowLeft, ChevronDown, Shield, Heart } from 'lucide-react';
+import { Check, CheckCircle, MessageCircle, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
 import { trackEvent, trackFormStart, trackFormStepComplete, trackFormSubmit, trackTelegramConnect, EventCategory } from '@/utils/analytics';
 import { trackFormEvent, trackTelegramEvent, trackButtonClick } from '@/components/ClarityEvents';
 
@@ -41,22 +41,8 @@ interface FormData {
 }
 
 // Supabase API keys
-const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const SERVICE_ROLE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '';
-
-// Country codes list
-const COUNTRY_CODES = [
-  { code: '91', country: 'IN', flag: '🇮🇳' },
-  { code: '1', country: 'US', flag: '🇺🇸' },
-  { code: '44', country: 'UK', flag: '🇬🇧' },
-  { code: '61', country: 'AU', flag: '🇦🇺' },
-  { code: '971', country: 'AE', flag: '🇦🇪' },
-  { code: '1', country: 'CA', flag: '🇨🇦' },
-  { code: '65', country: 'SG', flag: '🇸🇬' },
-  { code: '60', country: 'MY', flag: '🇲🇾' },
-  { code: '974', country: 'QA', flag: '🇶🇦' },
-  { code: '966', country: 'SA', flag: '🇸🇦' },
-];
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzQ5ODM5NDAwLCJleHAiOjE5MDc2MDU4MDB9.sWCsUjb5xqDn6pIkPlhHScIHJ1ytr8rlTH-SdrHLuZE';
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NDk4Mzk0MDAsImV4cCI6MTkwNzYwNTgwMH0.RUr6v34x5v9ZPaSSjIgqamSeOtPyVpfv20r7wQ4niK0';
 
 const IntimateSuccess = () => {
   const location = useLocation();
@@ -68,27 +54,14 @@ const IntimateSuccess = () => {
   const telegramLoginContainerRef = useRef<HTMLDivElement>(null);
   const [matchedPayment, setMatchedPayment] = useState<any>(null);
 
-  // NEW State for split phone handling
-  const [countryCode, setCountryCode] = useState('91');
-  const [localPhone, setLocalPhone] = useState('');
-
-
-
-  // Wait, I need to view where formData is defined first.
-
-
   // Extract payment details from query params
   const paymentId = queryParams?.get('payment_id') || '';
   const status = queryParams?.get('status') || '';
   const amount = queryParams?.get('amount') || '';
 
-  // International Number Verification State - REMOVED toggled, using permanent selector
-
   // Form state
-  const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for phone verification
+  const [currentStep, setCurrentStep] = useState(0);
   const [formCompleted, setFormCompleted] = useState(false);
-  const [isExistingDeletedUser, setIsExistingDeletedUser] = useState(false); // For users in telegram_sub_deleted
-  const [deletedUserData, setDeletedUserData] = useState<any>(null);
   const [lastSubmissionTime, setLastSubmissionTime] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -126,56 +99,6 @@ const IntimateSuccess = () => {
     }
   }, []);
 
-  // Initialize/Sync split state with formData.mobileNumber on mount
-  useEffect(() => {
-    if (formData.mobileNumber && formData.mobileNumber !== (countryCode + localPhone)) {
-      const found = COUNTRY_CODES.find(c => formData.mobileNumber.startsWith(c.code));
-      if (found) {
-        setCountryCode(found.code);
-        setLocalPhone(formData.mobileNumber.slice(found.code.length));
-      } else if (formData.mobileNumber.length > 2) {
-        setLocalPhone(formData.mobileNumber);
-      }
-    }
-  }, [formData.mobileNumber]); // Sync when mobileNumber changes (e.g. from localStorage load)
-
-  // Helper to update full mobile number
-  const updateFullNumber = (code: string, number: string) => {
-    const full = code + number;
-    setFormData(prev => ({ ...prev, mobileNumber: full }));
-
-    // Also update localStorage immediately for persistence (mirrors existing handleInputChange)
-    const stored = localStorage.getItem('membershipFormData');
-    if (stored) {
-      const data = JSON.parse(stored);
-      data.mobileNumber = full;
-      localStorage.setItem('membershipFormData', JSON.stringify(data));
-    }
-  };
-
-  // Initialize Telegram login widget
-  useEffect(() => {
-    const container = telegramLoginContainerRef.current;
-    if (container) {
-      // Clear any existing content
-      container.innerHTML = '';
-
-      // Create the script element for Telegram login widget
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://telegram.org/js/telegram-widget.js?22';
-      script.setAttribute('data-telegram-login', 'IntimateCareTalksBot');
-      script.setAttribute('data-size', 'large');
-      script.setAttribute('data-radius', '8');
-      script.setAttribute('data-request-access', 'write');
-      script.setAttribute('data-userpic', 'false');
-      script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
-
-      // Append the script to the container
-      container.appendChild(script);
-    }
-  }, []);
-
   // Parse query parameters from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -186,78 +109,7 @@ const IntimateSuccess = () => {
     trackFormEvent('intimate_success_form', 'init', 'start');
 
     // Define the auth callback globally
-    window.telegramLoginCallback = async (user) => {
-      setTelegramData(user);
-
-      try {
-        setLoading(true);
-
-        // Get latest form data
-        const latestFormData = { ...formData };
-
-        // Get phone from various sources
-        let reliablePhone = '';
-        if (latestFormData.mobileNumber) {
-          reliablePhone = latestFormData.mobileNumber;
-        } else if (localStorage.getItem('verifiedPhone')) {
-          reliablePhone = localStorage.getItem('verifiedPhone') || '';
-        }
-
-        // Generate a unique submission ID
-        const now = Date.now();
-        const uniqueId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}`;
-
-        // Create the payload in the same format as before
-        const payloadData = {
-          ...user,
-          chat_id: user.id,
-          user_id: user.id,
-          telegram_id: user.id,
-          phone_number: reliablePhone,
-          verified_phone: reliablePhone,
-          payment_id: paymentId || '',
-          amount: amount || '',
-          customer_name: '',
-          matched_payment: null,
-          form_data: latestFormData,
-          source: 'intimate_talks',
-          auth_date_formatted: new Date(user.auth_date * 1000).toISOString(),
-          command: '/user_join_verified',
-          verified_payment: false,
-          payment_data: null
-        };
-
-        // Send to the webhook
-        const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payloadData)
-        });
-
-        if (!response.ok) {
-          throw new Error(`Webhook error: ${response.status}`);
-        }
-
-        const responseText = await response.text();
-
-        toast({
-          title: 'Success!',
-          description: 'You have been verified and added to the Intimate Talks group!',
-          variant: 'default'
-        });
-      } catch (error) {
-        console.error('Error in webhook call:', error);
-        toast({
-          title: 'Error',
-          description: 'There was an error verifying your account. Please try again.',
-          variant: 'destructive'
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+    window.telegramLoginCallback = handleTelegramAuth;
 
     // Check if payment exists in Supabase
     const paymentId = params.get('payment_id');
@@ -269,7 +121,7 @@ const IntimateSuccess = () => {
       // Clean up global callback
       delete window.telegramLoginCallback;
     };
-  }, [location, formData, amount, paymentId]);
+  }, [location]);
 
   // Verify payment with Supabase
   const verifyPayment = async (paymentId: string) => {
@@ -283,8 +135,8 @@ const IntimateSuccess = () => {
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
-          'apikey': ANON_KEY,
-          'Authorization': `Bearer ${ANON_KEY}`
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE'
         }
       });
       
@@ -293,6 +145,7 @@ const IntimateSuccess = () => {
       }
       
       const payments = await response.json();
+      console.log('Payments data:', payments);
       
       const verified = payments.some((payment: any) => payment.payment_id === paymentId);
       setPaymentVerified(verified);
@@ -301,7 +154,7 @@ const IntimateSuccess = () => {
         toast({
           title: 'Payment verification failed',
           description: 'We could not verify your payment. Please contact support.',
-          variant: 'destructive',
+          variant: 'destructive'
         });
       }
       */
@@ -317,163 +170,7 @@ const IntimateSuccess = () => {
     }
   };
 
-  // Helper function to normalize phone numbers
-  const normalizePhone = (phone: string | null | undefined) => {
-    if (!phone) return '';
-    const phoneStr = String(phone);
-    const digits = phoneStr.replace(/\D/g, '');
-    return digits.slice(-10); // Get last 10 digits
-  };
-
-  // Check if user exists in telegram_sub_deleted table (previously removed users)
-  const checkDeletedUser = async (phoneNumber: string) => {
-    try {
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/telegram_sub_deleted?select=*', {
-        method: 'GET',
-        headers: {
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-        }
-      });
-
-      if (!response.ok) {
-        console.error('Failed to fetch deleted users data');
-        return null;
-      }
-
-      const deletedUsers = await response.json();
-      const formattedInputPhone = normalizePhone(phoneNumber);
-
-      // Find a deleted user that matches the phone number
-      const matchedDeletedUser = deletedUsers.find((user: any) => {
-        const userPhone = normalizePhone(user.phone_number);
-        return formattedInputPhone === userPhone;
-      });
-
-      return matchedDeletedUser || null;
-    } catch (error) {
-      console.error('Error checking deleted users:', error);
-      return null;
-    }
-  };
-
-  // Initial phone verification at the beginning
-  const verifyPhoneInitial = async () => {
-    if (!formData.mobileNumber || formData.mobileNumber.length < 10) {
-      toast({
-        title: 'Phone number required',
-        description: 'Please enter a valid 10-digit phone number to continue.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      setVerificationLoading(true);
-      const formattedInputPhone = normalizePhone(formData.mobileNumber);
-
-      // Fetch payment data first (needed for both new and returning users)
-      const paymentResponse = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
-        method: 'GET',
-        headers: {
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-        }
-      });
-
-      if (!paymentResponse.ok) {
-        throw new Error('Failed to fetch payment data');
-      }
-
-      const payments = await paymentResponse.json();
-
-      // Find a payment that matches the phone number
-      const matchedPaymentData = payments.find((payment: any) => {
-        const paymentPhone = normalizePhone(payment.phone);
-        const paymentPhoneNumber = normalizePhone(payment.phone_number);
-        const customerPhone = normalizePhone(payment.customer_phone);
-
-        return formattedInputPhone === paymentPhone ||
-          formattedInputPhone === paymentPhoneNumber ||
-          formattedInputPhone === customerPhone;
-      });
-
-      // Check if user exists in telegram_sub_deleted (previously removed users)
-      const deletedUser = await checkDeletedUser(formData.mobileNumber);
-
-      if (deletedUser) {
-        console.log('Found user in telegram_sub_deleted');
-
-        // Cross-check with payment_kb_all to verify they have re-subscribed
-        if (matchedPaymentData) {
-          // Check if the payment is newer than when they were deleted (if we have expiry_date)
-          const deletedExpiry = deletedUser.expiry_date ? new Date(deletedUser.expiry_date) : null;
-          const paymentDate = matchedPaymentData.created_at ? new Date(matchedPaymentData.created_at) :
-            matchedPaymentData.payment_date ? new Date(matchedPaymentData.payment_date) : null;
-
-          // If we can compare dates, check if payment is after expiry (re-subscription)
-          // Or if no dates available, just verify payment exists
-          const hasValidResubscription = !deletedExpiry || !paymentDate || paymentDate > deletedExpiry;
-
-          if (hasValidResubscription) {
-            console.log('Verified re-subscription for deleted user');
-            setDeletedUserData(deletedUser);
-            setMatchedPayment(matchedPaymentData);
-            setIsExistingDeletedUser(true);
-            setFormCompleted(true);
-            setCurrentStep(3); // Skip to Telegram login step
-
-            localStorage.setItem('verifiedPhone', formData.mobileNumber);
-
-            toast({
-              title: 'Welcome back!',
-              description: 'Your re-subscription has been verified. Please connect with Telegram to rejoin.',
-              variant: 'default'
-            });
-            return;
-          }
-        }
-
-        // Deleted user but no valid payment found - they need to subscribe again
-        toast({
-          title: 'Subscription Required',
-          description: 'Your previous subscription has expired. Please subscribe again to rejoin the group.',
-          variant: 'destructive'
-        });
-        return;
-      }
-
-      // New user - check if they have a valid payment
-      if (matchedPaymentData) {
-        setMatchedPayment(matchedPaymentData);
-        localStorage.setItem('verifiedPhone', formData.mobileNumber);
-        setCurrentStep(0); // Proceed to form step 1
-
-        toast({
-          title: 'Phone Verified!',
-          description: 'Your payment has been verified. Please complete the registration form.',
-          variant: 'default'
-        });
-      } else {
-        toast({
-          title: 'Verification Failed',
-          description: 'We could not find a payment associated with this phone number. Please check your number or contact support.',
-          variant: 'destructive'
-        });
-      }
-    } catch (error) {
-      console.error('Error during initial phone verification:', error);
-      toast({
-        title: 'Error',
-        description: 'Could not verify your phone number. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setVerificationLoading(false);
-    }
-  };
-
-  // Verify phone number against Supabase database (for form submission)
+  // Verify phone number against Supabase database
   const verifyPhoneNumber = async () => {
     try {
       setVerificationLoading(true);
@@ -485,8 +182,8 @@ const IntimateSuccess = () => {
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
         headers: {
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+          'apikey': ANON_KEY,
+          'Authorization': `Bearer ${ANON_KEY}`
         }
       });
 
@@ -495,25 +192,40 @@ const IntimateSuccess = () => {
       }
 
       const payments = await response.json();
-      console.log('Verification process started');
-
-      const formattedInputPhone = normalizePhone(formData.mobileNumber);
+      console.log('Payments data for phone verification:', payments);
 
       // Find a payment that matches the phone number
-      const matchedPaymentData = payments.find((payment: any) => {
+      const matchedPayment = payments.find((payment: any) => {
+        // Normalize phone numbers by removing any non-digit characters and comparing only the last 10 digits
+        const normalizePhone = (phone: string | null | undefined) => {
+          if (!phone) return '';
+          // Convert to string in case it's a number
+          const phoneStr = String(phone);
+          const digits = phoneStr.replace(/\D/g, '');
+          return digits.slice(-10); // Get last 10 digits
+        };
+
+        const formattedInputPhone = normalizePhone(formData.mobileNumber);
         const paymentPhone = normalizePhone(payment.phone);
         const paymentPhoneNumber = normalizePhone(payment.phone_number);
         const customerPhone = normalizePhone(payment.customer_phone);
+
+        console.log('Comparing phones:', {
+          input: formattedInputPhone,
+          payment: paymentPhone,
+          paymentNumber: paymentPhoneNumber,
+          customer: customerPhone
+        });
 
         return formattedInputPhone === paymentPhone ||
           formattedInputPhone === paymentPhoneNumber ||
           formattedInputPhone === customerPhone;
       });
 
-      console.log('Verification process completed');
+      console.log('Matched payment:', matchedPayment);
 
-      if (matchedPaymentData) {
-        setMatchedPayment(matchedPaymentData);
+      if (matchedPayment) {
+        setMatchedPayment(matchedPayment);
         setFormCompleted(true);
         return true;
       } else {
@@ -673,7 +385,7 @@ const IntimateSuccess = () => {
     // This uses a shared global window variable to lock submissions across the entire application
     try {
       if ((window as any).__formSubmissionLock) {
-        console.log('GLOBAL LOCK ACTIVE - Submission already in progress');
+        console.log('🔒 GLOBAL LOCK ACTIVE - Submission already in progress');
         return true; // Return success without submitting
       }
 
@@ -687,7 +399,7 @@ const IntimateSuccess = () => {
 
       // Require at least 5 seconds between submissions
       if (now - lastSubmissionTime < 5000) {
-        console.log('PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
+        console.log('🚫 PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
         (window as any).__formSubmissionLock = false; // Release lock
         return true; // Return success without submitting
       }
@@ -710,10 +422,10 @@ const IntimateSuccess = () => {
         submission_id: uniqueId
       };
 
-      console.log('SUBMITTING form data to webhook with ID:', uniqueId);
+      console.log('✅ SUBMITTING form data to webhook with ID:', uniqueId);
 
       // Send the form data to the webhook
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -722,37 +434,96 @@ const IntimateSuccess = () => {
       });
 
       if (!response.ok) {
-        // If the webhook returns an error, log it and potentially handle it
-        const errorData = await response.text(); // Use text() to avoid JSON parse error if not JSON
-        console.error('Webhook submission failed:', response.status, errorData);
-        // Potentially throw an error or return a specific value to indicate failure
-        // For now, we'll let it proceed, but you might want to handle this more robustly
-        // Consider not setting localStorage 'lastFormSubmission' if webhook fails, to allow quicker retry
+        throw new Error(`Form submission failed: ${response.status}`);
       }
 
-      // Return true to indicate that the submission process was initiated
+      console.log('✅ Form data submitted successfully with ID:', uniqueId);
       return true;
     } catch (error) {
-      console.error('Error in submitFormToWebhook:', error);
-      // Return false or throw error to indicate failure
+      console.error('❌ Error submitting form data:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to submit form data. Please try again.',
+        variant: 'destructive'
+      });
       return false;
     } finally {
-      // Always release the global lock and reset submitting state
-      // This ensures that even if an error occurs, the lock is released.
-      (window as any).__formSubmissionLock = false;
+      // Clear all submission flags
       setIsSubmitting(false);
-      console.log('GLOBAL LOCK RELEASED and isSubmitting set to false in submitFormToWebhook');
+      // Release global lock with a small delay to prevent race conditions
+      setTimeout(() => {
+        (window as any).__formSubmissionLock = false;
+      }, 500);
     }
   };
 
+  // Function to handle Telegram authentication
+  const handleTelegramAuth = async (user: any) => {
+    console.log('Telegram auth data:', user);
+    setTelegramData(user);
 
+    // If already submitting, don't trigger multiple webhook calls
+    if (isSubmitting) {
+      console.log('Already submitting, please wait...');
+      // Continue with telegram auth without redundant webhook call
+    } else {
+      // Submit form data to webhook again to ensure it's up to date
+      await submitFormToWebhook();
+    }
+
+    try {
+      let currentPhone = '';
+
+      // Try to get the verified phone from various sources
+      if (formData.mobileNumber) {
+        currentPhone = formData.mobileNumber;
+      } else if (localStorage.getItem('verifiedPhone')) {
+        currentPhone = localStorage.getItem('verifiedPhone') || '';
+      }
+
+      if (!currentPhone) {
+        toast({
+          title: 'Missing Phone Number',
+          description: 'Please complete the form with your phone number first.',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      // Create a deep copy of matchedPayment to avoid reference issues
+      const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
+
+      // Combine user data
+      const combinedUserData = {
+        ...user,
+        telegram_id: user.id,
+        phone_number: currentPhone,
+        verified_phone: currentPhone,
+        payment_id: paymentId || (matchedPayment?.payment_id || matchedPayment?.id || ''),
+        amount: amount || (matchedPayment?.amount || ''),
+        customer_name: matchedPayment?.customer_name || matchedPayment?.name || '',
+        matched_payment: paymentDataCopy,
+        form_data: formData
+      };
+
+      // Send the combined data to the backend
+      sendTelegramDataToBackend(combinedUserData);
+    } catch (error) {
+      console.error('Error in telegram auth handling:', error);
+      toast({
+        title: 'Error',
+        description: 'There was an error processing your Telegram login. Please try again.',
+        variant: 'destructive'
+      });
+    }
+  };
 
   // Function to send data to the backend webhook
   const sendTelegramDataToBackend = async (userData: any) => {
     try {
       // Check for global submission lock
       if ((window as any).__telegramSubmissionLock) {
-        console.log('GLOBAL TELEGRAM LOCK ACTIVE - Submission already in progress');
+        console.log('🔒 GLOBAL TELEGRAM LOCK ACTIVE - Submission already in progress');
         // Still show success message
         toast({
           title: 'Success!',
@@ -773,7 +544,7 @@ const IntimateSuccess = () => {
 
       // Require at least 5 seconds between Telegram submissions
       if (now - lastTelegramTime < 5000) {
-        console.log('PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
+        console.log('🚫 PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
         // Still show success message
         toast({
           title: 'Success!',
@@ -798,7 +569,10 @@ const IntimateSuccess = () => {
       const reliablePhone = userData.phone_number || userData.verified_phone || formData.mobileNumber || backupPhone || '';
 
       // Log important data before sending
-      console.log('Raw Telegram user data received');
+      console.log('Raw Telegram user data:', userData);
+      console.log('User ID from Telegram:', userData.id);
+      console.log('Final phone number being sent:', reliablePhone);
+      console.log('Form data being sent:', formData);
 
       // Deep clone matchedPayment to avoid any reference issues
       const paymentDataToSend = userData.matched_payment ||
@@ -811,9 +585,9 @@ const IntimateSuccess = () => {
       const uniqueId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
 
       // First, send to the form webhook to ensure form data is saved
-      console.log('SUBMITTING to form webhook with ID:', uniqueId);
+      console.log('✅ SUBMITTING to form webhook with ID:', uniqueId);
 
-      await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
+      await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -849,10 +623,10 @@ const IntimateSuccess = () => {
         submission_id: uniqueId
       };
 
-      console.log('SUBMITTING to Telegram webhook with ID:', uniqueId);
+      console.log('✅ SUBMITTING to Telegram webhook with ID:', uniqueId);
 
       // Now send to the main telegram webhook for user verification
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/telegram-success-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -864,7 +638,7 @@ const IntimateSuccess = () => {
         throw new Error(`Webhook error: ${response.status}`);
       }
 
-      console.log('Webhook successfully called with ID:', uniqueId);
+      console.log('✅ Webhook successfully called with ID:', uniqueId);
 
       toast({
         title: 'Success!',
@@ -873,7 +647,7 @@ const IntimateSuccess = () => {
       });
 
     } catch (error) {
-      console.error('Error in webhook call:', error);
+      console.error('❌ Error in webhook call:', error);
       toast({
         title: 'Error',
         description: 'There was an error verifying your account. Please try again.',
@@ -917,9 +691,7 @@ const IntimateSuccess = () => {
     // Step 2: Terms and conditions
     else if (currentStep === 1) {
       if (!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement ||
-        !formData.respectAgreement || !formData.contentAgreement || !formData.nonJudgmentalAgreement ||
-        !formData.participateAgreement || !formData.sensitiveTopicsAgreement || !formData.anonymityAgreement ||
-        !formData.liabilityAgreement || !formData.explicitLanguageAgreement || !formData.additionalGuidelinesAgreement) {
+        !formData.respectAgreement || !formData.contentAgreement) {
         toast({
           title: 'Missing agreements',
           description: 'You must agree to all the terms to continue.',
@@ -937,60 +709,58 @@ const IntimateSuccess = () => {
       // Go to next step
       setCurrentStep(2);
     }
-    // Step 3: Additional contact info (email, referral)
+    // Step 3: Contact information
     else if (currentStep === 2) {
-      if (!formData.email) {
+      if (!formData.mobileNumber || !formData.email) {
         toast({
           title: 'Incomplete information',
-          description: 'Please provide your email to continue.',
+          description: 'Please provide your mobile number and email to continue.',
           variant: 'destructive'
         });
         return;
       }
 
-      // Submit form data
+      // Final form data submission to the webhook - always submit at final step
       await submitFormToWebhook();
-      setFormCompleted(true);
+
+      // Verify phone number and proceed
+      const verified = await verifyPhoneNumber();
+      if (!verified) return;
+
       setCurrentStep(3);
     }
   };
 
   // Form Step 1: Basic Information
   const renderStep1 = () => (
-    <div className="space-y-8 animate-fade-in-up">
-      <div className="text-center lg:text-left">
-        <span className="badge-premium mb-4">Step 01</span>
-        <h2 className="text-3xl font-black text-slate-950 tracking-tight">Personal Details</h2>
-        <p className="text-slate-500 font-medium mt-2">Tell us a bit about yourself to personalize your experience.</p>
-      </div>
+    <div className="bg-white rounded-xl p-6 shadow-sm">
+      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Membership Information</h2>
+      <p className="text-gray-700 mb-6">Please provide some basic information about yourself.</p>
 
-      <div className="grid gap-6">
-        <div className="group">
-          <label htmlFor="gender" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            Gender <span className="text-primary italic">*</span>
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+            Your Gender <span className="text-red-500">*</span>
           </label>
-          <div className="relative">
-            <select
-              id="gender"
-              name="gender"
-              value={formData.gender}
-              onChange={handleInputChange}
-              className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all appearance-none cursor-pointer"
-              required
-            >
-              <option value="">Select your gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-              <option value="prefer_not_to_say">Prefer not to say</option>
-            </select>
-            <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-primary transition-colors" />
-          </div>
+          <select
+            id="gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            required
+          >
+            <option value="">Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="prefer_not_to_say">Prefer not to say</option>
+          </select>
         </div>
 
         <div>
-          <label htmlFor="location" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            Location <span className="text-primary italic">*</span>
+          <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+            Your Location <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -998,53 +768,52 @@ const IntimateSuccess = () => {
             name="location"
             value={formData.location}
             onChange={handleInputChange}
-            className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
             placeholder="e.g. Mumbai, India"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="problems" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            What challenges are you facing? <span className="text-primary italic">*</span>
+          <label htmlFor="problems" className="block text-sm font-medium text-gray-700 mb-1">
+            What problems are you facing? <span className="text-red-500">*</span>
           </label>
           <textarea
             id="problems"
             name="problems"
             value={formData.problems}
             onChange={handleInputChange}
-            className="w-full px-6 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all resize-none"
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
             rows={3}
-            placeholder="Describe any issues you're experiencing..."
+            placeholder="Please describe any issues you're experiencing..."
             required
           />
         </div>
 
         <div>
-          <label htmlFor="joinReason" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            Why are you joining? <span className="text-primary italic">*</span>
+          <label htmlFor="joinReason" className="block text-sm font-medium text-gray-700 mb-1">
+            Why did you join this group? <span className="text-red-500">*</span>
           </label>
           <textarea
             id="joinReason"
             name="joinReason"
             value={formData.joinReason}
             onChange={handleInputChange}
-            className="w-full px-6 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all resize-none"
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
             rows={3}
-            placeholder="What motivated you to join?"
+            placeholder="What motivated you to join our community?"
             required
           />
         </div>
       </div>
 
-      <div className="flex justify-end pt-4">
+      <div className="mt-6 flex justify-end">
         <button
-          className="btn-premium-primary h-14 px-10 text-lg shadow-xl shadow-primary/20"
+          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
           disabled={!formData.gender || !formData.location || !formData.problems || !formData.joinReason}
         >
-          Continue
-          <ArrowRight className="ml-2 h-5 w-5" />
+          Next <ArrowRight className="ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
@@ -1052,189 +821,154 @@ const IntimateSuccess = () => {
 
   // Form Step 2: Terms and Agreements
   const renderStep2 = () => (
-    <div className="space-y-8 animate-fade-in-up">
-      <div className="text-center lg:text-left">
-        <span className="badge-premium mb-4">Step 02</span>
-        <h2 className="text-3xl font-black text-slate-950 tracking-tight">Community Rules</h2>
-        <p className="text-slate-500 font-medium mt-2">A safe community requires shared values. Please review carefully.</p>
-      </div>
+    <div className="bg-white rounded-xl p-6 shadow-sm">
+      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Membership Agreement</h2>
+      <p className="text-gray-700 mb-6">Please read and agree to the following terms and conditions.</p>
 
-      <div className="space-y-3 max-h-[440px] overflow-y-auto pr-4 scrollbar-hide">
-        <div className="mb-6">
-          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 ml-1">Mandatory Agreements</h3>
+      <div className="space-y-4 max-h-[400px] overflow-y-auto p-4 bg-gray-50 rounded-lg mb-4">
+        <div className="mb-4">
+          <h3 className="font-medium text-gray-800 mb-2">Mandatory Guidelines</h3>
+          <p className="text-sm text-gray-700 mb-4">
+            Your participation in our group requires adherence to the following guidelines:
+          </p>
 
-          <div className="grid gap-3">
-            {[
-              { id: 'hookupAgreement', title: 'No Hookup Solicitations', sub: 'Romantic or sexual encounter requests are strictly prohibited.' },
-              { id: 'privacyAgreement', title: 'Privacy & Confidentiality', sub: 'Absolutely no screenshots or sharing group content externally.' },
-              { id: 'participationAgreement', title: 'Voluntary Participation', sub: 'All interactions are voluntary and non-professional in nature.' },
-              { id: 'respectAgreement', title: 'Respect & Empathy', sub: 'Always engage with kindness and consideration for others.' },
-              { id: 'contentAgreement', title: 'Content Restrictions', sub: 'Memes, jokes, or inappropriate materials are not allowed.' },
-              { id: 'nonJudgmentalAgreement', title: 'Non-Judgmental Space', sub: 'We maintain zero tolerance for shaming or judgmental talk.' },
-              { id: 'participateAgreement', title: 'Active Participation', sub: 'Prolonged inactivity may result in removal from the group.' },
-              { id: 'sensitiveTopicsAgreement', title: 'Sensitive Topics', sub: 'Approach intense topics with empathy and correct language.' },
-              { id: 'anonymityAgreement', title: 'Anonymity Protection', sub: 'Never reveal member identities without explicit consent.' },
-              { id: 'liabilityAgreement', title: 'Liability Disclaimer', sub: 'The organization is not liable for individual member actions.' },
-              { id: 'explicitLanguageAgreement', title: 'No Explicit Content', sub: 'Sexually explicit or graphic media is strictly forbidden.' },
-            ].map((item: any) => (
-              <label key={item.id} className={`flex items-start gap-4 p-5 rounded-[2rem] border transition-all cursor-pointer group hover:bg-slate-50 ${formData[item.id as keyof FormData] ? 'bg-primary/5 border-primary/20' : 'bg-slate-50/50 border-slate-100'}`}>
-                <div className="relative mt-1">
-                  <input
-                    type="checkbox"
-                    id={item.id}
-                    name={item.id}
-                    checked={formData[item.id as keyof FormData] as boolean}
-                    onChange={handleInputChange}
-                    className="sr-only"
-                  />
-                  <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData[item.id as keyof FormData] ? 'bg-primary border-primary scale-110' : 'border-slate-300 bg-white'}`}>
-                    {formData[item.id as keyof FormData] && <Check className="w-4 h-4 text-white stroke-[3px]" />}
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <span className={`text-sm font-black tracking-tight leading-none mb-1 transition-colors ${formData[item.id as keyof FormData] ? 'text-primary' : 'text-slate-950'}`}>{item.title}</span>
-                  <span className="text-xs text-slate-500 font-medium leading-relaxed">{item.sub}</span>
-                </div>
+          <div className="space-y-3">
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="hookupAgreement"
+                name="hookupAgreement"
+                checked={formData.hookupAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="hookupAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">1. Prohibition of Hookup or Dating Solicitations:</span> This group is solely for constructive discussions and prohibits any attempts to initiate or solicit romantic or sexual encounters. Any such actions, including private propositions, will result in immediate removal from the group.
               </label>
-            ))}
+            </div>
+
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="privacyAgreement"
+                name="privacyAgreement"
+                checked={formData.privacyAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="privacyAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">2. Privacy and Confidentiality:</span> Respecting the privacy of all members is paramount. Any use of screenshots or group content for purposes such as public display, harassment, or blackmail is strictly prohibited and will be treated as a severe breach of trust.
+              </label>
+            </div>
+
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="participationAgreement"
+                name="participationAgreement"
+                checked={formData.participationAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="participationAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">3. Voluntary Participation:</span> Members acknowledge that all interactions, opinions, and advice within the group are voluntary and non-professional. Users engage at their own discretion and bear personal responsibility for any actions taken based on shared advice or content.
+              </label>
+            </div>
+
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="respectAgreement"
+                name="respectAgreement"
+                checked={formData.respectAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="respectAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">4. Respect and Empathy:</span> Members are expected to engage with empathy, respect, and consideration towards others. Behaviors that ridicule, mock, or humiliate fellow members are unacceptable and will not be tolerated.
+              </label>
+            </div>
+
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="contentAgreement"
+                name="contentAgreement"
+                checked={formData.contentAgreement}
+                onChange={handleInputChange}
+                className="mt-1 mr-3"
+              />
+              <label htmlFor="contentAgreement" className="text-sm text-gray-700">
+                <span className="font-medium">5. Content Restrictions:</span> Group content should contribute positively and be relevant to our discussions on intimacy. Sharing of memes, jokes, or pornographic materials is strictly prohibited to maintain the group's focus on constructive dialogue.
+              </label>
+            </div>
           </div>
         </div>
 
-        <label className={`flex items-start gap-4 p-6 rounded-[2.5rem] border bg-slate-950 text-white transition-all cursor-pointer group ${formData.additionalGuidelinesAgreement ? 'border-primary shadow-lg shadow-primary/10' : 'border-slate-800'}`}>
-          <div className="relative mt-1">
-            <input
-              type="checkbox"
-              id="additionalGuidelinesAgreement"
-              name="additionalGuidelinesAgreement"
-              checked={formData.additionalGuidelinesAgreement}
-              onChange={handleInputChange}
-              className="sr-only"
-            />
-            <div className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${formData.additionalGuidelinesAgreement ? 'bg-primary border-primary' : 'border-white/20 bg-white/5'}`}>
-              {formData.additionalGuidelinesAgreement && <Check className="w-4 h-4 text-white stroke-[3px]" />}
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-black tracking-tight mb-1">Accept Master Terms</span>
-            <span className="text-xs text-slate-400 font-medium leading-relaxed">I agree to DM policies, harassment reporting, and total limitation of liability.</span>
-          </div>
-        </label>
+        <div className="flex items-start">
+          <input
+            type="checkbox"
+            id="additionalGuidelinesAgreement"
+            name="additionalGuidelinesAgreement"
+            checked={formData.additionalGuidelinesAgreement}
+            onChange={handleInputChange}
+            className="mt-1 mr-3"
+          />
+          <label htmlFor="additionalGuidelinesAgreement" className="text-sm text-gray-700">
+            <span className="font-medium">Additional Guidelines:</span> I have read and agree to all additional guidelines, including the private messaging policy, legal action for harassment, limitation of liability, prohibition of sexually triggering language, and moderation and termination/refund policy.
+          </label>
+        </div>
       </div>
 
-      <div className="flex justify-between pt-4">
+      <div className="mt-6 flex justify-between">
         <button
-          className="flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-slate-500 hover:text-slate-900 transition-colors"
+          className="bg-white border border-[#FF7A9A] text-[#FF7A9A] hover:bg-gray-50 py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={prevStep}
         >
-          <Lock className="w-4 h-4" /> Back
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </button>
 
         <button
-          className="btn-premium-primary h-14 px-10 text-lg shadow-xl shadow-primary/20"
+          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
-          disabled={!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement ||
-            !formData.respectAgreement || !formData.contentAgreement || !formData.nonJudgmentalAgreement ||
-            !formData.participateAgreement || !formData.sensitiveTopicsAgreement || !formData.anonymityAgreement ||
-            !formData.liabilityAgreement || !formData.explicitLanguageAgreement || !formData.additionalGuidelinesAgreement}
+          disabled={!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || !formData.respectAgreement || !formData.contentAgreement || !formData.additionalGuidelinesAgreement}
         >
-          Confirm Rules
-          <ArrowRight className="ml-2 h-5 w-5" />
+          Next <ArrowRight className="ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
   );
 
-  // Initial Step: Phone Verification (Step -1)
-  const renderPhoneVerification = () => (
-    <div className="space-y-8 animate-fade-in-up">
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-[2rem] bg-primary/10 text-primary mb-6 shadow-lg shadow-primary/5">
-          <Lock className="h-7 w-7 stroke-[2.5px]" />
-        </div>
-        <h2 className="text-3xl font-black text-slate-950 tracking-tight">Identity Check</h2>
-        <p className="text-slate-500 font-medium mt-2">Enter the mobile number used for your subscription.</p>
-      </div>
+  // Form Step 3: Contact Information
+  const renderStep3 = () => (
+    <div className="bg-white rounded-xl p-6 shadow-sm">
+      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Contact Information</h2>
+      <p className="text-gray-700 mb-6">Please provide your contact details to complete your registration.</p>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div>
-          <label htmlFor="mobileNumber" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            Mobile Number <span className="text-primary italic">*</span>
+          <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700 mb-1">
+            Your Mobile Number <span className="text-red-500">*</span>
           </label>
-
-          <div className="flex gap-3">
-            <div className="relative">
-              <select
-                value={countryCode}
-                onChange={(e) => {
-                  const newCode = e.target.value;
-                  setCountryCode(newCode);
-                  updateFullNumber(newCode, localPhone);
-                }}
-                className="h-16 px-4 pr-8 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold appearance-none focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-lg cursor-pointer"
-              >
-                {COUNTRY_CODES.map(c => (
-                  <option key={c.code + c.country} value={c.code}>
-                    {c.flag} +{c.code}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            </div>
-
-            <div className="relative group flex-1">
-              <input
-                type="tel"
-                id="mobileNumber"
-                value={localPhone}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, '');
-                  setLocalPhone(val);
-                  updateFullNumber(countryCode, val);
-                }}
-                className="w-full h-16 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-black text-2xl tracking-[0.1em] placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all group-hover:border-slate-300"
-                placeholder="9876543210"
-              />
-              <div className="absolute inset-x-0 -bottom-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
-            </div>
-          </div>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-4 text-center">
-            Encrypted • Confidential • Instant
+          <input
+            type="tel"
+            id="mobileNumber"
+            name="mobileNumber"
+            value={formData.mobileNumber}
+            onChange={handlePhoneNumberChange}
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            placeholder="e.g. 9876543210"
+            maxLength={10}
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Please note you will be added to the community only after validating your mobile number. Please enter the right number.
           </p>
         </div>
-        <button
-          className="btn-premium-primary w-full h-16 text-lg shadow-2xl shadow-primary/20"
-          onClick={verifyPhoneInitial}
-          disabled={!formData.mobileNumber || formData.mobileNumber.length < 10 || verificationLoading}
-        >
-          {verificationLoading ? (
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Verifying Access...
-            </div>
-          ) : (
-            <>
-              Access Community
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </>
-          )}
-        </button>
-      </div>
-    </div >
-  );
 
-  // Form Step 3: Additional Contact Information (Email & Referral)
-  const renderStep3 = () => (
-    <div className="space-y-8 animate-fade-in-up">
-      <div className="text-center lg:text-left">
-        <span className="badge-premium mb-4">Step 03</span>
-        <h2 className="text-3xl font-black text-slate-950 tracking-tight">Final Details</h2>
-        <p className="text-slate-500 font-medium mt-2">Almost there! Just a few more things to get you set up.</p>
-      </div>
-
-      <div className="space-y-6">
         <div>
-          <label htmlFor="email" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            Email Address <span className="text-primary italic">*</span>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            Your Email ID <span className="text-red-500">*</span>
           </label>
           <input
             type="email"
@@ -1242,15 +976,15 @@ const IntimateSuccess = () => {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
-            placeholder="you@example.com"
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            placeholder="e.g. yourname@example.com"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="referral" className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-1">
-            Referral Code <span className="text-slate-300 font-normal italic">(optional)</span>
+          <label htmlFor="referral" className="block text-sm font-medium text-gray-700 mb-1">
+            Referred by
           </label>
           <input
             type="text"
@@ -1258,27 +992,29 @@ const IntimateSuccess = () => {
             name="referral"
             value={formData.referral}
             onChange={handleInputChange}
-            className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
-            placeholder="Enter referral code"
+            className="w-full px-4 py-2 rounded-lg border border-[#F0F0F5] focus:outline-none focus:ring-2 focus:ring-[#FF7A9A] focus:border-transparent"
+            placeholder="If you have a referral code, enter it here"
           />
+          <p className="text-xs text-gray-500 mt-1">
+            If you have a referral code, use this space to enter it.
+          </p>
         </div>
       </div>
 
-      <div className="flex justify-between pt-4">
+      <div className="mt-6 flex justify-between">
         <button
-          className="flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-slate-500 hover:text-slate-900 transition-colors"
+          className="bg-white border border-[#FF7A9A] text-[#FF7A9A] hover:bg-gray-50 py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={prevStep}
         >
-          <ArrowLeft className="w-4 h-4" /> Back
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </button>
 
         <button
-          className="btn-premium-primary h-14 px-10 text-lg shadow-xl shadow-primary/20"
+          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
-          disabled={!formData.email}
+          disabled={!formData.mobileNumber || !formData.email}
         >
-          Secure Account
-          <ArrowRight className="ml-2 h-5 w-5" />
+          Submit <ArrowRight className="ml-2 h-4 w-4" />
         </button>
       </div>
     </div>
@@ -1286,78 +1022,80 @@ const IntimateSuccess = () => {
 
   // Form Step 4: Thank You and Telegram Login
   const renderStep4 = () => (
-    <div className="space-y-8 animate-fade-in-up">
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2.5rem] bg-emerald-500 text-white mb-6 shadow-xl shadow-emerald-100 animate-bounce-subtle">
-          <CheckCircle className="h-10 w-10 stroke-[2.5px]" />
+    <div className="bg-white rounded-xl p-6 shadow-sm">
+      <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Thank You!</h2>
+      <div className="text-center mb-6">
+        <div className="flex justify-center mb-4">
+          <div className="bg-[#E6F7EB] text-[#10B981] p-4 rounded-full">
+            <Check className="h-8 w-8" strokeWidth={3} />
+          </div>
         </div>
-        <h2 className="text-4xl font-black text-slate-950 tracking-tight leading-tight">
-          {isExistingDeletedUser ? 'Welcome Home!' : 'All Verified & Set!'}
-        </h2>
-        {isExistingDeletedUser ? (
-          <p className="text-slate-500 font-bold mt-4">
-            Hi {deletedUserData?.customer_name || 'Member'}! Your re-subscription is active. <br />Join your tribe on Telegram below.
-          </p>
+        <p className="text-gray-700">
+          Dear Subscriber,
+        </p>
+        <p className="text-gray-700 mt-2">
+          I wanted to take a moment to express my sincere gratitude. Your kindness and support mean the world to me. Thank you for being an incredible part of our community. 🌟
+        </p>
+        <p className="text-gray-700 mt-4 font-medium">
+          Warm regards 😊
+        </p>
+        <p className="text-gray-700 mt-1">
+          Khushboo Bist
+        </p>
+      </div>
+
+      <div className="mt-8">
+        <h3 className="font-serif text-xl font-medium text-gray-800 mb-4">Join Our Telegram Group</h3>
+        <p className="text-gray-700 mb-6">
+          {formCompleted
+            ? "Click the button below to connect with Telegram and join our community."
+            : "Please wait while we verify your information..."}
+        </p>
+
+        {telegramData ? (
+          <div className="bg-[#E6F7EB] p-6 rounded-lg border border-[#D1E7DD] shadow-sm">
+            <div className="flex items-center mb-3">
+              <div className="bg-[#10B981] text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <CheckCircle size={16} />
+              </div>
+              <h4 className="font-medium text-[#0F766E]">Successfully Connected</h4>
+            </div>
+            <p className="text-[#0F766E] font-medium mb-3">
+              Thank you, {telegramData.first_name}! You're all set to join our Telegram group.
+              Check your Telegram app for the invitation link.
+            </p>
+            <div className="bg-white p-3 rounded-lg border border-[#D1E7DD] text-sm text-[#0F766E]">
+              <p className="mb-1">
+                <span className="font-medium">Telegram ID:</span> {telegramData.id}
+                {telegramData.username && ` (@${telegramData.username})`}
+              </p>
+              <p>
+                <span className="font-medium">Phone:</span> {formData.mobileNumber}
+              </p>
+            </div>
+          </div>
         ) : (
-          <p className="text-slate-500 font-bold mt-4">
-            Thank you for being part of this journey. <br />Your safe space is just one click away.
-          </p>
+          <div className="flex justify-center">
+            {formCompleted ? (
+              <div ref={telegramLoginContainerRef} className="telegram-login-container">
+                {/* Telegram widget will be inserted here by useEffect */}
+                <div className="animate-pulse bg-[#F0F0F5] h-12 w-48 rounded-lg"></div>
+              </div>
+            ) : (
+              <div className="bg-[#F0F0F5] text-gray-400 py-3 px-6 rounded-full text-center">
+                Telegram Login (Verifying your information...)
+              </div>
+            )}
+          </div>
         )}
       </div>
 
-      <div className="bg-slate-900 rounded-[3rem] p-10 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2" />
-
-        <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary">
-              <MessageCircle className="h-6 w-6" />
-            </div>
-            <h3 className="text-xl font-bold text-white tracking-tight">Official Telegram Link</h3>
-          </div>
-
-          <p className="text-slate-400 font-medium mb-10 leading-relaxed">
-            {formCompleted
-              ? "Your unique invite link is ready. Use as provided to enter our private community."
-              : "Synchronizing your profile across our secure servers..."}
-          </p>
-
-          {telegramData ? (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 p-8 rounded-[2rem] text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-4">
-                <Check className="h-6 w-6 text-white stroke-[3px]" />
-              </div>
-              <span className="block font-black text-white text-lg mb-1">Redirection Ready</span>
-              <p className="text-emerald-400 font-bold text-sm">
-                Connected as {telegramData.first_name}. Open Telegram now!
-              </p>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              {formCompleted ? (
-                <div ref={telegramLoginContainerRef} className="telegram-login-container transform hover:scale-105 transition-transform">
-                  <div className="w-64 h-16 bg-white/10 rounded-2xl animate-pulse flex items-center justify-center text-white/20 font-bold">
-                    Loading Secure Portal...
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-4 text-slate-500 font-bold italic">
-                  <div className="w-5 h-5 border-2 border-slate-700 border-t-primary rounded-full animate-spin" />
-                  Verifying Security Protocol...
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="text-center pt-10 border-t border-slate-50">
+      <div className="mt-6 flex justify-center">
         <Link
           to="/"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="inline-flex items-center gap-2 text-sm font-black text-slate-400 uppercase tracking-widest hover:text-primary transition-colors"
+          className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors"
         >
-          <ArrowLeft className="w-3 h-3" /> Go Home
+          Return to Home
         </Link>
       </div>
     </div>
@@ -1380,12 +1118,10 @@ const IntimateSuccess = () => {
     const script = document.createElement('script');
     script.async = true;
     script.src = 'https://telegram.org/js/telegram-widget.js?22';
-    script.setAttribute('data-telegram-login', 'KB_intimate_bot');
+    script.setAttribute('data-telegram-login', 'KB_initmatetalks_bot');
     script.setAttribute('data-size', 'large');
-    script.setAttribute('data-radius', '8');
-    script.setAttribute('data-request-access', 'write');
-    script.setAttribute('data-userpic', 'false');
     script.setAttribute('data-onauth', 'telegramLoginCallback(user)');
+    script.setAttribute('data-request-access', 'write');
     script.setAttribute('data-auth-url', window.location.href);
     script.setAttribute('data-userpic', 'false');
     script.setAttribute('data-radius', '8');
@@ -1402,113 +1138,102 @@ const IntimateSuccess = () => {
   }, [formCompleted]);
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-20 relative overflow-hidden">
-      {/* Premium Background Elements */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+    <div className="bg-[#FFE5EC]">
+      <section className="py-12 md:py-16 lg:py-20">
+        <div className="container-custom max-w-5xl">
+          <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8">
+            <div className="p-6 md:p-8">
+              <div className="text-center mb-8">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-[#E6F7EB] text-[#10B981] p-4 rounded-full">
+                    <Check className="h-12 w-12" strokeWidth={3} />
+                  </div>
+                </div>
 
-      <div className="max-w-xl mx-auto px-4 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in-up">
-          <div className="inline-flex items-center gap-3 px-6 py-2 bg-emerald-500/10 text-emerald-600 text-[11px] font-black uppercase tracking-[0.2em] rounded-full mb-6 border border-emerald-500/10">
-            <CheckCircle className="h-4 w-4 stroke-[3px]" />
-            Payment Verified
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-950 mb-4 tracking-tighter">
-            Community <span className="text-gradient">Entrance</span>
-          </h1>
-          <p className="text-slate-500 font-medium text-lg leading-relaxed">
-            Welcome to Intimate Talks. Please complete your registration below.
-          </p>
-        </div>
+                <div className="text-[#FF7A9A] text-sm font-medium mb-1">PAYMENT CONFIRMED</div>
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium text-gray-800 mb-3">
+                  Complete Your Registration
+                </h1>
+                <p className="text-gray-700 font-medium">
+                  Please fill out the form below to join our Intimate Talks community
+                </p>
+              </div>
 
-        {/* Main Card */}
-        <div className="bg-white rounded-[3.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] border border-slate-100/50 overflow-hidden animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-          {verificationLoading && currentStep === -1 ? (
-            <div className="p-20 flex flex-col items-center justify-center">
-              <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-8"></div>
-              <p className="text-slate-950 font-black uppercase tracking-widest text-sm animate-pulse">Running Security Check</p>
-            </div>
-          ) : (
-            <div className="p-8 md:p-12">
-              {/* Progress Steps */}
-              {!isExistingDeletedUser && currentStep < 3 && (
-                <div className="mb-14">
-                  <div className="flex items-center justify-between px-2">
-                    {['Verify', 'Profile', 'Safety', 'Legal'].map((label, index) => {
-                      const stepNum = index;
-                      const adjustedCurrent = currentStep + 1;
-                      const isActive = adjustedCurrent === stepNum;
-                      const isComplete = adjustedCurrent > stepNum;
-                      return (
-                        <div key={label} className="relative flex-1 flex flex-col items-center">
-                          {/* Line */}
-                          {index > 0 && (
-                            <div className={`absolute right-1/2 top-4 w-full h-[3px] -translate-y-1/2 transition-colors duration-500 ${isComplete || isActive ? 'bg-primary/20' : 'bg-slate-100'}`} style={{ right: 'calc(50% + 20px)', width: 'calc(100% - 40px)' }} />
-                          )}
-
-                          <div className={`
-                            relative z-10 w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-black transition-all duration-500
-                            ${isComplete ? 'bg-primary text-white shadow-lg shadow-primary/30' : ''}
-                            ${isActive ? 'bg-slate-950 text-white ring-8 ring-slate-50 shadow-xl' : ''}
-                            ${!isActive && !isComplete ? 'bg-slate-100 text-slate-400' : ''}
-                          `}>
-                            {isComplete ? <Check className="h-5 w-5 stroke-[4px]" /> : index + 1}
+              {verificationLoading ? (
+                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8 flex justify-center items-center">
+                  <div className="animate-pulse flex flex-col items-center">
+                    <div className="h-12 w-12 rounded-full bg-[#FFE5EC] mb-4"></div>
+                    <div className="h-4 w-48 bg-[#FFE5EC] rounded"></div>
+                    <p className="mt-4 text-[#FF7A9A]">Verifying your payment...</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8">
+                  {/* Progress indicator */}
+                  <div className="mb-8">
+                    <div className="flex justify-between">
+                      {[1, 2, 3, 4].map((step) => (
+                        <div key={step} className="flex flex-col items-center">
+                          <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep + 1 >= step
+                              ? 'bg-[#FF7A9A] text-white'
+                              : 'bg-[#F0F0F5] text-gray-400'
+                              }`}
+                          >
+                            {currentStep + 1 > step ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <span>{step}</span>
+                            )}
                           </div>
-
-                          <span className={`mt-4 text-[9px] font-black uppercase tracking-[0.2em] transition-colors duration-300 ${isActive ? 'text-slate-900' : 'text-slate-400'}`}>
-                            {label}
+                          <span className={`text-xs mt-1 ${currentStep + 1 >= step
+                            ? 'text-[#FF7A9A]'
+                            : 'text-gray-400'
+                            }`}>
+                            {step === 1 ? 'Info' :
+                              step === 2 ? 'Terms' :
+                                step === 3 ? 'Contact' : 'Complete'}
                           </span>
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
+                    <div className="mt-2 h-1 bg-[#F0F0F5] rounded-full">
+                      <div
+                        className="h-full bg-[#FF7A9A] rounded-full transition-all duration-300"
+                        style={{ width: `${((currentStep + 1) / 4) * 100}%` }}
+                      ></div>
+                    </div>
                   </div>
+
+                  {currentStep === 0 && renderStep1()}
+                  {currentStep === 1 && renderStep2()}
+                  {currentStep === 2 && renderStep3()}
+                  {currentStep === 3 && renderStep4()}
                 </div>
               )}
 
-              {/* Form Steps */}
-              <div className="min-h-[400px] flex flex-col justify-center">
-                {currentStep === -1 && renderPhoneVerification()}
-                {currentStep === 0 && renderStep1()}
-                {currentStep === 1 && renderStep2()}
-                {currentStep === 2 && renderStep3()}
-                {currentStep === 3 && renderStep4()}
+              <p className="text-gray-700 text-center mb-6">
+                Once you've joined our Telegram group, you'll have access to exclusive content, discussions, and resources to enhance your intimate life.
+              </p>
+
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link
+                  to="/"
+                  className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
+                >
+                  Return to Home
+                </Link>
+                <Link
+                  to="/guide"
+                  className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors"
+                >
+                  Explore 69 Positions Guide
+                </Link>
               </div>
             </div>
-          )}
-        </div>
-
-        {/* Footer Support */}
-        <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-          <div className="flex flex-wrap justify-center gap-6 items-center">
-            {[
-              { icon: Shield, text: "End-to-end Encrypted" },
-              { icon: Heart, text: "Community Verified" }
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <item.icon className="w-4 h-4 text-slate-400" />
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">{item.text}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 flex justify-center gap-6">
-            <Link
-              to="/"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="text-slate-400 hover:text-primary font-bold text-xs uppercase tracking-widest transition-colors"
-            >
-              Home
-            </Link>
-            <span className="text-slate-200">|</span>
-            <Link
-              to="/guide"
-              className="text-slate-400 hover:text-primary font-bold text-xs uppercase tracking-widest transition-colors"
-            >
-              Help Desk
-            </Link>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
