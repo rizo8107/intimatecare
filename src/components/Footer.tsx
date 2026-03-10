@@ -10,11 +10,11 @@ const Footer = () => {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       console.log('Sending footer newsletter subscription data...');
-      
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/kb_newsletter', {
+
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/kb_newsletter', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,10 +26,10 @@ const Footer = () => {
           subscriptionDate: new Date().toISOString(),
         }),
       });
-      
+
       const data = await response.json().catch(() => null);
       console.log('Webhook response:', response.status, data);
-      
+
       if (response.ok) {
         setFooterEmail('');
         toast({
@@ -73,7 +73,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          
+
           <div>
             <h3 className="font-serif text-xl mb-4">Quick Links</h3>
             <ul className="space-y-2">
@@ -109,7 +109,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="font-serif text-xl mb-4">Contact</h3>
             <ul className="space-y-2">
@@ -126,20 +126,20 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-            
+
             <div className="mt-6">
               <h4 className="font-medium mb-2">Subscribe to Newsletter</h4>
               <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
-                <input 
-                  type="email" 
-                  placeholder="Your email" 
+                <input
+                  type="email"
+                  placeholder="Your email"
                   value={footerEmail}
                   onChange={(e) => setFooterEmail(e.target.value)}
                   className="px-4 py-2 rounded-md border border-white/20 bg-white/10 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/30"
                   required
                 />
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="bg-white text-[#FF7A9A] hover:bg-white/90 px-4 py-2 rounded-md font-medium transition-colors sm:whitespace-nowrap"
                   disabled={loading}
                 >
@@ -149,7 +149,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="border-t border-white/20 pt-8 text-center text-sm text-white/80">
           <p> {new Date().getFullYear()} Khushboo Bist. All rights reserved.</p>
         </div>

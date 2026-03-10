@@ -53,12 +53,12 @@ const IntimateSuccess = () => {
   const [verificationLoading, setVerificationLoading] = useState(false);
   const telegramLoginContainerRef = useRef<HTMLDivElement>(null);
   const [matchedPayment, setMatchedPayment] = useState<any>(null);
-  
+
   // Extract payment details from query params
   const paymentId = queryParams?.get('payment_id') || '';
   const status = queryParams?.get('status') || '';
   const amount = queryParams?.get('amount') || '';
-  
+
   // Form state
   const [currentStep, setCurrentStep] = useState(0);
   const [formCompleted, setFormCompleted] = useState(false);
@@ -103,20 +103,20 @@ const IntimateSuccess = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setQueryParams(params);
-    
+
     // Track page view for analytics
     trackFormStart('intimate_success_form');
     trackFormEvent('intimate_success_form', 'init', 'start');
-    
+
     // Define the auth callback globally
     window.telegramLoginCallback = handleTelegramAuth;
-    
+
     // Check if payment exists in Supabase
     const paymentId = params.get('payment_id');
     if (paymentId) {
       verifyPayment(paymentId);
     }
-    
+
     return () => {
       // Clean up global callback
       delete window.telegramLoginCallback;
@@ -129,7 +129,7 @@ const IntimateSuccess = () => {
       setVerificationLoading(true);
       // For now, auto-verify the payment to let development proceed
       setPaymentVerified(true);
-      
+
       // In production, uncomment this code to verify with Supabase:
       /*
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
@@ -174,10 +174,10 @@ const IntimateSuccess = () => {
   const verifyPhoneNumber = async () => {
     try {
       setVerificationLoading(true);
-      
+
       // First, send the current form data to the form webhook
       await submitFormToWebhook();
-      
+
       // Proceed with phone verification
       const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
@@ -186,14 +186,14 @@ const IntimateSuccess = () => {
           'Authorization': `Bearer ${ANON_KEY}`
         }
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch payment data');
       }
-      
+
       const payments = await response.json();
       console.log('Payments data for phone verification:', payments);
-      
+
       // Find a payment that matches the phone number
       const matchedPayment = payments.find((payment: any) => {
         // Normalize phone numbers by removing any non-digit characters and comparing only the last 10 digits
@@ -204,26 +204,26 @@ const IntimateSuccess = () => {
           const digits = phoneStr.replace(/\D/g, '');
           return digits.slice(-10); // Get last 10 digits
         };
-        
+
         const formattedInputPhone = normalizePhone(formData.mobileNumber);
         const paymentPhone = normalizePhone(payment.phone);
         const paymentPhoneNumber = normalizePhone(payment.phone_number);
         const customerPhone = normalizePhone(payment.customer_phone);
-        
+
         console.log('Comparing phones:', {
           input: formattedInputPhone,
           payment: paymentPhone,
           paymentNumber: paymentPhoneNumber,
           customer: customerPhone
         });
-        
-        return formattedInputPhone === paymentPhone || 
-               formattedInputPhone === paymentPhoneNumber ||
-               formattedInputPhone === customerPhone;
+
+        return formattedInputPhone === paymentPhone ||
+          formattedInputPhone === paymentPhoneNumber ||
+          formattedInputPhone === customerPhone;
       });
-      
+
       console.log('Matched payment:', matchedPayment);
-      
+
       if (matchedPayment) {
         setMatchedPayment(matchedPayment);
         setFormCompleted(true);
@@ -259,10 +259,10 @@ const IntimateSuccess = () => {
       });
       return;
     }
-    
+
     // Verify phone number against Supabase before proceeding
     const verified = await verifyPhoneNumber();
-    
+
     if (verified) {
       setFormCompleted(true);
     }
@@ -278,7 +278,7 @@ const IntimateSuccess = () => {
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as HTMLInputElement;
-    
+
     // For checkboxes, use checked property
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
@@ -286,7 +286,7 @@ const IntimateSuccess = () => {
         ...prev,
         [name]: checked
       }));
-      
+
       // Save to localStorage for persistence
       const updatedFormData = {
         ...formData,
@@ -298,7 +298,7 @@ const IntimateSuccess = () => {
         ...prev,
         [name]: value
       }));
-      
+
       // Save to localStorage for persistence
       const updatedFormData = {
         ...formData,
@@ -315,13 +315,13 @@ const IntimateSuccess = () => {
       const verified = await verifyPhoneNumber();
       if (!verified) return;
     }
-    
+
     // If on final step, submit form data
     if (currentStep === 3) {
       submitFormData();
       return;
     }
-    
+
     setCurrentStep(prev => prev + 1);
   };
 
@@ -334,17 +334,17 @@ const IntimateSuccess = () => {
   const submitFormData = async () => {
     try {
       setLoading(true);
-      
+
       // Store form data in localStorage as backup
       try {
         localStorage.setItem('form_data', JSON.stringify(formData));
       } catch (e) {
         console.error('Failed to store form data in localStorage', e);
       }
-      
+
       // Verify phone number with Supabase before proceeding
       const verified = await verifyPhoneNumber();
-      
+
       if (!verified) {
         toast({
           title: 'Verification failed',
@@ -354,19 +354,19 @@ const IntimateSuccess = () => {
         setLoading(false);
         return;
       }
-      
+
       // For now, just log the form data
       console.log('Form data submitted:', formData);
-      
+
       // Show success message
       toast({
         title: 'Form submitted successfully',
         description: 'You can now connect with Telegram to join the group.',
       });
-      
+
       // Set form as completed to enable Telegram login
       setFormCompleted(true);
-      
+
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
@@ -388,31 +388,31 @@ const IntimateSuccess = () => {
         console.log('🔒 GLOBAL LOCK ACTIVE - Submission already in progress');
         return true; // Return success without submitting
       }
-      
+
       // Set global lock
       (window as any).__formSubmissionLock = true;
-      
+
       // Use localStorage for additional protection
       const now = Date.now();
       const lastSubmission = localStorage.getItem('lastFormSubmission');
       const lastSubmissionTime = lastSubmission ? parseInt(lastSubmission) : 0;
-      
+
       // Require at least 5 seconds between submissions
       if (now - lastSubmissionTime < 5000) {
         console.log('🚫 PREVENTED duplicate submission, last was', (now - lastSubmissionTime) / 1000, 'seconds ago');
         (window as any).__formSubmissionLock = false; // Release lock
         return true; // Return success without submitting
       }
-      
+
       // Set submission flag
       setIsSubmitting(true);
-      
+
       // Store current submission time in localStorage
       localStorage.setItem('lastFormSubmission', now.toString());
-      
+
       // Generate a unique ID with less chance of collision
       const uniqueId = `${now}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
-      
+
       // Prepare the form data to be sent
       const formDataToSend = {
         ...formData,
@@ -421,22 +421,22 @@ const IntimateSuccess = () => {
         source: 'intimate_talks',
         submission_id: uniqueId
       };
-      
+
       console.log('✅ SUBMITTING form data to webhook with ID:', uniqueId);
-      
+
       // Send the form data to the webhook
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formDataToSend)
       });
-      
+
       if (!response.ok) {
         throw new Error(`Form submission failed: ${response.status}`);
       }
-      
+
       console.log('✅ Form data submitted successfully with ID:', uniqueId);
       return true;
     } catch (error) {
@@ -461,7 +461,7 @@ const IntimateSuccess = () => {
   const handleTelegramAuth = async (user: any) => {
     console.log('Telegram auth data:', user);
     setTelegramData(user);
-    
+
     // If already submitting, don't trigger multiple webhook calls
     if (isSubmitting) {
       console.log('Already submitting, please wait...');
@@ -470,17 +470,17 @@ const IntimateSuccess = () => {
       // Submit form data to webhook again to ensure it's up to date
       await submitFormToWebhook();
     }
-    
+
     try {
       let currentPhone = '';
-      
+
       // Try to get the verified phone from various sources
       if (formData.mobileNumber) {
         currentPhone = formData.mobileNumber;
       } else if (localStorage.getItem('verifiedPhone')) {
         currentPhone = localStorage.getItem('verifiedPhone') || '';
       }
-      
+
       if (!currentPhone) {
         toast({
           title: 'Missing Phone Number',
@@ -489,10 +489,10 @@ const IntimateSuccess = () => {
         });
         return;
       }
-      
+
       // Create a deep copy of matchedPayment to avoid reference issues
       const paymentDataCopy = matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null;
-      
+
       // Combine user data
       const combinedUserData = {
         ...user,
@@ -505,7 +505,7 @@ const IntimateSuccess = () => {
         matched_payment: paymentDataCopy,
         form_data: formData
       };
-      
+
       // Send the combined data to the backend
       sendTelegramDataToBackend(combinedUserData);
     } catch (error) {
@@ -532,16 +532,16 @@ const IntimateSuccess = () => {
         });
         return; // Return without submitting
       }
-      
+
       // Set global telegram submission lock
       (window as any).__telegramSubmissionLock = true;
       setLoading(true);
-      
+
       // Check for duplicate submission
       const now = Date.now();
       const lastTelegramSubmission = localStorage.getItem('lastTelegramSubmission');
       const lastTelegramTime = lastTelegramSubmission ? parseInt(lastTelegramSubmission) : 0;
-      
+
       // Require at least 5 seconds between Telegram submissions
       if (now - lastTelegramTime < 5000) {
         console.log('🚫 PREVENTED duplicate Telegram submission, last was', (now - lastTelegramTime) / 1000, 'seconds ago');
@@ -553,10 +553,10 @@ const IntimateSuccess = () => {
         });
         return; // Return without submitting
       }
-      
+
       // Save current submission time
       localStorage.setItem('lastTelegramSubmission', now.toString());
-      
+
       // Try to get phone from localStorage as a backup
       let backupPhone = '';
       try {
@@ -564,30 +564,30 @@ const IntimateSuccess = () => {
       } catch (e) {
         console.error('Failed to get phone from localStorage', e);
       }
-      
+
       // Find the most reliable phone number from all possible sources
       const reliablePhone = userData.phone_number || userData.verified_phone || formData.mobileNumber || backupPhone || '';
-      
+
       // Log important data before sending
       console.log('Raw Telegram user data:', userData);
       console.log('User ID from Telegram:', userData.id);
       console.log('Final phone number being sent:', reliablePhone);
       console.log('Form data being sent:', formData);
-      
+
       // Deep clone matchedPayment to avoid any reference issues
-      const paymentDataToSend = userData.matched_payment || 
-                               (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
-      
+      const paymentDataToSend = userData.matched_payment ||
+        (matchedPayment ? JSON.parse(JSON.stringify(matchedPayment)) : null);
+
       // Ensure we have the latest form data
       const latestFormData = { ...formData };
-      
+
       // Generate a unique submission ID with less chance of collision
       const uniqueId = `telegram-${now}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
-      
+
       // First, send to the form webhook to ensure form data is saved
       console.log('✅ SUBMITTING to form webhook with ID:', uniqueId);
-      
-      await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/form', {
+
+      await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -601,7 +601,7 @@ const IntimateSuccess = () => {
           submission_id: uniqueId
         })
       });
-      
+
       // Add payment details to the payload with the most reliable phone number
       const payloadData = {
         ...userData,
@@ -622,30 +622,30 @@ const IntimateSuccess = () => {
         form_data: latestFormData,
         submission_id: uniqueId
       };
-      
+
       console.log('✅ SUBMITTING to Telegram webhook with ID:', uniqueId);
-      
+
       // Now send to the main telegram webhook for user verification
-      const response = await fetch('https://backend-n8n.7za6uc.easypanel.host/webhook/telegram-success-user', {
+      const response = await fetch('https://backend-n8n.lhs56u.easypanel.host/webhook/telegram-success-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payloadData)
       });
-      
+
       if (!response.ok) {
         throw new Error(`Webhook error: ${response.status}`);
       }
-      
+
       console.log('✅ Webhook successfully called with ID:', uniqueId);
-      
+
       toast({
         title: 'Success!',
         description: 'You have been verified and added to the Intimate Talks group!',
         variant: 'default'
       });
-      
+
     } catch (error) {
       console.error('❌ Error in webhook call:', error);
       toast({
@@ -669,7 +669,7 @@ const IntimateSuccess = () => {
       console.log('Already submitting, please wait...');
       return;
     }
-    
+
     // Check if current step is complete
     // Step 1: Basic information
     if (currentStep === 0) {
@@ -681,17 +681,17 @@ const IntimateSuccess = () => {
         });
         return;
       }
-      
+
       // Submit form data to the webhook after completing step 1
       await submitFormToWebhook();
-      
+
       // Go to next step
       setCurrentStep(1);
-    } 
+    }
     // Step 2: Terms and conditions
     else if (currentStep === 1) {
-      if (!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement || 
-          !formData.respectAgreement || !formData.contentAgreement) {
+      if (!formData.hookupAgreement || !formData.privacyAgreement || !formData.participationAgreement ||
+        !formData.respectAgreement || !formData.contentAgreement) {
         toast({
           title: 'Missing agreements',
           description: 'You must agree to all the terms to continue.',
@@ -699,16 +699,16 @@ const IntimateSuccess = () => {
         });
         return;
       }
-      
+
       // Only submit if we've made changes since last step
       const now = Date.now();
       if (now - lastSubmissionTime > 3000) {
         await submitFormToWebhook();
       }
-      
+
       // Go to next step
       setCurrentStep(2);
-    } 
+    }
     // Step 3: Contact information
     else if (currentStep === 2) {
       if (!formData.mobileNumber || !formData.email) {
@@ -719,14 +719,14 @@ const IntimateSuccess = () => {
         });
         return;
       }
-      
+
       // Final form data submission to the webhook - always submit at final step
       await submitFormToWebhook();
-      
+
       // Verify phone number and proceed
       const verified = await verifyPhoneNumber();
       if (!verified) return;
-      
+
       setCurrentStep(3);
     }
   };
@@ -736,7 +736,7 @@ const IntimateSuccess = () => {
     <div className="bg-white rounded-xl p-6 shadow-sm">
       <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Membership Information</h2>
       <p className="text-gray-700 mb-6">Please provide some basic information about yourself.</p>
-      
+
       <div className="space-y-4">
         <div>
           <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
@@ -757,7 +757,7 @@ const IntimateSuccess = () => {
             <option value="prefer_not_to_say">Prefer not to say</option>
           </select>
         </div>
-        
+
         <div>
           <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
             Your Location <span className="text-red-500">*</span>
@@ -773,7 +773,7 @@ const IntimateSuccess = () => {
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="problems" className="block text-sm font-medium text-gray-700 mb-1">
             What problems are you facing? <span className="text-red-500">*</span>
@@ -789,7 +789,7 @@ const IntimateSuccess = () => {
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="joinReason" className="block text-sm font-medium text-gray-700 mb-1">
             Why did you join this group? <span className="text-red-500">*</span>
@@ -806,7 +806,7 @@ const IntimateSuccess = () => {
           />
         </div>
       </div>
-      
+
       <div className="mt-6 flex justify-end">
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
@@ -824,14 +824,14 @@ const IntimateSuccess = () => {
     <div className="bg-white rounded-xl p-6 shadow-sm">
       <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Membership Agreement</h2>
       <p className="text-gray-700 mb-6">Please read and agree to the following terms and conditions.</p>
-      
+
       <div className="space-y-4 max-h-[400px] overflow-y-auto p-4 bg-gray-50 rounded-lg mb-4">
         <div className="mb-4">
           <h3 className="font-medium text-gray-800 mb-2">Mandatory Guidelines</h3>
           <p className="text-sm text-gray-700 mb-4">
             Your participation in our group requires adherence to the following guidelines:
           </p>
-          
+
           <div className="space-y-3">
             <div className="flex items-start">
               <input
@@ -846,7 +846,7 @@ const IntimateSuccess = () => {
                 <span className="font-medium">1. Prohibition of Hookup or Dating Solicitations:</span> This group is solely for constructive discussions and prohibits any attempts to initiate or solicit romantic or sexual encounters. Any such actions, including private propositions, will result in immediate removal from the group.
               </label>
             </div>
-            
+
             <div className="flex items-start">
               <input
                 type="checkbox"
@@ -860,7 +860,7 @@ const IntimateSuccess = () => {
                 <span className="font-medium">2. Privacy and Confidentiality:</span> Respecting the privacy of all members is paramount. Any use of screenshots or group content for purposes such as public display, harassment, or blackmail is strictly prohibited and will be treated as a severe breach of trust.
               </label>
             </div>
-            
+
             <div className="flex items-start">
               <input
                 type="checkbox"
@@ -874,7 +874,7 @@ const IntimateSuccess = () => {
                 <span className="font-medium">3. Voluntary Participation:</span> Members acknowledge that all interactions, opinions, and advice within the group are voluntary and non-professional. Users engage at their own discretion and bear personal responsibility for any actions taken based on shared advice or content.
               </label>
             </div>
-            
+
             <div className="flex items-start">
               <input
                 type="checkbox"
@@ -888,7 +888,7 @@ const IntimateSuccess = () => {
                 <span className="font-medium">4. Respect and Empathy:</span> Members are expected to engage with empathy, respect, and consideration towards others. Behaviors that ridicule, mock, or humiliate fellow members are unacceptable and will not be tolerated.
               </label>
             </div>
-            
+
             <div className="flex items-start">
               <input
                 type="checkbox"
@@ -904,7 +904,7 @@ const IntimateSuccess = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-start">
           <input
             type="checkbox"
@@ -919,7 +919,7 @@ const IntimateSuccess = () => {
           </label>
         </div>
       </div>
-      
+
       <div className="mt-6 flex justify-between">
         <button
           className="bg-white border border-[#FF7A9A] text-[#FF7A9A] hover:bg-gray-50 py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
@@ -927,7 +927,7 @@ const IntimateSuccess = () => {
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </button>
-        
+
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
@@ -944,7 +944,7 @@ const IntimateSuccess = () => {
     <div className="bg-white rounded-xl p-6 shadow-sm">
       <h2 className="font-serif text-xl font-medium text-gray-800 mb-4">Contact Information</h2>
       <p className="text-gray-700 mb-6">Please provide your contact details to complete your registration.</p>
-      
+
       <div className="space-y-4">
         <div>
           <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700 mb-1">
@@ -965,7 +965,7 @@ const IntimateSuccess = () => {
             Please note you will be added to the community only after validating your mobile number. Please enter the right number.
           </p>
         </div>
-        
+
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Your Email ID <span className="text-red-500">*</span>
@@ -981,7 +981,7 @@ const IntimateSuccess = () => {
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="referral" className="block text-sm font-medium text-gray-700 mb-1">
             Referred by
@@ -1000,7 +1000,7 @@ const IntimateSuccess = () => {
           </p>
         </div>
       </div>
-      
+
       <div className="mt-6 flex justify-between">
         <button
           className="bg-white border border-[#FF7A9A] text-[#FF7A9A] hover:bg-gray-50 py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
@@ -1008,7 +1008,7 @@ const IntimateSuccess = () => {
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </button>
-        
+
         <button
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors flex items-center"
           onClick={handleCompleteStep}
@@ -1043,15 +1043,15 @@ const IntimateSuccess = () => {
           Khushboo Bist
         </p>
       </div>
-      
+
       <div className="mt-8">
         <h3 className="font-serif text-xl font-medium text-gray-800 mb-4">Join Our Telegram Group</h3>
         <p className="text-gray-700 mb-6">
-          {formCompleted 
+          {formCompleted
             ? "Click the button below to connect with Telegram and join our community."
             : "Please wait while we verify your information..."}
         </p>
-        
+
         {telegramData ? (
           <div className="bg-[#E6F7EB] p-6 rounded-lg border border-[#D1E7DD] shadow-sm">
             <div className="flex items-center mb-3">
@@ -1061,12 +1061,12 @@ const IntimateSuccess = () => {
               <h4 className="font-medium text-[#0F766E]">Successfully Connected</h4>
             </div>
             <p className="text-[#0F766E] font-medium mb-3">
-              Thank you, {telegramData.first_name}! You're all set to join our Telegram group. 
+              Thank you, {telegramData.first_name}! You're all set to join our Telegram group.
               Check your Telegram app for the invitation link.
             </p>
             <div className="bg-white p-3 rounded-lg border border-[#D1E7DD] text-sm text-[#0F766E]">
               <p className="mb-1">
-                <span className="font-medium">Telegram ID:</span> {telegramData.id} 
+                <span className="font-medium">Telegram ID:</span> {telegramData.id}
                 {telegramData.username && ` (@${telegramData.username})`}
               </p>
               <p>
@@ -1089,10 +1089,10 @@ const IntimateSuccess = () => {
           </div>
         )}
       </div>
-      
+
       <div className="mt-6 flex justify-center">
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-2 px-6 rounded-full text-center font-medium transition-colors"
         >
           Return to Home
@@ -1106,14 +1106,14 @@ const IntimateSuccess = () => {
     if (!formCompleted || !telegramLoginContainerRef.current) {
       return;
     }
-    
+
     console.log('Loading Telegram widget, terms agreed:', formCompleted);
-    
+
     // Clear any existing content
     if (telegramLoginContainerRef.current) {
       telegramLoginContainerRef.current.innerHTML = '';
     }
-    
+
     // Create the script exactly as provided
     const script = document.createElement('script');
     script.async = true;
@@ -1125,10 +1125,10 @@ const IntimateSuccess = () => {
     script.setAttribute('data-auth-url', window.location.href);
     script.setAttribute('data-userpic', 'false');
     script.setAttribute('data-radius', '8');
-    
+
     // Append the script to the container
     telegramLoginContainerRef.current.appendChild(script);
-    
+
     return () => {
       // Clean up when component unmounts or terms change
       if (telegramLoginContainerRef.current) {
@@ -1149,7 +1149,7 @@ const IntimateSuccess = () => {
                     <Check className="h-12 w-12" strokeWidth={3} />
                   </div>
                 </div>
-                
+
                 <div className="text-[#FF7A9A] text-sm font-medium mb-1">PAYMENT CONFIRMED</div>
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-medium text-gray-800 mb-3">
                   Complete Your Registration
@@ -1158,7 +1158,7 @@ const IntimateSuccess = () => {
                   Please fill out the form below to join our Intimate Talks community
                 </p>
               </div>
-              
+
               {verificationLoading ? (
                 <div className="bg-[#FAFAFA] rounded-xl p-6 md:p-8 shadow-sm mb-8 flex justify-center items-center">
                   <div className="animate-pulse flex flex-col items-center">
@@ -1174,12 +1174,11 @@ const IntimateSuccess = () => {
                     <div className="flex justify-between">
                       {[1, 2, 3, 4].map((step) => (
                         <div key={step} className="flex flex-col items-center">
-                          <div 
-                            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              currentStep + 1 >= step 
-                                ? 'bg-[#FF7A9A] text-white' 
+                          <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep + 1 >= step
+                                ? 'bg-[#FF7A9A] text-white'
                                 : 'bg-[#F0F0F5] text-gray-400'
-                            }`}
+                              }`}
                           >
                             {currentStep + 1 > step ? (
                               <Check className="h-4 w-4" />
@@ -1187,46 +1186,45 @@ const IntimateSuccess = () => {
                               <span>{step}</span>
                             )}
                           </div>
-                          <span className={`text-xs mt-1 ${
-                            currentStep + 1 >= step 
-                              ? 'text-[#FF7A9A]' 
+                          <span className={`text-xs mt-1 ${currentStep + 1 >= step
+                              ? 'text-[#FF7A9A]'
                               : 'text-gray-400'
-                          }`}>
-                            {step === 1 ? 'Info' : 
-                             step === 2 ? 'Terms' : 
-                             step === 3 ? 'Contact' : 'Complete'}
+                            }`}>
+                            {step === 1 ? 'Info' :
+                              step === 2 ? 'Terms' :
+                                step === 3 ? 'Contact' : 'Complete'}
                           </span>
                         </div>
                       ))}
                     </div>
                     <div className="mt-2 h-1 bg-[#F0F0F5] rounded-full">
-                      <div 
+                      <div
                         className="h-full bg-[#FF7A9A] rounded-full transition-all duration-300"
                         style={{ width: `${((currentStep + 1) / 4) * 100}%` }}
                       ></div>
                     </div>
                   </div>
-                  
+
                   {currentStep === 0 && renderStep1()}
                   {currentStep === 1 && renderStep2()}
                   {currentStep === 2 && renderStep3()}
                   {currentStep === 3 && renderStep4()}
                 </div>
               )}
-              
+
               <p className="text-gray-700 text-center mb-6">
                 Once you've joined our Telegram group, you'll have access to exclusive content, discussions, and resources to enhance your intimate life.
               </p>
-              
+
               <div className="flex flex-wrap justify-center gap-4">
-                <Link 
-                  to="/" 
+                <Link
+                  to="/"
                   className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full text-center font-medium transition-colors"
                 >
                   Return to Home
                 </Link>
-                <Link 
-                  to="/guide" 
+                <Link
+                  to="/guide"
                   className="bg-white hover:bg-gray-50 text-[#FF7A9A] border border-[#FF7A9A] py-3 px-6 rounded-full text-center font-medium transition-colors"
                 >
                   Explore 69 Positions Guide
