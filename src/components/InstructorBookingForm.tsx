@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { format, parseISO, isToday, isTomorrow, addDays } from 'date-fns';
 
 // Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.lhs56u.easypanel.host';
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzQ5ODM5NDAwLCJleHAiOjE5MDc2MDU4MDB9.sWCsUjb5xqDn6pIkPlhHScIHJ1ytr8rlTH-SdrHLuZE';
 
 // Add error checking for required Supabase configuration

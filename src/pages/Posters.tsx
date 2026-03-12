@@ -42,8 +42,8 @@ const PRODUCTS = [
     },
     {
         id: 3,
-        title: "30-Day Couple Challenge",
-        tagline: "Reignite Your Passion Daily",
+        title: "The Naughty Bedroom Playbook",
+        tagline: "(Go Beyond Missionary)",
         price: "599",
         image: "/images/32 days v2.jpg",
         color: "#6366f1"

@@ -125,7 +125,7 @@ const MembershipForm = () => {
 
       // In production, uncomment this code to verify with Supabase:
       /*
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
+      const response = await fetch('https://crm-supabase.lhs56u.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
           'apikey': ANON_KEY,
@@ -190,7 +190,7 @@ const MembershipForm = () => {
 
       // In production, uncomment this code to verify with Supabase:
       /*
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
+      const response = await fetch('https://crm-supabase.lhs56u.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
           'apikey': ANON_KEY,

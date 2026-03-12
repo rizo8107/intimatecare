@@ -49,12 +49,11 @@ const SalesPopup = () => {
             };
         }
 
-        // 30-Day Challenge Page -> 30-Day Challenge Offer
         if (pathname === '/30-day-challenge') {
             return {
-                title: "30-Day Couple Challenge",
-                subtitle: "ROUTINE BREAKER",
-                description: "Break the cycle and rediscover your spark with 30 daily activities designed for maximum connection.",
+                title: "The Naughty Bedroom Playbook",
+                subtitle: "(Go Beyond Missionary)",
+                description: "Don’t try this at home… unless you’re ready to break the bed.",
                 image: "/images/32 days v2.jpg",
                 link: "https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine",
                 isExternal: true,
@@ -153,6 +152,7 @@ const SalesPopup = () => {
                         {/* Close Button */}
                         <button
                             onClick={closePopup}
+                            aria-label="Close"
                             className="absolute top-6 right-6 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-all z-10"
                         >
                             <XIcon className="w-5 h-5" />

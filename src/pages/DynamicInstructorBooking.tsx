@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery, useQueries, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.lhs56u.easypanel.host';
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: false,
       retry: 1,
     },
@@ -158,7 +158,7 @@ const DynamicInstructorBookingContent = () => {
 
   // Refs for polling control
   const pollingActiveRef = useRef<boolean>(false);
-  const pollingTimeoutIdRef = useRef<number | null>(null);
+  const pollingTimeoutIdRef = useRef<any>(null);
   const pollingAttemptsRef = useRef<number>(0);
 
   // Payment constants

@@ -12,39 +12,39 @@ const ThirtyDayChallengePreview = () => {
             </div>
             <div className="p-8 md:p-12">
               <h2 className="font-serif text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
-                Break The Same-Sex Routine
+                The Naughty Bedroom Playbook
               </h2>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-8 pb-12">
             {/* Image Column */}
             <div className="relative overflow-hidden rounded-xl shadow-lg">
-              <img 
-                src="/images/32 days v2.jpg" 
-                alt="30+ Ways to Explore Pleasure" 
+              <img
+                src="/images/32 days v2.jpg"
+                alt="The Naughty Bedroom Playbook"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://via.placeholder.com/600x800?text=30+Day+Challenge";
+                  target.src = "https://via.placeholder.com/600x800?text=Playbook";
                   target.onerror = null;
                 }}
               />
             </div>
-            
+
             {/* Content Column */}
             <div className="flex flex-col justify-between">
               <div>
                 <p className="text-gray-700 mb-6">
-                  Are you tired of the same predictable patterns in your intimate life? These 30+ Ways to Explore Pleasure are designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
+                  Don’t try this at home… unless you’re ready to break the bed. This playbook is designed to take you beyond missionary, ignite curiosity, and create a deeper connection with your partner.
                 </p>
-                
+
                 <div className="bg-[#FF7A9A] rounded-xl p-6 mb-6 text-white relative overflow-hidden">
                   <div className="absolute top-6 -right-14 transform rotate-45 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 py-1.5 px-16 text-sm font-bold text-yellow-900 shadow-lg animate-pulse">
                     LIMITED TIME OFFER
                   </div>
                   <div className="text-lg md:text-xl font-light mb-4">
-                    <span className="font-bold text-[#FFD1DC]">30+ Ways to Explore Pleasure</span><br />
+                    <span className="font-bold text-[#FFD1DC]">(Go Beyond Missionary)</span><br />
                     Crave, Connect & Come Again
                   </div>
                   <div className="mb-4">
@@ -53,14 +53,14 @@ const ThirtyDayChallengePreview = () => {
                       <span className="text-white text-3xl font-bold">₹599</span>
                     </div>
                   </div>
-                  <Link 
+                  <Link
                     to="/thirty-day-challenge"
                     className="inline-flex items-center mt-2 bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-2 px-6 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
                   >
                     Get It Now <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </div>
-                
+
                 <div className="bg-[#F9F9F9] rounded-xl p-6">
                   <h3 className="font-medium text-lg text-gray-800 mb-3">What You'll Get:</h3>
                   <ul className="space-y-3">
@@ -78,7 +78,7 @@ const ThirtyDayChallengePreview = () => {
                     </li>
                   </ul>
                   <div className="mt-4 text-center">
-                    <Link 
+                    <Link
                       to="/thirty-day-challenge"
                       className="inline-flex items-center text-[#FF5A84] hover:text-[#FF7A9A] font-medium"
                     >

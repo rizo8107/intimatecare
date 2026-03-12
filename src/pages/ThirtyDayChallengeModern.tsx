@@ -20,7 +20,7 @@ const ThirtyDayChallengeModern = () => {
 
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: '30+ Ways to Explore Pleasure',
+        content_name: 'The Naughty Bedroom Playbook',
         content_category: 'Playbooks for couples',
         value: 599.00,
         currency: 'INR'
@@ -42,47 +42,47 @@ const ThirtyDayChallengeModern = () => {
     },
     {
       icon: Calendar,
-      title: "Lasting Change",
-      description: "30 days is the optimal period to establish new patterns in your intimate dynamics."
+      title: "Playbook System",
+      description: "Our structured playbook establishes new patterns in your intimate dynamics for lasting change."
     }
   ];
 
   const whatYouGet = [
-    "30+ unique daily challenges designed for couples",
+    "30+ naughty tasks designed for couples",
     "Detailed instructions for each activity",
-    "Connection prompts and conversation starters",
+    "Beyond Missionary exploration",
     "Sensual techniques to enhance pleasure",
-    "Bonus: 5 special weekend activities",
-    "Printable tracking calendar"
+    "Bonus: 5 special bedroom secrets",
+    "Printable exploration guide"
   ];
 
   const faqs = [
     {
-      question: "How does the 30-Day Challenge work?",
-      answer: "Each day, you'll receive a new activity or prompt designed to bring you and your partner closer. Activities range from communication exercises to sensual experiences, building progressively over the month."
+      question: "How does the Naughty Bedroom Playbook work?",
+      answer: "You'll explore new activities and prompts designed to take you beyond missionary. Activities range from communication exercises to experimental bedroom play."
     },
     {
       question: "Is this suitable for all couples?",
       answer: "Yes! Whether you're newly dating or married for decades, the challenges are designed to work for couples at any stage."
     },
     {
-      question: "What if we miss a day?",
-      answer: "No problem! The challenge is flexible. You can pick up where you left off or extend it beyond 30 days. The goal is connection, not perfection."
+      question: "What if we skip a task?",
+      answer: "No problem! The playbook is flexible. You can pick up where you left off. The goal is connection and exploration, not perfection."
     },
     {
-      question: "Is the content explicit?",
-      answer: "The challenge includes a mix of emotional connection activities and sensual experiences. Everything is tasteful and focused on building intimacy."
+      question: "Is the playbook explicit?",
+      answer: "The playbook includes a mix of emotional connection activities and physical exploration. Everything is designed to be tasteful and empowering."
     }
   ];
 
   const testimonials = [
     {
-      text: "By day 15, we were communicating about our desires in ways we never had before. The challenges made it easy to try new things.",
+      text: "After just 5 tasks, we were communicating about our desires in ways we never had before. This playbook made it easy to try new things.",
       author: "Pooja & Sameer",
       rating: 5
     },
     {
-      text: "We were stuck in such a routine that intimacy felt like a chore. This challenge brought back the excitement and anticipation.",
+      text: "We were stuck in such a routine that intimacy felt like a chore. This playbook brought back the excitement and anticipation.",
       author: "Rahul & Neha",
       rating: 5
     },
@@ -106,7 +106,7 @@ const ThirtyDayChallengeModern = () => {
               <div className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-white border-8 border-white animate-float">
                 <img
                   src="/images/32 days v2.jpg"
-                  alt="30+ Ways to Explore Pleasure"
+                  alt="The Naughty Bedroom Playbook"
                   className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
                 />
               </div>
@@ -120,7 +120,7 @@ const ThirtyDayChallengeModern = () => {
               <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-4 md:p-6 border border-white/40 flex gap-6 md:gap-8 items-center min-w-[280px] md:min-w-[300px]">
                 <div className="text-center">
                   <div className="text-3xl font-black text-orange-500 leading-none">30+</div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Days</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Tasks</div>
                 </div>
                 <div className="w-px h-8 bg-slate-200" />
                 <div className="text-center">
@@ -137,19 +137,19 @@ const ThirtyDayChallengeModern = () => {
 
             {/* Left - Content */}
             <div className="animate-fade-in-up">
-              <span className="badge-premium mb-6">30-Day Experience</span>
+              <span className="badge-premium mb-6">Playbook Experience</span>
 
               <h1 className="text-3xl sm:text-4xl md:text-7xl font-black text-slate-950 mb-8 leading-[1.05] tracking-tighter">
-                Break Your <br />
-                <span className="text-gradient">Routine</span>
+                The Naughty <br />
+                <span className="text-gradient">Bedroom Playbook</span>
               </h1>
 
               <p className="text-base sm:text-lg text-slate-500 font-medium mb-4 leading-relaxed max-w-xl">
-                Daily prompts and activities designed to reignite passion and deepen your connection.
+                Don’t try this at home… unless you’re ready to break the bed.
               </p>
 
               <p className="text-sm sm:text-base text-primary font-black uppercase tracking-widest mb-10">
-                Crave, Connect & Come Again
+                (Go Beyond Missionary)
               </p>
 
               {/* Social Proof */}

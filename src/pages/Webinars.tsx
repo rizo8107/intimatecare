@@ -27,7 +27,7 @@ import { toast } from 'react-hot-toast';
 import { createClient } from '@supabase/supabase-js';
 
 // Directly create Supabase client here to avoid module resolution issues
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.7za6uc.easypanel.host';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://crm-supabase.lhs56u.easypanel.host';
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
 

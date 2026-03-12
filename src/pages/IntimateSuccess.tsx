@@ -132,7 +132,7 @@ const IntimateSuccess = () => {
 
       // In production, uncomment this code to verify with Supabase:
       /*
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb?select=*', {
+      const response = await fetch('https://crm-supabase.lhs56u.easypanel.host/rest/v1/payments_kb?select=*', {
         method: 'GET',
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ey AgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE',
@@ -179,7 +179,7 @@ const IntimateSuccess = () => {
       await submitFormToWebhook();
 
       // Proceed with phone verification
-      const response = await fetch('https://crm-supabase.7za6uc.easypanel.host/rest/v1/payments_kb_all?select=*', {
+      const response = await fetch('https://crm-supabase.lhs56u.easypanel.host/rest/v1/payments_kb_all?select=*', {
         method: 'GET',
         headers: {
           'apikey': ANON_KEY,

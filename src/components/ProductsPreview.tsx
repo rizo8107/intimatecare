@@ -19,9 +19,9 @@ const PRODUCTS_PREVIEW = [
     },
     {
         id: 3,
-        title: "30-Day Couple Challenge",
-        subtitle: "Daily Sparks",
-        description: "Daily sparks and activities designed to reignite passion and deepen your bond.",
+        title: "The Naughty Bedroom Playbook",
+        subtitle: "(Go Beyond Missionary)",
+        description: "Don’t try this at home… unless you’re ready to break the bed.",
         price: "₹599",
         image: "/images/32 days v2.jpg",
         icon: Target,
@@ -73,12 +73,14 @@ const ProductsPreview = () => {
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => scroll('left')}
+                            aria-label="Scroll left"
                             className="w-12 h-12 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all shadow-sm"
                         >
                             <ChevronLeft className="w-6 h-6" />
                         </button>
                         <button
                             onClick={() => scroll('right')}
+                            aria-label="Scroll right"
                             className="w-12 h-12 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all shadow-sm"
                         >
                             <ChevronRight className="w-6 h-6" />
@@ -130,12 +132,12 @@ const ProductsPreview = () => {
 
                                     {/* Content */}
                                     <div className="px-1 md:px-2 pb-1 md:pb-2 flex flex-col flex-grow">
-                                        <h3 className="text-sm md:text-2xl font-bold text-slate-900 mb-0.5 md:mb-1 tracking-tight leading-tight line-clamp-1">
+                                        <h3 className="text-sm md:text-2xl font-bold text-slate-900 mb-0.5 md:mb-1 tracking-tight leading-tight line-clamp-2">
                                             {product.title}
                                         </h3>
 
                                         <div className="flex items-center gap-2 mb-2 md:mb-3">
-                                            <p className="text-slate-400 font-medium text-[10px] md:text-sm line-clamp-1">
+                                            <p className="text-slate-400 font-medium text-[10px] md:text-sm line-clamp-2">
                                                 {product.subtitle}
                                             </p>
                                             <span className="w-[1px] h-3 bg-slate-200" />
@@ -151,20 +153,12 @@ const ProductsPreview = () => {
                                         </p>
 
                                         {/* Footer */}
-                                        <div className="flex flex-col items-stretch mt-auto gap-2">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <div className="px-4 py-1.5 md:px-5 md:py-2 bg-slate-100 rounded-full">
-                                                    <span className="text-slate-900 font-bold tracking-tight text-xs md:text-base">{product.price}</span>
-                                                </div>
-                                                <div className="flex items-center gap-1.5 text-primary">
-                                                    <Eye className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                                                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider">View</span>
-                                                </div>
+                                        <div className="flex flex-row items-center justify-between mt-auto gap-1 md:gap-2">
+                                            <div className="px-3 py-1.5 md:px-5 md:py-2.5 bg-slate-100 rounded-full text-center">
+                                                <span className="text-slate-900 font-bold tracking-tight text-xs md:text-base">{product.price}</span>
                                             </div>
-
                                             <div className="flex items-center justify-center gap-2 px-4 py-2 md:px-6 md:py-2.5 bg-slate-900 rounded-full text-white font-medium group-hover:bg-primary transition-colors text-[10px] md:text-base">
-                                                <span className="hidden md:inline">Buy Now</span>
-                                                <span className="md:hidden">Buy Now</span>
+                                                <span className="text-[10px] md:text-base">Buy Now</span>
                                                 <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-white -rotate-45 group-hover:rotate-0 transition-transform hidden md:block" />
                                             </div>
                                         </div>

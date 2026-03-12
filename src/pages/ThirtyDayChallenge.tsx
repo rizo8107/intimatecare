@@ -16,17 +16,17 @@ const ThirtyDayChallenge = () => {
   // Handle buy now button click - redirect to payment page
   const handleBuyNow = () => {
     setIsLoading(true);
-    
+
     // Track click with Facebook Pixel if available
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: '30+ Ways to Explore Pleasure',
+        content_name: 'The Naughty Bedroom Playbook',
         content_category: 'Playbooks for couples',
         value: 599.00,
         currency: 'INR'
       });
     }
-    
+
     // Redirect to payment page
     window.location.href = 'https://payments.cashfree.com/forms/Break-The-Same-Sex-Routine';
   };
@@ -44,42 +44,42 @@ const ThirtyDayChallenge = () => {
               <div className="p-8 md:p-12">
                 <div className="text-[#FF7A9A] text-sm font-bold uppercase tracking-wider mb-2 text-center">EXCLUSIVE DIGITAL PRODUCT</div>
                 <h2 className="font-serif text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
-                  Transform Your Intimate Life in 30 Days
+                  The Naughty Bedroom Playbook
                 </h2>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-8 pb-12">
               {/* Image Column */}
               <div className="relative overflow-hidden rounded-xl shadow-lg">
-                <img 
-                  src="/images/32 days v2.jpg" 
-                  alt="30+ Ways to Explore Pleasure" 
+                <img
+                  src="/images/32 days v2.jpg"
+                  alt="The Naughty Bedroom Playbook"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = "https://via.placeholder.com/600x800?text=30+Day+Challenge";
+                    target.src = "https://via.placeholder.com/600x800?text=Playbook";
                     target.onerror = null;
                   }}
                 />
               </div>
-              
+
               {/* Content Column */}
               <div className="flex flex-col justify-between">
                 <div>
                   <p className="text-gray-700 mb-6">
-                    Are you tired of the same predictable patterns in your intimate life? These 30+ Ways to Explore Pleasure are designed to break routines, ignite passion, and create deeper connection with your partner through carefully crafted daily activities.
+                    Don’t try this at home… unless you’re ready to break the bed. This playbook is designed to take you beyond missionary, ignite curiosity, and create a deeper, more experimental connection with your partner.
                   </p>
-                  
+
                   <div className="bg-[#FF7A9A] rounded-xl p-6 mb-6 text-white relative overflow-hidden">
                     <div className="absolute top-14 -right-14 transform rotate-45 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 py-1.5 px-16 text-sm font-bold text-yellow-900 shadow-lg animate-pulse">
                       LIMITED TIME OFFER
                     </div>
                     <h1 className="font-serif text-3xl md:text-4xl font-bold mb-3 drop-shadow-sm">
-                      Break The<br />Same-Sex Routine
+                      The Naughty<br />Bedroom Playbook
                     </h1>
                     <div className="text-lg md:text-xl font-light mb-4">
-                      <span className="font-bold text-[#FFD1DC]">30+ Ways to Explore Pleasure</span><br />
+                      <span className="font-bold text-[#FFD1DC]">(Go Beyond Missionary)</span><br />
                       Crave, Connect & Come Again
                     </div>
                     <div className="mb-4">
@@ -88,7 +88,7 @@ const ThirtyDayChallenge = () => {
                         <span className="text-white text-3xl font-bold">₹599</span>
                       </div>
                     </div>
-                    <button 
+                    <button
                       onClick={handleBuyNow}
                       disabled={isLoading}
                       className="mt-2 bg-white text-[#FF5A84] hover:bg-[#FFE5EC] py-2 px-6 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
@@ -96,7 +96,7 @@ const ThirtyDayChallenge = () => {
                       {isLoading ? 'Processing...' : 'Buy Now'}
                     </button>
                   </div>
-                  
+
                   <div className="bg-[#F9F9F9] rounded-xl p-6 mb-6">
                     <h3 className="font-medium text-lg text-gray-800 mb-3">What You'll Get:</h3>
                     <ul className="space-y-3">
@@ -132,13 +132,13 @@ const ThirtyDayChallenge = () => {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div className="md:hidden">
                     <div className="flex items-center gap-1 mb-4 justify-start">
                       <span className="text-xl font-bold text-gray-500 line-through opacity-60">₹999</span>
                       <span className="text-2xl font-bold text-[#FF5A84]">₹599</span>
                     </div>
-                    <button 
+                    <button
                       onClick={handleBuyNow}
                       disabled={isLoading}
                       className="w-full bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-6 rounded-full font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
@@ -150,7 +150,7 @@ const ThirtyDayChallenge = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Benefits Section */}
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 mb-12">
             <div className="text-center mb-10">
@@ -158,10 +158,10 @@ const ThirtyDayChallenge = () => {
                 Why This Challenge Works
               </h2>
               <p className="text-gray-700 max-w-3xl mx-auto">
-                Based on research in relationship psychology and sexual wellness, this 30-day program is designed to create lasting change in your intimate connection.
+                Based on research in relationship psychology and sexual wellness, this playbook program is designed to create lasting change in your intimate connection.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-[#FAFAFA] rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-[#FFE5EC] rounded-full flex items-center justify-center mx-auto mb-4">
@@ -172,7 +172,7 @@ const ThirtyDayChallenge = () => {
                   Novel experiences trigger dopamine release, creating excitement and anticipation in your relationship.
                 </p>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-[#FFE5EC] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Sparkles size={24} className="text-[#FF7A9A]" />
@@ -182,7 +182,7 @@ const ThirtyDayChallenge = () => {
                   Structured activities create opportunities for vulnerability and emotional intimacy alongside physical pleasure.
                 </p>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 text-center">
                 <div className="w-12 h-12 bg-[#FFE5EC] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Sparkles size={24} className="text-[#FF7A9A]" />
@@ -194,13 +194,13 @@ const ThirtyDayChallenge = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Testimonials */}
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 mb-12">
             <h2 className="font-serif text-3xl font-bold text-gray-800 mb-8 text-center">
               What Couples Are Saying
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
@@ -211,7 +211,7 @@ const ThirtyDayChallenge = () => {
                   <span className="text-sm font-medium text-gray-800">Married couple, 5 years</span>
                 </div>
               </div>
-              
+
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
                   "We were stuck in such a routine that intimacy felt like a chore. This challenge brought back the excitement and anticipation we had when we first met."
@@ -231,7 +231,7 @@ const ThirtyDayChallenge = () => {
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden p-8 md:p-12 mb-12">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Featured In</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
-              {['BBC.jpg','Deccan.jpg','Huf.jpg','INDIA (1).jpg','INDIA (2).jpg','INDIA (3).jpg','Indian ex.jpg','Mint.jpg','Vogue.jpg'].map(img => (
+              {['BBC.jpg', 'Deccan.jpg', 'Huf.jpg', 'INDIA (1).jpg', 'INDIA (2).jpg', 'INDIA (3).jpg', 'Indian ex.jpg', 'Mint.jpg', 'Vogue.jpg'].map(img => (
                 <div key={img} className="w-28 md:w-32 lg:w-36 opacity-80 hover:opacity-100 transition-opacity">
                   <img
                     src={`/Featured/${img}`}
@@ -247,15 +247,15 @@ const ThirtyDayChallenge = () => {
           {/* CTA Section */}
           <div className="bg-[#FFE5EC] p-8 rounded-xl text-center">
             <h2 className="text-2xl font-serif font-bold mb-4">Ready to Transform Your Intimate Life?</h2>
-            <p className="text-gray-700 mb-6">  
-              The 30+ Ways to Explore Pleasure playbook is available now at a special discount price!
+            <p className="text-gray-700 mb-6">
+              The Naughty Bedroom Playbook is available now at a special discount price!
             </p>
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex items-center justify-center gap-4">
                 <span className="text-2xl font-bold text-gray-500 line-through opacity-60">₹999</span>
                 <span className="text-3xl font-bold text-[#FF5A84]">₹599</span>
               </div>
-              <button 
+              <button
                 onClick={handleBuyNow}
                 disabled={isLoading}
                 className="bg-[#FF7A9A] hover:bg-[#FF5A84] text-white py-3 px-8 rounded-full font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"

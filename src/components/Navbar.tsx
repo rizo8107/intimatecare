@@ -10,6 +10,7 @@ const TopBanner = () => {
   const proofs = [
     { text: "Sarah from Mumbai just booked a 1:1 session", time: "2 min ago" },
     { text: "Couple from Delhi downloaded the 69 Position Playbook", time: "5 min ago" },
+    { text: "Rahul from Bangalore grabbed The Naughty Bedroom Playbook", time: "7 min ago" },
     FEATURE_FLAGS.ENABLE_INTIMATE_TALKS ? { text: "Priya joined the Intimate Talks", time: "8 min ago" } : null,
   ].filter(Boolean) as { text: string; time: string }[];
 
@@ -195,7 +196,7 @@ const Navbar = () => {
 
                 <div className="mt-4 mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Coaching & Guides</div>
                 <MobileNavLink to="/guide" active={isActive('/guide')} onClick={closeMenu}>Playbooks</MobileNavLink>
-                <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>Challenges</MobileNavLink>
+                <MobileNavLink to="/30-day-challenge" active={isActive('/30-day-challenge')} onClick={closeMenu}>Naughty Playbook</MobileNavLink>
                 {FEATURE_FLAGS.ENABLE_NEW_YEAR_BUNDLE && <MobileNavLink to="/newyear-bundle" active={isActive('/newyear-bundle')} onClick={closeMenu}>New Year Bundle</MobileNavLink>}
                 <MobileNavLink to="/sessions" active={isActive('/sessions')} onClick={closeMenu}>1:1 Sessions</MobileNavLink>
 

@@ -39,7 +39,7 @@ type ProgramItem = {
 
 const programs: ProgramItem[] = [
   {
-    icon: <School className="w-6 h-6" />, 
+    icon: <School className="w-6 h-6" />,
     title: "Schools (Grade 9–12)",
     blurb: "Age-appropriate, stigma‑free modules for teens to build respect, self‑awareness and safe decision‑making.",
     bullets: [
@@ -54,7 +54,7 @@ const programs: ProgramItem[] = [
     imageAlt: "Students participating in an interactive school session",
   },
   {
-    icon: <GraduationCap className="w-6 h-6" />, 
+    icon: <GraduationCap className="w-6 h-6" />,
     title: "Colleges & Universities",
     blurb: "Workshops that prepare young adults for healthy relationships, campus life, and early careers.",
     bullets: [
@@ -69,7 +69,7 @@ const programs: ProgramItem[] = [
     imageAlt: "College students engaging in a campus workshop",
   },
   {
-    icon: <Building2 className="w-6 h-6" />, 
+    icon: <Building2 className="w-6 h-6" />,
     title: "MNCs & Workplaces",
     blurb: "Practical, inclusive trainings for respectful culture and high‑trust teams.",
     bullets: [
@@ -203,8 +203,8 @@ function SectionHeading({ over, title, sub }: { over?: string; title: string; su
 export default function Programs() {
   const heroImgs = useMemo(
     () => [
-      "https://backend-pocketbase.7za6uc.easypanel.host/api/files/pbc_3420988878/ywr0z33t2nx88s1/riz01372_7rbkydbgjn.JPG?token=",
-      "https://backend-pocketbase.7za6uc.easypanel.host/api/files/pbc_3420988878/z9687j5x5l909wm/riz01350_bl4lrwsvnf.JPG?token=",
+      "https://backend-pocketbase.lhs56u.easypanel.host/api/files/pbc_3420988878/ywr0z33t2nx88s1/riz01372_7rbkydbgjn.JPG?token=",
+      "https://backend-pocketbase.lhs56u.easypanel.host/api/files/pbc_3420988878/z9687j5x5l909wm/riz01350_bl4lrwsvnf.JPG?token=",
     ],
     []
   );

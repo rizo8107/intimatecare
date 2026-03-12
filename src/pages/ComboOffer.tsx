@@ -50,7 +50,7 @@ const ComboOffer = () => {
     // Track click with Facebook Pixel if available
     if (window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: 'Combo Offer - 69 Positions + 30+ Ways to Explore Pleasure',
+        content_name: 'Combo Offer - 69 Positions + The Naughty Bedroom Playbook',
         content_category: 'Playbooks for couples Bundle',
         value: Number(price.replace(/,/g, '')),
         currency: 'INR'
@@ -126,7 +126,7 @@ const ComboOffer = () => {
                     <div className="relative w-1/2">
                       <img
                         src="/images/32 days v2.jpg"
-                        alt="30+ Ways to Explore Pleasure"
+                        alt="The Naughty Bedroom Playbook"
                         className="w-full h-auto rounded-r-xl"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -162,7 +162,7 @@ const ComboOffer = () => {
                       <div className="bg-[#FFE5EC] text-[#FF7A9A] w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
                         <CheckCircle size={14} />
                       </div>
-                      <span><strong>Book 2:</strong> Break the Same-Sex Routine 30+ Ways to Explore Pleasure</span>
+                      <span><strong>Book 2:</strong> The Naughty Bedroom Playbook (Go Beyond Missionary)</span>
                     </li>
                     <li className="flex items-start">
                       <div className="bg-[#FFE5EC] text-[#FF7A9A] w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
@@ -237,10 +237,10 @@ const ComboOffer = () => {
 
                 <div className="border-t border-gray-200 pt-6">
                   <h3 className="font-serif text-2xl font-bold text-gray-800 mb-4">
-                    Book 2: Break the Same-Sex Routine
+                    Book 2: The Naughty Bedroom Playbook
                   </h3>
                   <p className="text-gray-700 mb-4">
-                    Feeling stuck in the same old routine with your partner? These 30+ ways to explore pleasure are made for same-sex couples who want to bring back the excitement. With playful prompts and sexy tasks, you'll laugh more, touch more, and turn up the heat — one day at a time.
+                    Don’t try this at home… unless you’re ready to break the bed. This playbook is designed to take you beyond missionary, ignite curiosity, and create a deeper, more experimental connection with your partner.
                   </p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-start">
@@ -305,7 +305,7 @@ const ComboOffer = () => {
 
               <div className="bg-[#FAFAFA] rounded-xl p-6 border border-[#F0F0F5]">
                 <p className="italic text-gray-700 mb-4">
-                  "The 30+ ways to explore pleasure completely transformed our relationship. We're communicating better and the intimacy is on another level now."
+                  "The Naughty Bedroom Playbook completely transformed our relationship. We're communicating better and the intimacy is on another level now."
                 </p>
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-[#FFE5EC] flex items-center justify-center text-[#FF7A9A] text-sm font-bold mr-3">K</div>

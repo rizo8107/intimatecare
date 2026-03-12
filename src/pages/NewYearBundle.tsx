@@ -42,11 +42,11 @@ const NewYearBundle = () => {
       features: ["Anatomical Illustrations", "Body Type Variations", "Communication Tips"]
     },
     {
-      title: "30-Day Couple Challenge",
-      subtitle: "Routine Breaker",
+      title: "The Naughty Bedroom Playbook",
+      subtitle: "(Go Beyond Missionary)",
       image: "/images/32 days v2.jpg",
-      description: "Daily activities designed to break routines, ignite passion, and create deeper connection with your partner.",
-      features: ["30 Ready-to-use Tasks", "Connection Prompts", "Novelty Inducers"]
+      description: "Don’t try this at home… unless you’re ready to break the bed.",
+      features: ["30 Spiced-up Tasks", "New Realm Exploration", "Erotic Connection"]
     },
     {
       title: "Intimate Talks",

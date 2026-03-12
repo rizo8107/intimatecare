@@ -31,7 +31,7 @@ const chips = [
 
 const programs = [
   {
-    icon: <School className="w-6 h-6" />, 
+    icon: <School className="w-6 h-6" />,
     title: "Schools (Grade 9–12)",
     blurb: "Age-appropriate, stigma‑free modules for teens to build respect, self‑awareness and safe decision‑making.",
     bullets: [
@@ -44,7 +44,7 @@ const programs = [
     color: c.mint,
   },
   {
-    icon: <GraduationCap className="w-6 h-6" />, 
+    icon: <GraduationCap className="w-6 h-6" />,
     title: "Colleges & Universities",
     blurb: "Workshops that prepare young adults for healthy relationships, campus life, and early careers.",
     bullets: [
@@ -57,7 +57,7 @@ const programs = [
     color: c.lavender,
   },
   {
-    icon: <Building2 className="w-6 h-6" />, 
+    icon: <Building2 className="w-6 h-6" />,
     title: "MNCs & Workplaces",
     blurb: "Practical, inclusive trainings for respectful culture and high‑trust teams.",
     bullets: [
@@ -243,7 +243,7 @@ export default function IntimateCareLanding() {
               <Card className="relative border-0 rounded-3xl overflow-hidden shadow-xl" style={{ background: c.bgAlt }}>
                 <CardContent className="p-0">
                   <img
-                    src="https://backend-pocketbase.7za6uc.easypanel.host/api/files/pbc_3420988878/ywr0z33t2nx88s1/riz01372_7rbkydbgjn.JPG?token="
+                    src="https://backend-pocketbase.lhs56u.easypanel.host/api/files/pbc_3420988878/ywr0z33t2nx88s1/riz01372_7rbkydbgjn.JPG?token="
                     alt="Instructor portrait 1"
                     className="w-full h-auto object-cover"
                     loading="eager"
@@ -254,7 +254,7 @@ export default function IntimateCareLanding() {
                 <Card className="border-0 rounded-2xl overflow-hidden">
                   <CardContent className="p-0">
                     <img
-                      src="https://backend-pocketbase.7za6uc.easypanel.host/api/files/pbc_3420988878/z9687j5x5l909wm/riz01350_bl4lrwsvnf.JPG?token="
+                      src="https://backend-pocketbase.lhs56u.easypanel.host/api/files/pbc_3420988878/z9687j5x5l909wm/riz01350_bl4lrwsvnf.JPG?token="
                       alt="Instructor portrait 2"
                       className="w-full h-48 md:h-56 object-cover"
                       loading="lazy"
